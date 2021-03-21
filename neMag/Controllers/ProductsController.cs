@@ -15,10 +15,7 @@ namespace neMag.Controllers
 
         private Models.ApplicationDbContext db = new Models.ApplicationDbContext();
         private int _perPage = 11; // cate produse intra pe o pagina
-        private const int PRICE_CRESCATOR = 1;
-        private const int PRICE_DESC = 2;
-        private const int RATING_CRESCATOR = 3;
-        private const int RATING_DESC = 4;
+        
         // GET: Product
         public ActionResult Index()
         {
@@ -35,24 +32,14 @@ namespace neMag.Controllers
                 offset = (currentPage - 1) * this._perPage;
 
             var categories = db.Categories;
-            var crrCateg = 0;
-            if (Request.Params.Get("category") != null)
-            {
-                crrCateg = Convert.ToInt32(Request.Params.Get("category").Trim().ToString());
-
-                if (crrCateg != 0) 
-                    products = products.Where(p => p.CategoryId.Equals(crrCateg));
-            }
 
             var prodsOnPage = products.ToList().Skip(offset).Take(this._perPage);
-
 
             if (TempData.ContainsKey("message"))
             {
                 ViewBag.Message = TempData["message"].ToString();
             }
             ViewBag.totalItems = totalItems;
-            ViewBag.cat = crrCateg;
             ViewBag.categories = categories;
             ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)this._perPage);
             ViewBag.Products = prodsOnPage;
@@ -76,27 +63,27 @@ namespace neMag.Controllers
                 {
                     produs.Rating = 0;
                     produs.Accepted = false;
-
                     var newPhotoPath = UploadPhoto(photo);
                     produs.Photo = newPhotoPath;
-
+                    
                     db.Products.Add(produs);
                     db.SaveChanges();
                     TempData["massage"] = "Produsul a fost adaugat";
+                    
                     return RedirectToAction("Index");
                 }
                 else
                 {
                     produs.Categ = GetAllCategories();
                     produs.Price = 1;
-                    return View(produs);
+                    return View("Index");
                 }
             }
             catch (Exception e)
             {
                 produs.Categ = GetAllCategories();
                 produs.Price = 2;
-                return View(produs);
+                return View("Index");
             }
 
 
@@ -105,6 +92,9 @@ namespace neMag.Controllers
         [NonAction]
         public string UploadPhoto(HttpPostedFileBase uploadedFile)
         {
+            // TODO remove this, momentan e folositor doar pt debugging rapid, dar altfel n ar trebui sa fie un feature
+            if (uploadedFile == null)
+                return "";
             // Se preia numele fisierul
             string uploadedFileName = uploadedFile.FileName;
             string uploadedFileExtension = Path.GetExtension(uploadedFileName);

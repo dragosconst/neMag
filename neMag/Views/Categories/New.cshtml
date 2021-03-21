@@ -8,10 +8,16 @@
 {
     <br />
     @Html.HiddenFor(c => c.CategoryId);
-    @Html.Label("CategoryName", "Numele categoriei")
+    @Html.Label("Title", "Numele categoriei")
     <br />
-    @Html.TextBox("CategoryName", null, new { @class = "form-control"})
-    @Html.ValidationMessageFor(c => c.Title, null, new {  @class = "text-danger"})
+    @Html.TextBox("Title", null, new { @class = "form-control" })
+    @Html.ValidationMessageFor(c => c.Title, null, new { @class = "text-danger" })
+    <br />
+
+    @Html.Label("Description", "Descrierea categoriei")
+    <br />
+    @Html.TextBox("Description", null, new { @class = "form-control" })
+    @Html.ValidationMessageFor(c => c.Description, null, new { @class = "text-danger" })
     <br />
     <button class="btn btn-sm btn-success" type="submit">Salveaza</button>
 }

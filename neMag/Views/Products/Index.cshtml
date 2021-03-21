@@ -16,20 +16,16 @@
     <div>
         @foreach (neMag.Models.Product product in ViewBag.Products)
         {
-            if (product.Accepted == true)
-            {
-
-                <div class="panel panel-default my-panel product_box">
+            <div class="panel panel-default my-panel product_box">
 
 
-                    @Html.Partial("productInfo", product)
+                @Html.Partial("productInfo", product)
 
-                    <div class="panel-footer my-panel-footer">
-                        <a class="btn  pull-left open" href="/Products/Show/@product.ProductId">Deschidere</a>
-                        <div class="clearfix"></div>
-                    </div>
+                <div class="panel-footer my-panel-footer">
+                    <a class="btn  pull-left open" href="/Products/Show/@product.ProductId">Deschidere</a>
+                    <div class="clearfix"></div>
                 </div>
-            }
+            </div>
         }
 
     </div>

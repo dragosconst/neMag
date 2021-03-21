@@ -263,6 +263,7 @@
     <Content Include="Views\Products\Index.cshtml" />
     <Content Include="Views\Products\New.cshtml" />
     <Content Include="Views\Products\Show.cshtml" />
+    <Content Include="Views\Shared\productInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202103150653462_Initial.resx">

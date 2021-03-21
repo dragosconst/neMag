@@ -7,7 +7,6 @@ using System.Web.Mvc;
 
 namespace online_shop.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
         private neMag.Models.ApplicationDbContext db = new neMag.Models.ApplicationDbContext();
