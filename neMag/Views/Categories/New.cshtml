@@ -11,7 +11,7 @@
     @Html.Label("CategoryName", "Numele categoriei")
     <br />
     @Html.TextBox("CategoryName", null, new { @class = "form-control"})
-    @Html.ValidationMessageFor(c => c.CategoryName, null, new {  @class = "text-danger"})
+    @Html.ValidationMessageFor(c => c.Title, null, new {  @class = "text-danger"})
     <br />
     <button class="btn btn-sm btn-success" type="submit">Salveaza</button>
 }

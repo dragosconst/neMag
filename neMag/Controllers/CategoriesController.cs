@@ -42,7 +42,7 @@ namespace online_shop.Controllers
 
                 if(TryUpdateModel(cat))
                 {
-                    cat.CategoryName = requestCat.CategoryName;
+                    cat.Title = requestCat.Title;
                     db.SaveChanges();
                     TempData["message"] = "Categorie schimbata cu succes.";
                     return RedirectToAction("Index");

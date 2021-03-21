@@ -17,7 +17,7 @@
         @Html.Label("CategoryName", "Numele categoriei")
         <br />
         @Html.EditorFor(c => c.CategoryName)
-        @Html.ValidationMessageFor(c => c.CategoryName, null, new { @class = "text-danger" })
+        @Html.ValidationMessageFor(c => c.Title, null, new { @class = "text-danger" })
 
         <button class="btn btn-sm btn-success" type="submit">Modifica</button>
     }

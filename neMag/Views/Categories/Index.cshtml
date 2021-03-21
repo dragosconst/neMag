@@ -10,7 +10,7 @@
 @foreach (var cat in ViewBag.Categories)
 {
     <div class="panel panel-default">
-        <div class="panel-heading">@cat.CategoryName</div>
+        <div class="panel-heading">@cat.Title</div>
         <div class="panel-body">
             <a class="pull-left btn-sm btn btn-info" href="/Categories/Show/@cat.CategoryId">Afiseaza individual</a>
             <br />
