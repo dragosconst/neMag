@@ -1,0 +1,47 @@
+﻿@model neMag.Models.Product
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+
+<h2>Editare Produs</h2>
+
+
+@using (Html.BeginForm("Edit", "Products", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+    <br />
+    @Html.HiddenFor(m => m.ProductId)
+    @Html.HiddenFor(m => m.UserId)
+
+    @Html.Label("ProductName", "Nume Produs", new { htmlAttributes = new { @class = "form-control" } })
+    @Html.EditorFor(m => m.ProductName)
+    @Html.ValidationMessage("ProductName", null, new { @class = "text-danger" })
+    <br />
+
+    @Html.DropDownListFor(m => m.CategoryId,
+        new SelectList(Model.Categ, "Value", "Text"), "Selectati categoria", new { @class = "form-control" })
+    @Html.ValidationMessage("CategoryId", null, new { @class = "text-danger" })
+
+    <br />
+    @Html.Label("Description", "Descriere: ")
+    @Html.Editor("Description", new { htmlAttributes = new { @class = "form-control" } })
+    @Html.ValidationMessage("Description", null, new { @class = "text-danger" })
+    <br />
+    <br />
+    <label for="photo"></label>
+    <input id="photo" type="file" name="photo" />
+    <br />
+    @Html.Label("Price", "Pret", new { htmlAttributes = new { @class = "form-control" } })
+    @Html.EditorFor(m => m.Price)
+    @Html.ValidationMessage("Price", null, new { @class = "text-danger" })
+
+    <br />
+    @Html.Label("Discount", "Discount:")
+    @Html.TextBox("Discount", null, new { @class = "form-control", type = "number", min = "0", max = "100", step = "0.01" })
+    <br />
+
+
+    <button class="btn btn-sm btn-success" type="submit">Modifica produs</button>
+}

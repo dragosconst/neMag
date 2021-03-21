@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="@Url.Content("~/Content/Site.css")"
+          rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <br />
+    <h1>@ViewBag.Message</h1>
+    <hr />
+    <div>
+        @foreach (neMag.Models.Product product in ViewBag.Products)
+        {
+            <div class="panel panel-default my-panel product_box">
+
+
+                @Html.Partial("productInfo", product)
+
+                <div class="panel-footer my-panel-footer">
+                    <a class="btn  pull-left open" href="/Products/Show/@product.ProductId">Deschidere</a>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        }
+
+    </div>
+    <br />
+    <div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                @for (int i = 1; i <= ViewBag.lastPage; i++)
+                {
+                    if (ViewBag.search != "")
+                    {
+                        <li><a href="/Products/Index?page=@i" class="glyphicon">@(i)</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="/Products/Index?page=@i" class="glyphicon">@(i)</a></li>
+                    }
+                }
+                <li>
+                    @if (ViewBag.search != "")
+                    {
+                        <a href="/Products/Index?page=@(ViewBag.lastPage)" class="glyphicon glyphicon-chevron-right" aria-label="Next">
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="/Products/Index?page=@(ViewBag.lastPage)" class="glyphicon glyphicon-chevron-right" aria-label="Next">
+                        </a>
+                    }
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <hr />
+</body>
+</html>

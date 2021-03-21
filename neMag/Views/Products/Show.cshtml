@@ -1,0 +1,21 @@
+﻿@model neMag.Models.Product
+@{
+    ViewBag.Title = "Show";
+}
+<br /><br /><br />
+<div class="panel panel-default my-border show">
+    @Html.Partial("productInfo", Model)
+
+    @if (ViewBag.afisareButoane == true)
+    {
+        <div class="panel-footer">
+            <a class="btn btn-success pull-left" href="/Products/Edit/@Model.ProductId"><div class="glyphicon glyphicon-pencil"></div>     Modifica Produs</a>
+
+            <form method="post" action="/Products/Delete/@Model.ProductId">
+                @Html.HttpMethodOverride(HttpVerbs.Delete)
+                <button class="btn btn-danger pull-right" type="submit"><div class="glyphicon glyphicon-trash"></div>  Sterge Produs</button>
+            </form>
+            <div class="clearfix"></div>
+        </div>
+    }
+</div>
