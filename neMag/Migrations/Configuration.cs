@@ -10,8 +10,6 @@
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
-            AutomaticMigrationDataLossAllowed = true;
-            ContextKey = "neMag.Models.ApplicationDbContext";
         }
 
         protected override void Seed(neMag.Models.ApplicationDbContext context)

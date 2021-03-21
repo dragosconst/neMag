@@ -1,16 +1,16 @@
-﻿using System;
+﻿using neMag.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using neMag.Models;
 
 namespace online_shop.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
-        private Models.ApplicationDbContext db = new Models.ApplicationDbContext();
+        private neMag.Models.ApplicationDbContext db = new neMag.Models.ApplicationDbContext();
         // GET: Category
         public ActionResult Index()
         {

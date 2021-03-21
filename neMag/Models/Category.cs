@@ -15,6 +15,9 @@ namespace neMag.Models
         [Required(ErrorMessage = "Title is mandatory!")]
         public string Title { get; set; }
 
+        [Required(ErrorMessage = "Trebuie introdusa o denumire pt categorie")]
+        public string CategoryName { get; set; }
+
         [Required(ErrorMessage = "Description is mandatory!")]
         public string Description { get; set; }
 

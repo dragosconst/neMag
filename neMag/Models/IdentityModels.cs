@@ -23,7 +23,7 @@ namespace neMag.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<ApplicationDbContext, neMag.Migrations.Configuration>("DefaultConnection"));
+            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<ApplicationDbContext, neMag.Migrations.Configuration>("DefaultConnection"));
         }
 
         public DbSet<Category> Categories { get; set; }
