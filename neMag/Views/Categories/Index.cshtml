@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h1>@ViewBag.Message</h1>
+<h2>Toate categoriile: </h2>
+<br />
+
+@foreach (var cat in ViewBag.Categories)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">@cat.CategoryName</div>
+        <div class="panel-body">
+            <a class="pull-left btn-sm btn btn-info" href="/Categories/Show/@cat.CategoryId">Afiseaza individual</a>
+            <br />
+            <br />
+            <p>
+                <a class="pull-left btn-sm btn btn-success" href="/Categories/Edit/@cat.CategoryId">Editeaza</a>
+                <form method="post" action="/Categories/Delete/@cat.CategoryId">
+                    @Html.HttpMethodOverride(HttpVerbs.Delete)
+                    <button class="pull-right btn btn-danger" type="submit">Sterge</button>
+                </form>
+            </p>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+}
+
+<a class="pull-left btn-sm btn btn-success" href="/Categories/New">Adauga o categorie noua</a>
+<br />
+
