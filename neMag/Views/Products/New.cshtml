@@ -1,0 +1,40 @@
+﻿@model neMag.Models.Product
+
+@{
+    ViewBag.Title = "New";
+}
+
+<h2>Creare Produs</h2>
+
+
+@using (Html.BeginForm("New", "Products", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    <br />
+    @Html.Label("ProductName", "Nume Produs")
+    @Html.TextBox("ProductName", null, new { @class = "form-control" })
+    @Html.ValidationMessage("ProductName", null, new { @class = "text-danger" })
+    <br />
+
+    <label>Selectati categoria</label>
+    @Html.DropDownListFor(m => m.CategoryId, new SelectList(Model.Categ, "Value", "Text"),
+    "Selectati categoria", new { @class = "form-control" })
+    @Html.ValidationMessage("CategoryId", null, new { @class = "text-danger" })
+    <br />
+
+    @Html.Label("Description", "Descriere")
+    @Html.TextBox("Description", null, new { @class = "form-control" })
+
+    <label for="photo"></label>
+    <input id="photo" type="file" name="photo" />
+    @Html.Label("Price", "Pret")
+    @Html.TextBox("Price", null, new { @class = "form-control" })
+    @Html.ValidationMessage("Price", null, new { @class = "text-danger" })
+    <br />
+    <br />
+
+    <button type="submit">Adauga produs</button>
+}
+

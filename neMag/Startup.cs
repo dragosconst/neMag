@@ -10,5 +10,6 @@ namespace neMag
         {
             ConfigureAuth(app);
         }
+        
     }
 }
