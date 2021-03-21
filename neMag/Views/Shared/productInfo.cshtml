@@ -1,0 +1,48 @@
+﻿@model neMag.Models.Product
+<!DOCTYPE html>
+<html>
+<head>
+    @{
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>@ViewBag.Title - My ASP.NET Application</title>
+        @Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")
+        <link href="@Url.Content("~/Content/Site.css")"
+              rel="stylesheet" type="text/css" />
+    }
+</head>
+<body>
+    <div class="my-panel-header panel-heading " onClick="location.href='/Products/Show/@Model.ProductId';">
+        <a class="name" style="text-decoration:none; color:black" href="/Products/Show/@Model.ProductId">@Model.ProductName</a>
+        @{
+            var price = Model.Price;
+            var disc = Model.Discount / 100;
+            price -= price * disc; // n am gasit o varianta mai eleganta decat asta ca sa includ discount ul in partial
+            @:<span class="label label-success pull-right price">Pret: @price lei</span>
+        }
+        @if (Model.Discount != 0)
+        {
+            <span class="label label-danger discount">Discount : @Model.Discount%</span>
+        }
+        <div class="clearfix"></div>
+    </div>
+    <div class="panel-body my-panel-body" onClick="location.href='/Products/Show/@Model.ProductId';">
+
+        <br />
+        <picture>
+            <img class="my-image" src="@Model.Photo" alt="@Model.ProductName">
+        </picture>
+        <div class="my-description">
+            Descriere: <strong>@Model.Description</strong>
+        </div>
+        <br />
+
+        <i class="label label-info ">Rating: @Model.Rating/5   <i class="glyphicon glyphicon-star"></i></i><br />
+        <br />
+
+        <i class="glyphicon glyphicon-globe"></i> @Model.Category.Title
+        <br />
+    </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewBag.Title = "Show";
+}
+<br />
+<div class="panel panel-default">
+    <div class="panel-heading">@ViewBag.category.Title</div>
+    <div class="panel-body">
+        <br />
+        <p>@ViewBag.category.Description</p>
+        <p>
+            <a class="pull-left btn-sm btn btn-success" href="/Categories/Edit/@ViewBag.category.CategoryId">Editeaza</a>
+            <form method="post" action="/Categories/Delete/@ViewBag.category.CategoryId">
+                @Html.HttpMethodOverride(HttpVerbs.Delete)
+                <button class="pull-right btn btn-danger" type="submit">Sterge</button>
+            </form>
+        </p>
+        <div class="clearfix"></div>
+    </div>
+</div>
+

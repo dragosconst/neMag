@@ -1,0 +1,34 @@
+﻿@model neMag.Models.Category
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Editeaza categoria @Model.CategoryName</h2>
+
+<div class="panel">
+    <div class="panel-body">
+        @using (Html.BeginForm(actionName: "Edit", controllerName: "Categories"))
+        {
+            @Html.HttpMethodOverride(HttpVerbs.Put);
+
+            <br />
+            @Html.HiddenFor(c => c.CategoryId);
+            @Html.Label("Title", "Numele categoriei")
+            <br />
+            @Html.EditorFor(c => c.Title)
+            @Html.ValidationMessageFor(c => c.Title, null, new { @class = "text-danger" })
+
+
+            <br />
+            @Html.Label("Description", "Numele categoriei")
+            <br />
+            @Html.EditorFor(c => c.Description)
+            @Html.ValidationMessageFor(c => c.Description, null, new { @class = "text-danger" })
+
+
+            <button class="btn btn-sm btn-success" type="submit">Modifica</button>
+        }
+    </div>
+</div>
+

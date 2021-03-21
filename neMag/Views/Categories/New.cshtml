@@ -1,0 +1,24 @@
+﻿@model neMag.Models.Category
+@{
+    ViewBag.Title = "New";
+}
+
+<h2>Categorie noua</h2>
+@using (Html.BeginForm(actionName: "New", controllerName: "Categories"))
+{
+    <br />
+    @Html.HiddenFor(c => c.CategoryId);
+    @Html.Label("Title", "Numele categoriei")
+    <br />
+    @Html.TextBox("Title", null, new { @class = "form-control" })
+    @Html.ValidationMessageFor(c => c.Title, null, new { @class = "text-danger" })
+    <br />
+
+    @Html.Label("Description", "Descrierea categoriei")
+    <br />
+    @Html.TextBox("Description", null, new { @class = "form-control" })
+    @Html.ValidationMessageFor(c => c.Description, null, new { @class = "text-danger" })
+    <br />
+    <button class="btn btn-sm btn-success" type="submit">Salveaza</button>
+}
+
