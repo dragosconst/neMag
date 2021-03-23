@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@foreach (var post in ViewBag.posts)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div>
+                    <p style="font-size: 115%; white-space: pre-line;">@post.Content</p>
+                    <small class="pull-right">@post.Date</small>
+                    @if (post.UserId != null)
+                    {
+                        <a class="glyphicon glyphicon-user" href="/Users/Show/@post.UserId"></a>
+                        <i>written by</i> <strong> @post.User.UserName </strong>
+                    }
+                </div>
+                @*@if (User.IsInRole("Admin") || User.IsInRole("Colaborator") || post.UserId == ViewBag.userId)*@
+                @* { *@
+                <br />
+
+                <div style="display: inline-block; float : left; margin-right: 15px">
+                    <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
+                </div>
+
+                <div style="display: inline-block; float : left">
+                    <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId})">
+                        @Html.HttpMethodOverride(HttpVerbs.Delete)
+                        <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
+                    </form>
+                </div>
+                @* } *@
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <hr />
+}
+
+@* @if (User.IsInRole("Admin") || User.IsInRole("Colaborator") || User.IsInRole("User")) *@
+@* { *@
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <div class="panel">
+                <form method="post" action="/Posts/New">
+                    <div class="panel-body">
+                        @if (ViewBag.message == "Content is mandatory.")
+                        {
+                            <p class="text-danger">@ViewBag.message</p>
+                        }
+                        else
+                        {
+                            <p class="text-success">@ViewBag.message</p>
+                        }
+
+                        @*<input type="hidden" name="ProductId" value="@Model.ProductId" />*@
+                        <label>Post Content</label>
+                        <br />
+                        <textarea class="form-control" name="Content"></textarea>
+                        <br />
+                        <button class="btn btn-success " type="submit">Add post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+@* } *@

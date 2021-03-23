@@ -8,6 +8,8 @@ namespace neMag.Controllers
 {
     public class HomeController : Controller
     {
+        // comentariu!
+
         public ActionResult Index()
         {
             return View();
