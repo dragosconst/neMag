@@ -1,0 +1,16 @@
+﻿@model neMag.Models.Post
+
+<h2>Edit post</h2>
+<form method="post" action="@Url.Action("Edit", "Posts", new { id = Model.PostId})">
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+
+    @Html.Label("Content", "Post content")
+    <br />
+
+    @Html.TextArea("Content", null, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Content, null, new { @class = "text-danger" })
+    <br />
+
+    @Html.HiddenFor(m => m.Date)
+    <button class="btn btn-success" type="submit">Editeaza comentariu</button>
+</form>

@@ -7,9 +7,21 @@ using System.Web.Mvc;
 
 namespace neMag.Controllers
 {
+    // TODO: Insert Authorize attributes.
+
     public class PostsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
+
+        public ActionResult Index()
+        {
+            var posts = from post in db.Posts
+                        select post;
+            ViewBag.posts = posts;
+
+            return View();
+        }
 
         public ActionResult Edit(int id)
         {
@@ -43,6 +55,7 @@ namespace neMag.Controllers
         public ActionResult New(Post post)
         {
             post.Date = DateTime.Now;
+            post.isReview = false; // placeholder
             try
             {
                 if (ModelState.IsValid)
@@ -66,9 +79,9 @@ namespace neMag.Controllers
         }
 
         [HttpDelete]
-        public ActionResult Delete(int id1, int id2)
+        public ActionResult Delete(int id)
         {
-            Post post = db.Posts.Find(id1, id2);
+            Post post = db.Posts.Find(id);
             // int TopicId = post.ProductId;
 
             TempData["message"] = "The post has been deleted.";
