@@ -26,7 +26,7 @@ namespace neMag.Controllers
 
         public ActionResult Edit(int id)
         {
-            Post post = db.Posts.Find(id); // PostId, TopicId
+            Post post = db.Posts.Find(id);
             if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Colaborator") || User.IsInRole("Admin"))
             {
                 return View(post);
