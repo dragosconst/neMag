@@ -1,4 +1,5 @@
-﻿using neMag.Models;
+﻿using Microsoft.AspNet.Identity;
+using neMag.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,25 +26,41 @@ namespace neMag.Controllers
 
         public ActionResult Edit(int id)
         {
-            Post post = db.Posts.Find(id);
-            return View(post);
+            Post post = db.Posts.Find(id); // PostId, TopicId
+            if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Colaborator") || User.IsInRole("Admin"))
+            {
+                return View(post);
+            }
+            else
+            {
+                TempData["message"] = "You cannot edit someone else's post!";
+                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
+                return RedirectToAction("Index", "Posts"); // placeholder
+            }
         }
 
         [HttpPut]
+        //[Authorize(Roles = "User,Colaborator,Admin")]
         public ActionResult Edit(int id, Post requestPost)
         {
             try
             {
                 Post post = db.Posts.Find(id);
-                if (ModelState.IsValid && TryUpdateModel(post))
+                if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Colaborator") || User.IsInRole("Admin"))
                 {
-                    post.Content = requestPost.Content;
-                    post.Date = requestPost.Date;
-                    db.SaveChanges();
-                    // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                    return RedirectToAction("Index", "Posts"); // placeholder
+                    if (ModelState.IsValid && TryUpdateModel(post))
+                    {
+                        post.Content = requestPost.Content;
+                        post.Date = requestPost.Date;
+                        db.SaveChanges();
+                        // return RedirectToAction("Show", "Products", new { id = post.ProductId });
+                        return RedirectToAction("Index", "Posts"); // placeholder
+                    }
+                    return View(requestPost);
                 }
-                return View(requestPost);
+                TempData["message"] = "You cannot edit someone else's post!";
+                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
+                return RedirectToAction("Index", "Posts"); // placeholder
             }
             catch (Exception e)
             {
@@ -52,10 +69,13 @@ namespace neMag.Controllers
         }
 
         [HttpPost]
+        //[Authorize(Roles = "User,Colaborator,Admin")]
         public ActionResult New(Post post)
         {
             post.Date = DateTime.Now;
             post.isReview = false; // placeholder
+            post.UserId = User.Identity.GetUserId();
+
             try
             {
                 if (ModelState.IsValid)
@@ -79,14 +99,22 @@ namespace neMag.Controllers
         }
 
         [HttpDelete]
+        //[Authorize(Roles = "User,Colaborator,Admin")]
         public ActionResult Delete(int id)
         {
             Post post = db.Posts.Find(id);
-            // int TopicId = post.ProductId;
+            // int ProductId = post.ProductId;
 
-            TempData["message"] = "The post has been deleted.";
-            db.Posts.Remove(post);
-            db.SaveChanges();
+            if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Colaborator") || User.IsInRole("Admin"))
+            {
+                TempData["message"] = "The post has been deleted.";
+                db.Posts.Remove(post);
+                db.SaveChanges();
+                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
+                return RedirectToAction("Index", "Posts"); // placeholder
+            }
+
+            TempData["message"] = "You cannot delete someone else's post!";
             // return RedirectToAction("Show", "Products", new { id = post.ProductId });
             return RedirectToAction("Index", "Posts"); // placeholder
         }
