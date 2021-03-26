@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using neMag.Models;
 
 namespace online_shop.Controllers
 {
     public class CategoriesController : Controller
     {
-        private neMag.Models.ApplicationDbContext db = new neMag.Models.ApplicationDbContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
         // GET: Category
         public ActionResult Index()
         {
@@ -42,6 +43,7 @@ namespace online_shop.Controllers
                 if(TryUpdateModel(cat))
                 {
                     cat.Title = requestCat.Title;
+                    cat.Description = requestCat.Description;
                     db.SaveChanges();
                     TempData["message"] = "Categorie schimbata cu succes.";
                     return RedirectToAction("Index");
@@ -56,6 +58,7 @@ namespace online_shop.Controllers
         public ActionResult New()
         {
             Category cat = new Category();
+            ViewBag.modificare = "DA";
             return View(cat);
         }
         [HttpPost]
@@ -69,6 +72,7 @@ namespace online_shop.Controllers
                 return RedirectToAction("Index");
             }catch(Exception e)
             {
+                ViewBag.modificare = "NU";
                 return View(newCat);    
             }
         }
