@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "Afisare profil";
+}
+
+@model neMag.Models.ApplicationUser
+
+@using neMag.Controllers
+@using Microsoft.AspNet.Identity
+
+<h2>@ViewBag.Title</h2> <br />
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h3> Datele contului: </h3> <hr />
+        <strong> Nume: </strong> @Model.LastName <br />
+        <strong> Prenume: </strong> @Model.FirstName <br />
+        <strong> Email: </strong> @Model.Email
+    </div>
+    <div class="panel-footer">
+        <a class="btn btn-primary" href="/Users/Edit/@Model.Id"> Editeaza datele </a>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h3> Activitatea mea: </h3> <hr />
+        <strong> Vezi istoric comenzi </strong> <br />
+        <strong> Vezi istoric postari </strong> <br />
+        <strong> Vezi produse favorite </strong>
+    </div>
+</div>
+
+<form method="post" action="/Users/Delete/@Model.Id">
+    @Html.HttpMethodOverride(HttpVerbs.Delete)
+    <button class="btn btn-danger" type="submit"> Sterge profil </button>
+</form>
