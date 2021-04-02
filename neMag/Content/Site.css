@@ -27,3 +27,33 @@ textarea {
     background-color: #0984e3;
     color: white;
 }
+.product_box {
+    animation: 1s ease-out 0s 1 slideInFromDown;
+    z-index: 10;
+}
+.product_box:hover {
+    border: 1px solid black;
+    transform: scale(1.07);
+    z-index: 1000;
+}
+
+.my-panel {
+    margin-top: 10px;
+    margin-right: 10px;
+    width: 32%;
+    position: relative;
+    display: inline-block;
+    border-color: #81ecec;
+}
+.panel-default > .my-panel-footer {
+    background-color: #81ecec;
+}
+.my-border {
+    border-color: #81ecec;
+}
+.show {
+    width: 70%;
+    margin-left: 17%;
+    display: flex;
+    float: center;
+}

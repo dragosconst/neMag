@@ -15,14 +15,14 @@ namespace neMag.Controllers
 
         private Models.ApplicationDbContext db = new Models.ApplicationDbContext();
         private int _perPage = 11; // cate produse intra pe o pagina
-        
+
         // GET: Product
         public ActionResult Index()
         {
             var products = (from prod in db.Products//daca nu pun AsQueryable nu ruleaza, no idea why
                             select prod).Include("Category").AsQueryable();
-            
-            
+
+
             var totalItems = products.Count();
             var currentPage = Convert.ToInt32(Request.Params.Get("page"));
 
@@ -65,11 +65,11 @@ namespace neMag.Controllers
                     produs.Accepted = false;
                     var newPhotoPath = UploadPhoto(photo);
                     produs.Photo = newPhotoPath;
-                    
+
                     db.Products.Add(produs);
                     db.SaveChanges();
                     TempData["massage"] = "Produsul a fost adaugat";
-                    
+
                     return RedirectToAction("Index");
                 }
                 else
@@ -88,7 +88,7 @@ namespace neMag.Controllers
 
 
         }
-        
+
         [NonAction]
         public string UploadPhoto(HttpPostedFileBase uploadedFile)
         {
