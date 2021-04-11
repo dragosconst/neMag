@@ -27,7 +27,7 @@ namespace neMag.Controllers
         public ActionResult Edit(int id)
         {
             Post post = db.Posts.Find(id);
-            if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Colaborator") || User.IsInRole("Admin"))
+            if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Collaborator") || User.IsInRole("Admin"))
             {
                 return View(post);
             }
@@ -40,13 +40,13 @@ namespace neMag.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = "User,Colaborator,Admin")]
+        //[Authorize(Roles = "User,Collaborator,Admin")]
         public ActionResult Edit(int id, Post requestPost)
         {
             try
             {
                 Post post = db.Posts.Find(id);
-                if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Colaborator") || User.IsInRole("Admin"))
+                if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Collaborator") || User.IsInRole("Admin"))
                 {
                     if (ModelState.IsValid && TryUpdateModel(post))
                     {
@@ -69,7 +69,7 @@ namespace neMag.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "User,Colaborator,Admin")]
+        //[Authorize(Roles = "User,Collaborator,Admin")]
         public ActionResult New(Post post)
         {
             post.Date = DateTime.Now;
@@ -99,13 +99,13 @@ namespace neMag.Controllers
         }
 
         [HttpDelete]
-        //[Authorize(Roles = "User,Colaborator,Admin")]
+        //[Authorize(Roles = "User,Collaborator,Admin")]
         public ActionResult Delete(int id)
         {
             Post post = db.Posts.Find(id);
             // int ProductId = post.ProductId;
 
-            if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Colaborator") || User.IsInRole("Admin"))
+            if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Collaborator") || User.IsInRole("Admin"))
             {
                 TempData["message"] = "The post has been deleted.";
                 db.Posts.Remove(post);
