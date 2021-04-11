@@ -1,23 +1,24 @@
 ﻿using Microsoft.AspNet.Identity;
-using online_shop.Models;
+using neMag.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace online_shop.Controllers
+namespace neMag.Controllers
 {
     public class CosController : Controller
     {
         private Models.ApplicationDbContext db = new Models.ApplicationDbContext();
         // GET: Cos
+        /*
         public ActionResult Index()
         {
             var uid = User.Identity.GetUserId();
-            UpdateCosValue();
+            // UpdateCosValue(); // trebuie implementata metoda
             // fiecare user trebuie sa aiba un order cu status cos
-            var cos = getCos();
+            // var cos = getCos(); // trebuie implementata metoda
             var cosElems = from product in db.Products
                            join orderCon in db.OrderContents on product.ProductId equals orderCon.ProductId
                            where orderCon.OrderId == cos.OrderId
@@ -33,7 +34,8 @@ namespace online_shop.Controllers
             }
             return View(cos);
         }
+        */
 
-        
+
     }
 }
