@@ -41,10 +41,10 @@ namespace neMag
                 }
             }
 
-            if (!roleManager.RoleExists("Colaborator"))
+            if (!roleManager.RoleExists("Collaborator"))
             {
                 var role = new IdentityRole();
-                role.Name = "Colaborator";
+                role.Name = "Collaborator";
                 roleManager.Create(role);
             }
             
@@ -56,10 +56,10 @@ namespace neMag
                 roleManager.Create(role);
             }
 
-            if (!roleManager.RoleExists("BannedUser"))
+            if (!roleManager.RoleExists("RestrictedUser"))
             {
                 var role = new IdentityRole();
-                role.Name = "BannedUser";
+                role.Name = "RestrictedUser";
                 roleManager.Create(role);
             }
         }
