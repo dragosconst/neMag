@@ -52,6 +52,9 @@ namespace neMag.Controllers
                         post.Content = requestPost.Content;
                         post.Date = requestPost.Date;
                         post.ProductId = requestPost.ProductId;
+                        post.isReview = requestPost.isReview;
+                        post.Rating = requestPost.Rating;
+
                         db.SaveChanges();
                         return RedirectToAction("Show", "Products", new { id = post.ProductId });
                     }
@@ -71,7 +74,7 @@ namespace neMag.Controllers
         public ActionResult New(Post post)
         {
             post.Date = DateTime.Now;
-            post.isReview = false; // placeholder
+            post.isReview = true; // PLACEHOLDER: For now, all posts are reviews.
             post.UserId = User.Identity.GetUserId();
 
             try
