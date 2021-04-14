@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace online_shop.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
