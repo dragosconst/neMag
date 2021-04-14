@@ -40,5 +40,7 @@ namespace neMag.Models
         public virtual ApplicationUser User { get; set; }
 
         public IEnumerable<SelectListItem> Categ { get; set; }
+
+        public virtual ICollection<Post> Posts { get; set; }
     }
 }

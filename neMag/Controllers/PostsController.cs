@@ -34,8 +34,7 @@ namespace neMag.Controllers
             else
             {
                 TempData["message"] = "You cannot edit someone else's post!";
-                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                return RedirectToAction("Index", "Posts"); // placeholder
+                return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
         }
 
@@ -52,15 +51,14 @@ namespace neMag.Controllers
                     {
                         post.Content = requestPost.Content;
                         post.Date = requestPost.Date;
+                        post.ProductId = requestPost.ProductId;
                         db.SaveChanges();
-                        // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                        return RedirectToAction("Index", "Posts"); // placeholder
+                        return RedirectToAction("Show", "Products", new { id = post.ProductId });
                     }
                     return View(requestPost);
                 }
                 TempData["message"] = "You cannot edit someone else's post!";
-                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                return RedirectToAction("Index", "Posts"); // placeholder
+                return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
             catch (Exception e)
             {
@@ -87,14 +85,12 @@ namespace neMag.Controllers
                 else
                     TempData["message"] = "Content is mandatory.";
 
-                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                return RedirectToAction("Index", "Posts"); // placeholder
+                return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
             catch (Exception e)
             {
                 TempData["message"] = "The post was not added.";
-                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                return RedirectToAction("Index", "Posts"); // placeholder
+                return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
         }
 
@@ -110,13 +106,11 @@ namespace neMag.Controllers
                 TempData["message"] = "The post has been deleted.";
                 db.Posts.Remove(post);
                 db.SaveChanges();
-                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                return RedirectToAction("Index", "Posts"); // placeholder
+                return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
 
             TempData["message"] = "You cannot delete someone else's post!";
-            // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-            return RedirectToAction("Index", "Posts"); // placeholder
+            return RedirectToAction("Show", "Products", new { id = post.ProductId });
         }
     }
 }
