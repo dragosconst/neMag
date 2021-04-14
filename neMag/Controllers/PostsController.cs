@@ -54,8 +54,8 @@ namespace neMag.Controllers
                         post.ProductId = requestPost.ProductId;
                         post.isReview = requestPost.isReview;
                         post.Rating = requestPost.Rating;
-
                         db.SaveChanges();
+                        UpdateProductRating(post.ProductId);
                         return RedirectToAction("Show", "Products", new { id = post.ProductId });
                     }
                     return View(requestPost);
@@ -83,6 +83,7 @@ namespace neMag.Controllers
                 {
                     db.Posts.Add(post);
                     db.SaveChanges();
+                    UpdateProductRating(post.ProductId);
                     TempData["message"] = "The post has been added.";
                 }
                 else
@@ -109,11 +110,39 @@ namespace neMag.Controllers
                 TempData["message"] = "The post has been deleted.";
                 db.Posts.Remove(post);
                 db.SaveChanges();
+                UpdateProductRating(post.ProductId);
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
 
             TempData["message"] = "You cannot delete someone else's post!";
             return RedirectToAction("Show", "Products", new { id = post.ProductId });
+        }
+
+        [NonAction]
+        private double CalculateProductRating(int id)
+        {
+            double sum = 0.0;
+            int n;
+            var revs = from post in db.Posts
+                       where post.ProductId == id && post.isReview == true
+                       select post;
+
+            n = revs.Count();
+            foreach (var rev in revs)
+                sum += rev.Rating;
+
+            if (n == 0)
+                return 0;
+            else
+                return Math.Round(sum / n, 2);
+        }
+
+        [NonAction]
+        private void UpdateProductRating(int id)
+        {
+            Product product = db.Products.Find(id);
+            product.Rating = CalculateProductRating(id);
+            db.SaveChanges();
         }
     }
 }
