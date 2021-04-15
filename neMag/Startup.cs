@@ -41,6 +41,30 @@ namespace neMag
                 }
             }
 
+            // for testing
+             var userCol = new ApplicationUser();
+             userCol.UserName = "col1@gmail.com";
+             userCol.Email = "col1@gmail.com";
+            userCol.FirstName = "colaborator";
+            userCol.LastName = "colaborator";
+             var userCreated = UserManager.Create(userCol, "parolasimpla");
+
+             if(userCreated.Succeeded)
+             {
+                 UserManager.AddToRole(userCol.Id, "Collaborator");
+             }
+            var userCol2 = new ApplicationUser();
+            userCol2.UserName = "user1@gmail.com";
+            userCol2.Email = "user1@gmail.com";
+            userCol2.FirstName = "user";
+            userCol2.LastName = "user";
+            var userCreated2 = UserManager.Create(userCol2, "parolasimpla");
+
+            if (userCreated2.Succeeded)
+            {
+                UserManager.AddToRole(userCol.Id, "User");
+            }
+
             if (!roleManager.RoleExists("Collaborator"))
             {
                 var role = new IdentityRole();

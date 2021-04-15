@@ -8,7 +8,7 @@
 <div class="panel panel-default my-border show">
     @Html.Partial("productInfo", Model)
 
-    @if (ViewBag.afisareButoane == true)
+    @if (ViewBag.showButtons == true)
     {
         <div class="panel-footer">
             <a class="btn btn-success pull-left" href="/Products/Edit/@Model.ProductId"><div class="glyphicon glyphicon-pencil"></div>     Modifica Produs</a>
