@@ -171,7 +171,7 @@ namespace neMag.Controllers
                         cart.Date = DateTime.Now;
                         db.SaveChanges();
                         TempData["message"] = "Comanda a fost trimisă";
-                        Order newCart = GetCart(); // create a new cart
+                        Order newCart = GetCart(); // create a new cart, might be unnecessary
                         return RedirectToAction("Index", "Products");
                     }
                     return View(cart);
@@ -226,12 +226,12 @@ namespace neMag.Controllers
             string uid = User.Identity.GetUserId();
             IEnumerable<Order> cart = (from order in db.Orders
                           where order.UserId == uid && order.Status == CART
-                          select order).ToList(); // tolist.first because we are working with linq
+                          select order).ToList(); // tolist because we dont want to work with raw linq
             if (cart.Count() == 1)
                 return cart.First();
             else
             {   
-                // case when this user has never ordered something before
+                // if there's no existing cart, make one
                 Order newCart = new Order();
                 db.Orders.Add(newCart);
                 newCart.UserId = uid;

@@ -14,9 +14,9 @@ namespace neMag.Controllers
     {
 
         private Models.ApplicationDbContext db = new Models.ApplicationDbContext();
-        private int _perPage = 11; // cate produse intra pe o pagina
+        private int _perPage = 11; // how many products to show per page
 
-        // oricine poate vedea produsele 
+        // everyone can see the available products
         public ActionResult Index()
         {
             var products = (from prod in db.Products
@@ -97,28 +97,29 @@ namespace neMag.Controllers
         [NonAction]
         public string UploadPhoto(HttpPostedFileBase uploadedFile)
         {
-            // TODO remove this, momentan e folositor doar pt debugging rapid, dar altfel n ar trebui sa fie un feature
+            // do we want to accept products with no photos? if not, this if could be removed
             if (uploadedFile == null)
                 return "";
-            // Se preia numele fisierul
+            // Get file name
             string uploadedFileName = uploadedFile.FileName;
             string uploadedFileExtension = Path.GetExtension(uploadedFileName);
 
-            // Se poate verifica daca extensia este intr-o lista dorita
+            // Check some extensions
             if (uploadedFileExtension == ".png" || uploadedFileExtension == ".jpg")
             {
-                // Se stocheaza fisierul in folderul Files (folderul trebuie creat in proiect)
+                // With the current implementation, the Photos folder must be manually created
+                // TODO: fix this, maybe, or improve on it
 
-                // 1. Se seteaza calea folderului de upload
+                // 1. Map the upload file path
                 string uploadFolderPath = Server.MapPath("~/Photos/");
 
-                // 2. Se salveaza fisierul in acel folder
+                // 2. Save file in folder path
                 uploadedFile.SaveAs(uploadFolderPath + uploadedFileName);
 
-                // 3. Se adauga modelul in baza de date
+                // 3. Save database state
                 db.SaveChanges();
 
-                // 4. returnez filepath-ul
+                // 4. return filepath
                 return "\\Photos\\" + uploadedFileName;
             }
             return "";
@@ -239,7 +240,7 @@ namespace neMag.Controllers
                 selectList.Add(new SelectListItem
                 {
                     Value = category.CategoryId.ToString(),
-                    Text = category.Title.ToString() // posibil sa nu fie necesar ToString
+                    Text = category.Title.ToString() // ToString might be redundant
                 });
             }
             return selectList;
@@ -250,11 +251,11 @@ namespace neMag.Controllers
         {
             ViewBag.showButtons = false;
             ViewBag.isCollaborator = false;
-            if (User.IsInRole("Admin")) // adminu are voie la toata lumea
+            if (User.IsInRole("Admin")) // admin has full privileges on products
             {
                 ViewBag.showButtons = true;
             }
-            else if (User.IsInRole("Collaborator") && User.Identity.GetUserId() == prod.UserId) // colaboratorii doar la cele facute de ei
+            else if (User.IsInRole("Collaborator") && User.Identity.GetUserId() == prod.UserId) // collaborators only on theirs
             {
                 ViewBag.showButtons = true;
                 ViewBag.isCollaborator = true;
