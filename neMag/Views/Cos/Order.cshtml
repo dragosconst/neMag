@@ -1,0 +1,24 @@
+﻿@model neMag.Models.Order
+@{
+    ViewBag.Title = "Order";
+}
+
+<br /><br />
+<h3>Total Comandă: @ViewBag.pret lei</h3>
+<h3>Timp estimat de livrare: se va calcula după trimiterea comenzii</h3>
+@using (Html.BeginForm(actionName: "Order", controllerName: "Cos"))
+{
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+
+    @Html.HiddenFor(m => m.OrderId)
+    @Html.HiddenFor(m => m.UserId)
+    @Html.HiddenFor(m => m.Date)
+    @Html.HiddenFor(m => m.TotalPrice)
+    @Html.HiddenFor(m => m.Status)
+    @Html.Label("Details", "Detalii livrare:", new { htmlAttributes = new { @class = "form-control", @style = "font-size:30px" } })
+
+    <div style="font-size: 15px">(ex: Adresa, Interval de livrare preferat, etc...)</div>
+    @Html.Editor("Details", new { htmlAttributes = new { @class = "form-control" } })
+    <button class="btn btn-sm open" style="margin-top:5px" type="submit">Trimite comanda</button>
+}
+

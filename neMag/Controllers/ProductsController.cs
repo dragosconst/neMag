@@ -60,6 +60,7 @@ namespace neMag.Controllers
         {
             product.Categ = GetAllCategories();
             product.UserId = User.Identity.GetUserId();
+            product.User = db.Users.Find(product.UserId);
             try
             {
                 if (ModelState.IsValid)
@@ -68,6 +69,7 @@ namespace neMag.Controllers
                     product.Accepted = false;
                     var newPhotoPath = UploadPhoto(photo);
                     product.Photo = newPhotoPath;
+                    product.Category = db.Categories.Find(product.CategoryId);
 
                     db.Products.Add(product);
                     db.SaveChanges();
@@ -192,6 +194,7 @@ namespace neMag.Controllers
                         product.ProductName = requestProduct.ProductName;
                         product.Description = requestProduct.Description;
                         product.CategoryId = requestProduct.CategoryId;
+                        product.Category = db.Categories.Find(product.CategoryId);
 
                         if (photo != null)
                         {
@@ -246,6 +249,7 @@ namespace neMag.Controllers
         private void SetAccessRights(Product prod)
         {
             ViewBag.showButtons = false;
+            ViewBag.isCollaborator = false;
             if (User.IsInRole("Admin")) // adminu are voie la toata lumea
             {
                 ViewBag.showButtons = true;
@@ -253,6 +257,7 @@ namespace neMag.Controllers
             else if (User.IsInRole("Collaborator") && User.Identity.GetUserId() == prod.UserId) // colaboratorii doar la cele facute de ei
             {
                 ViewBag.showButtons = true;
+                ViewBag.isCollaborator = true;
             }
         }
     }

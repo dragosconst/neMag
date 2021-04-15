@@ -62,7 +62,7 @@ namespace neMag
 
             if (userCreated2.Succeeded)
             {
-                UserManager.AddToRole(userCol.Id, "User");
+                UserManager.AddToRole(userCol2.Id, "User");
             }
 
             if (!roleManager.RoleExists("Collaborator"))

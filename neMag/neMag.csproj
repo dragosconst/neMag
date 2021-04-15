@@ -275,6 +275,11 @@
     <Content Include="Views\Users\Show.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Users\Edit.cshtml" />
+    <Content Include="Views\Cos\Index.cshtml" />
+    <Content Include="Views\Cos\Order.cshtml" />
+    <Content Include="Views\Account\AdminBoard.cshtml" />
+    <Content Include="Views\Cos\AllOrders.cshtml" />
+    <Content Include="Views\Cos\Show.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202103150653462_Initial.resx">

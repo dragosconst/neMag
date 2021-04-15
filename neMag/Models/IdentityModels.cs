@@ -37,7 +37,7 @@ namespace neMag.Models
         public DbSet<Product> Products { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderContent> OrdersContents { get; set; }
+        public DbSet<OrderContent> OrderContents { get; set; }
 
         public static ApplicationDbContext Create()
         {
