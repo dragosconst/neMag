@@ -6,6 +6,11 @@ namespace neMag.Models
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
+        [Display(Name = "UserName")]
+        public string UserName { get; set; }
+
+
+        [Required]
         [Display(Name = "Email")]
         public string Email { get; set; }
     }
@@ -64,6 +69,12 @@ namespace neMag.Models
 
     public class RegisterViewModel
     {
+        [Required]
+        public string LastName { get; set; }
+
+        [Required]
+        public string FirstName { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
