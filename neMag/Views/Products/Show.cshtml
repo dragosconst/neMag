@@ -2,7 +2,9 @@
 @{
     ViewBag.Title = "Show";
 }
-<br /><br /><br />
+<br />
+<br />
+<br />
 <div class="panel panel-default my-border show">
     @Html.Partial("productInfo", Model)
 
@@ -19,3 +21,96 @@
         </div>
     }
 </div>
+
+@* Index of posts *@
+@foreach (var post in Model.Posts)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div>
+                    <p style="font-size: 115%; white-space: pre-line;">@post.Content</p>
+                    <small class="pull-right">@post.Date</small>
+                    @* PLACEHOLDER: All posts should be made by a registered user.*@
+                    @if (post.UserId != null)
+                    {
+                        <a class="glyphicon glyphicon-user" href="/Users/Show/@post.UserId"></a>
+                        <i>written by</i> <strong> @post.User.UserName </strong>
+                    }
+                    @if (post.isReview)
+                    {
+                        <i class="label label-info ">Rating: @post.Rating/5   <i class="glyphicon glyphicon-star"></i></i>
+                    }
+
+                </div>
+                @*@if (User.IsInRole("Admin") || User.IsInRole("Colaborator") || post.UserId == ViewBag.userId)*@
+                @* { *@
+                        <br />
+
+                        <div style="display: inline-block; float : left; margin-right: 15px">
+                            <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
+                        </div>
+
+                        <div style="display: inline-block; float : left">
+                            <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId})">
+                                @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
+                            </form>
+                        </div>
+                @* } *@
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <hr />
+}
+
+@* @if (User.IsInRole("Admin") || User.IsInRole("Colaborator") || User.IsInRole("User")) *@
+@* { *@
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-8">
+                    <div class="panel">
+                        <form method="post" action="/Posts/New">
+                            <div class="panel-body">
+                                @if (ViewBag.message == "Content is mandatory.")
+                                {
+                                    <p class="text-danger">@ViewBag.message</p>
+                                }
+                                else
+                                {
+                                    <p class="text-success">@ViewBag.message</p>
+                                }
+
+                                <input type="hidden" name="ProductId" value="@Model.ProductId" />
+                                <label>Post Content</label>
+                                <br />
+                                <textarea class="form-control" name="Content"></textarea>
+                                <br />
+
+                                <div class="rate">
+                                    <input type="radio" id="star5" name="Rating" value="5" />
+                                    <label for="star5" title="text">5 stars</label>
+                                    <input type="radio" id="star4" name="Rating" value="4" />
+                                    <label for="star4" title="text">4 stars</label>
+                                    <input type="radio" id="star3" name="Rating" value="3" />
+                                    <label for="star3" title="text">3 stars</label>
+                                    <input type="radio" id="star2" name="Rating" value="2" />
+                                    <label for="star2" title="text">2 stars</label>
+                                    <input type="radio" id="star1" name="Rating" value="1" />
+                                    <label for="star1" title="text">1 star</label>
+                                </div>
+                                <br />
+
+                                <button class="btn btn-success " type="submit">Add post</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+@* } *@
