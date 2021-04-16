@@ -7,7 +7,7 @@
 <br /><hr />
 <h3> Data efectuării: @Model.Date</h3>
 
-<ul style="column-count : 1;display: inline-block;column-width:135px">
+<ul style="column-count : 1;display: inline-block;column-width:100px">
     <li class="row" style="list-style-type: none;width:1000px">
         <h3 class="pull-left" style="width:50%">Id produs</h3><h3 class="pull-left" style="width:50%">Cantitate</h3>
     </li>
@@ -15,14 +15,33 @@
     {
         if (con.Order.OrderId == Model.OrderId)
         {
-            <h3 class="pull-left" style="width:50%">@con.Product.ProductId</h3>
-            <h3 class="pull-left" style="width:50%">@con.Quantity</h3>
+            
+                <h3 class="pull-left" style="width:50%">@con.Product.ProductId</h3>
+                <h3 class="pull-left" style="width:35%">
+                    <form method="post" class="quantity_buttons pull-left" action="/Cos/EditDecrease/@con.OrderContentId">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <button class="btn btn-info glyphicon glyphicon-minus" type="submit"></button>
+                    </form>
+                    <div class="pull-left">@con.Quantity</div>
+                    <form method="post" class="quantity_buttons pull-left" action="/Cos/EditIncrease/@con.OrderContentId">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <button class="btn btn-info glyphicon glyphicon-plus" type="submit"></button>
+                    </form>
+                </h3>
+                <h3 class="pull-left" style="width:15%">
+                    <form method="post" action="/Cos/EditDelete/@con.OrderContentId">
+                        @Html.HttpMethodOverride(HttpVerbs.Delete)
+                        <button class="btn btn-danger pull-right" type="submit">Șterge din comanda</button>
+                    </form>
+                </h3>
+            
         }
 
     }
+   </br>
     @if (Model.Status == ViewBag.SENT)
     {
-        <li class="row" style="list-style-type: none"><a class="btn btn-success pull-left" href="/Cos/Finish/@Model.OrderId">Finalizează</a></li>
+        <li class="row pull-left" style=" list-style-type: none;margin-top:30px; margin-left:0"><a class="btn btn-success pull-left" href="/Cos/Finish/@Model.OrderId">Finalizează</a></li>
     }
 </ul>
 

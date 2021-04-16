@@ -280,6 +280,8 @@
     <Content Include="Views\Account\AdminBoard.cshtml" />
     <Content Include="Views\Cos\AllOrders.cshtml" />
     <Content Include="Views\Cos\Show.cshtml" />
+    <Content Include="Views\Cos\Comenzi.cshtml" />
+    <Content Include="Views\Cos\OrdersFromMe.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202103150653462_Initial.resx">

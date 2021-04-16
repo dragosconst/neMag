@@ -33,6 +33,35 @@ namespace neMag.Controllers
             return View(cart);
         }
 
+        [Authorize(Roles = "Collaborator,Admin")]
+        public ActionResult OrdersFromMe()
+        {
+            IEnumerable<int> orderids = (from order in db.Orders
+                                       where order.Status == SENT
+                                       select order.OrderId).ToList();
+            string uid = User.Identity.GetUserId();
+            IEnumerable<int> productids = (from pr in db.Products
+                                           where pr.UserId == uid
+                                           select pr.ProductId).ToList();
+            List<OrderContent> Contents = new List<OrderContent>();
+            
+            foreach (var x in orderids)
+            {
+                IEnumerable<OrderContent> ocs = (from oc in db.OrderContents
+                                                where oc.Order.OrderId == x
+                                                select oc);
+                foreach (var y in ocs)
+                {
+                    if(productids.Contains(y.Product.ProductId))
+                    {
+                        Contents.Add(y);
+                    }
+                }
+            }
+            ViewBag.Contents = Contents;
+            return View();
+        }
+
         [HttpPut]
         [Authorize(Roles = "RestrictedUser,User,Admin")]
         public ActionResult AddToOrder(int id)
@@ -95,6 +124,21 @@ namespace neMag.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        public ActionResult EditDelete(int id)
+        {
+            OrderContent toDelete = db.OrderContents.Find(id);
+            Order order = toDelete.Order;
+            order.OrderContents.Remove(toDelete);
+            db.OrderContents.Remove(toDelete);
+            db.SaveChanges();
+            TempData["message"] = "Produsul a fost scos din comanda";
+            return RedirectToAction("Show/"+order.OrderId);
+        }
+
+
+
         [HttpPut]
         [Authorize(Roles = "RestrictedUser,User,Admin")]
         public ActionResult Increase(int id)
@@ -141,7 +185,52 @@ namespace neMag.Controllers
                 return RedirectToAction("Index");
             }
         }
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public ActionResult EditIncrease(int id)
+        {
+            OrderContent oc = db.OrderContents.Find(id);
+            if (TryUpdateModel(oc))
+            {
+                oc.Quantity++;
+                oc.Total += oc.Product.Price - oc.Product.Price * oc.Product.Discount;
+                db.SaveChanges();
+                UpdateCartValue();
+                return RedirectToAction("Show/"+oc.Order.OrderId);
+            }
+            else
+            {
+                TempData["message"] = "Eroare la creșterea numărului de produse din coș";
+                return RedirectToAction("Show/" + oc.Order.OrderId);
+            }
+        }
 
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public ActionResult EditDecrease(int id)
+        {
+            OrderContent oc = db.OrderContents.Find(id);
+            if (TryUpdateModel(oc))
+            {
+                oc.Quantity--;
+                oc.Total -= oc.Product.Price - oc.Product.Price * oc.Product.Discount;
+                db.SaveChanges();
+                UpdateCartValue();
+                if (oc.Quantity == 0)
+                {
+                    Order cart = oc.Order;
+                    cart.OrderContents.Remove(oc);
+                    db.OrderContents.Remove(oc);
+                    db.SaveChanges();
+                }
+                return RedirectToAction("Show/"+oc.Order.OrderId);
+            }
+            else
+            {
+                TempData["message"] = "Eroare la creșterea numărului de produse din coș";
+                return RedirectToAction("Show/" + oc.Order.OrderId);
+            }
+        }
         /**
          * If it's not clear enough, this view serves as the final part of the ordering process.
          * The user inputs some extra details and places the order.
