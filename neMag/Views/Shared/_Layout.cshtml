@@ -21,8 +21,16 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    @if (User.IsInRole("Admin") || User.IsInRole("Colaborator") || User.IsInRole("User") || User.IsInRole("RestrictedUser"))
+                    {
+                        <li><a href="/Cos/Index"><i class="glyphicon glyphicon-shopping-cart"></i>  Cos</a></li>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li>@Html.ActionLink("Panoul administratorului", "AdminBoard", "Account")</li>
+                    }
                     <li>@Html.ActionLink("Adaugare produs", "New", "Products")</li>
-                    <li>@Html.ActionLink("Adaugare postare", "Index", "Posts")</li>
+                    @*<li>@Html.ActionLink("Adaugare postare", "Index", "Posts")</li>*@
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

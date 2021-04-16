@@ -54,6 +54,11 @@ namespace neMag.Controllers
                 _userManager = value;
             }
         }
+        [Authorize(Roles = "Admin")]
+        public ActionResult AdminBoard()
+        {
+            return View();
+        }
 
         //
         // GET: /Account/Login

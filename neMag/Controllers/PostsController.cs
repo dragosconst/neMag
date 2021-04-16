@@ -34,8 +34,7 @@ namespace neMag.Controllers
             else
             {
                 TempData["message"] = "You cannot edit someone else's post!";
-                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                return RedirectToAction("Index", "Posts"); // placeholder
+                return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
         }
 
@@ -52,15 +51,17 @@ namespace neMag.Controllers
                     {
                         post.Content = requestPost.Content;
                         post.Date = requestPost.Date;
+                        post.ProductId = requestPost.ProductId;
+                        post.isReview = requestPost.isReview;
+                        post.Rating = requestPost.Rating;
                         db.SaveChanges();
-                        // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                        return RedirectToAction("Index", "Posts"); // placeholder
+                        UpdateProductRating(post.ProductId);
+                        return RedirectToAction("Show", "Products", new { id = post.ProductId });
                     }
                     return View(requestPost);
                 }
                 TempData["message"] = "You cannot edit someone else's post!";
-                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                return RedirectToAction("Index", "Posts"); // placeholder
+                return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
             catch (Exception e)
             {
@@ -73,7 +74,7 @@ namespace neMag.Controllers
         public ActionResult New(Post post)
         {
             post.Date = DateTime.Now;
-            post.isReview = false; // placeholder
+            post.isReview = true; // PLACEHOLDER: For now, all posts are reviews.
             post.UserId = User.Identity.GetUserId();
 
             try
@@ -82,19 +83,18 @@ namespace neMag.Controllers
                 {
                     db.Posts.Add(post);
                     db.SaveChanges();
+                    UpdateProductRating(post.ProductId);
                     TempData["message"] = "The post has been added.";
                 }
                 else
                     TempData["message"] = "Content is mandatory.";
 
-                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                return RedirectToAction("Index", "Posts"); // placeholder
+                return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
             catch (Exception e)
             {
                 TempData["message"] = "The post was not added.";
-                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                return RedirectToAction("Index", "Posts"); // placeholder
+                return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
         }
 
@@ -110,13 +110,39 @@ namespace neMag.Controllers
                 TempData["message"] = "The post has been deleted.";
                 db.Posts.Remove(post);
                 db.SaveChanges();
-                // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-                return RedirectToAction("Index", "Posts"); // placeholder
+                UpdateProductRating(post.ProductId);
+                return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
 
             TempData["message"] = "You cannot delete someone else's post!";
-            // return RedirectToAction("Show", "Products", new { id = post.ProductId });
-            return RedirectToAction("Index", "Posts"); // placeholder
+            return RedirectToAction("Show", "Products", new { id = post.ProductId });
+        }
+
+        [NonAction]
+        private double CalculateProductRating(int id)
+        {
+            double sum = 0.0;
+            int n;
+            var revs = from post in db.Posts
+                       where post.ProductId == id && post.isReview == true
+                       select post;
+
+            n = revs.Count();
+            foreach (var rev in revs)
+                sum += rev.Rating;
+
+            if (n == 0)
+                return 0;
+            else
+                return Math.Round(sum / n, 2);
+        }
+
+        [NonAction]
+        private void UpdateProductRating(int id)
+        {
+            Product product = db.Products.Find(id);
+            product.Rating = CalculateProductRating(id);
+            db.SaveChanges();
         }
     }
 }

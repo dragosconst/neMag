@@ -14,12 +14,12 @@ namespace neMag.Controllers
     {
 
         private Models.ApplicationDbContext db = new Models.ApplicationDbContext();
-        private int _perPage = 11; // cate produse intra pe o pagina
+        private int _perPage = 11; // how many products to show per page
 
-        // GET: Product
+        // everyone can see the available products
         public ActionResult Index()
         {
-            var products = (from prod in db.Products//daca nu pun AsQueryable nu ruleaza, no idea why
+            var products = (from prod in db.Products
                             select prod).Include("Category").AsQueryable();
 
 
@@ -46,27 +46,32 @@ namespace neMag.Controllers
             return View();
         }
 
+        [Authorize (Roles ="Admin,Collaborator")]
         public ActionResult New()
         {
-            Product produs = new Product();
-            produs.Categ = GetAllCategories();
-            return View(produs);
+            Product product = new Product();
+            product.Categ = GetAllCategories();
+            return View(product);
         }
 
         [HttpPost]
-        public ActionResult New(Product produs, HttpPostedFileBase photo)
+        [Authorize(Roles = "Admin,Collaborator")]
+        public ActionResult New(Product product, HttpPostedFileBase photo)
         {
-            produs.Categ = GetAllCategories();
+            product.Categ = GetAllCategories();
+            product.UserId = User.Identity.GetUserId();
+            product.User = db.Users.Find(product.UserId);
             try
             {
                 if (ModelState.IsValid)
                 {
-                    produs.Rating = 0;
-                    produs.Accepted = false;
+                    product.Rating = 0;
+                    product.Accepted = false;
                     var newPhotoPath = UploadPhoto(photo);
-                    produs.Photo = newPhotoPath;
+                    product.Photo = newPhotoPath;
+                    product.Category = db.Categories.Find(product.CategoryId);
 
-                    db.Products.Add(produs);
+                    db.Products.Add(product);
                     db.SaveChanges();
                     TempData["massage"] = "Produsul a fost adaugat";
 
@@ -74,15 +79,15 @@ namespace neMag.Controllers
                 }
                 else
                 {
-                    produs.Categ = GetAllCategories();
-                    produs.Price = 1;
+                    product.Categ = GetAllCategories();
+                    product.Price = 1;
                     return View("Index");
                 }
             }
             catch (Exception e)
             {
-                produs.Categ = GetAllCategories();
-                produs.Price = 2;
+                product.Categ = GetAllCategories();
+                product.Price = 2;
                 return View("Index");
             }
 
@@ -92,28 +97,29 @@ namespace neMag.Controllers
         [NonAction]
         public string UploadPhoto(HttpPostedFileBase uploadedFile)
         {
-            // TODO remove this, momentan e folositor doar pt debugging rapid, dar altfel n ar trebui sa fie un feature
+            // do we want to accept products with no photos? if not, this if could be removed
             if (uploadedFile == null)
                 return "";
-            // Se preia numele fisierul
+            // Get file name
             string uploadedFileName = uploadedFile.FileName;
             string uploadedFileExtension = Path.GetExtension(uploadedFileName);
 
-            // Se poate verifica daca extensia este intr-o lista dorita
+            // Check some extensions
             if (uploadedFileExtension == ".png" || uploadedFileExtension == ".jpg")
             {
-                // Se stocheaza fisierul in folderul Files (folderul trebuie creat in proiect)
+                // With the current implementation, the Photos folder must be manually created
+                // TODO: fix this, maybe, or improve on it
 
-                // 1. Se seteaza calea folderului de upload
+                // 1. Map the upload file path
                 string uploadFolderPath = Server.MapPath("~/Photos/");
 
-                // 2. Se salveaza fisierul in acel folder
+                // 2. Save file in folder path
                 uploadedFile.SaveAs(uploadFolderPath + uploadedFileName);
 
-                // 3. Se adauga modelul in baza de date
+                // 3. Save database state
                 db.SaveChanges();
 
-                // 4. returnez filepath-ul
+                // 4. return filepath
                 return "\\Photos\\" + uploadedFileName;
             }
             return "";
@@ -121,38 +127,53 @@ namespace neMag.Controllers
 
         public ActionResult Show(int id)
         {
-            Product produs = db.Products.Find(id);
-            if (produs == null)
+            Product product = db.Products.Find(id);
+            if (product == null)
             {
                 TempData["message"] = "Bad id" + id;
                 return RedirectToAction("Index");
             }
-            ViewBag.Product = produs;
-            ViewBag.Category = produs.Category;
+            ViewBag.Product = product;
+            ViewBag.Category = product.Category;
 
-            SetAccessRights(produs);
+            SetAccessRights(product);
 
-            return View(produs);
+            return View(product);
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin,Collaborator")]
         public ActionResult Delete(int id)
         {
             Product product = db.Products.Find(id);
+            if (User.IsInRole("Collaborator") &&
+                product.UserId != User.Identity.GetUserId())
+            {
+                TempData["message"] = "Acces interzis";
+                return RedirectToAction("Index");
+            }
             db.Products.Remove(product);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin,Collaborator")]
         public ActionResult Edit(int id)
         {
-            Product produs = db.Products.Find(id);
-            ViewBag.OldPath = produs.Photo;
-            produs.Categ = GetAllCategories();
-            return View(produs);
+            Product product = db.Products.Find(id);
+            if(User.IsInRole("Collaborator") &&
+                product.UserId != User.Identity.GetUserId())
+            {
+                TempData["message"] = "Acces interzis";
+                return RedirectToAction("Index");
+            }
+            ViewBag.OldPath = product.Photo;
+            product.Categ = GetAllCategories();
+            return View(product);
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin,Collaborator")]
         public ActionResult Edit(int id, Product requestProduct, HttpPostedFileBase photo)
         {
             requestProduct.Categ = GetAllCategories();
@@ -162,21 +183,28 @@ namespace neMag.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    Product produs = db.Products.Find(id);
-                    if (TryUpdateModel(produs))
+                    Product product = db.Products.Find(id);
+                    if (User.IsInRole("Collaborator") &&
+                        product.UserId != User.Identity.GetUserId())
                     {
-                        produs.ProductName = requestProduct.ProductName;
-                        produs.Description = requestProduct.Description;
-                        produs.CategoryId = requestProduct.CategoryId;
+                        TempData["message"] = "Acces interzis";
+                        return RedirectToAction("Index");
+                    }
+                    if (TryUpdateModel(product))
+                    {
+                        product.ProductName = requestProduct.ProductName;
+                        product.Description = requestProduct.Description;
+                        product.CategoryId = requestProduct.CategoryId;
+                        product.Category = db.Categories.Find(product.CategoryId);
 
                         if (photo != null)
                         {
                             var newPhotoPath = UploadPhoto(photo);
-                            produs.Photo = newPhotoPath;
+                            product.Photo = newPhotoPath;
                         }
                         else
                         {
-                            produs.Photo = requestProduct.Photo;
+                            product.Photo = requestProduct.Photo;
                         }
 
                         db.SaveChanges();
@@ -212,7 +240,7 @@ namespace neMag.Controllers
                 selectList.Add(new SelectListItem
                 {
                     Value = category.CategoryId.ToString(),
-                    Text = category.Title.ToString() // posibil sa nu fie necesar ToString
+                    Text = category.Title.ToString() // ToString might be redundant
                 });
             }
             return selectList;
@@ -220,8 +248,18 @@ namespace neMag.Controllers
 
         [NonAction]
         private void SetAccessRights(Product prod)
-        {   // momentan nu avem user roles, deci metoda asta inca nu face nimic
-            ViewBag.afisareButoane = true;
+        {
+            ViewBag.showButtons = false;
+            ViewBag.isCollaborator = false;
+            if (User.IsInRole("Admin")) // admin has full privileges on products
+            {
+                ViewBag.showButtons = true;
+            }
+            else if (User.IsInRole("Collaborator") && User.Identity.GetUserId() == prod.UserId) // collaborators only on theirs
+            {
+                ViewBag.showButtons = true;
+                ViewBag.isCollaborator = true;
+            }
         }
     }
 }
