@@ -18,18 +18,18 @@
             
                 <h3 class="pull-left" style="width:50%">@con.Product.ProductId</h3>
                 <h3 class="pull-left" style="width:35%">
-                    <form method="post" class="quantity_buttons pull-left" action="/Cos/EditDecrease/@con.OrderContentId">
+                    <form method="post" class="quantity_buttons pull-left" action="/Cos/EditDecrease/@con.OrderContentId/1">
                         @Html.HttpMethodOverride(HttpVerbs.Put)
                         <button class="btn btn-info glyphicon glyphicon-minus" type="submit"></button>
                     </form>
                     <div class="pull-left">@con.Quantity</div>
-                    <form method="post" class="quantity_buttons pull-left" action="/Cos/EditIncrease/@con.OrderContentId">
+                    <form method="post" class="quantity_buttons pull-left" action="/Cos/EditIncrease/@con.OrderContentId/1">
                         @Html.HttpMethodOverride(HttpVerbs.Put)
                         <button class="btn btn-info glyphicon glyphicon-plus" type="submit"></button>
                     </form>
                 </h3>
                 <h3 class="pull-left" style="width:15%">
-                    <form method="post" action="/Cos/EditDelete/@con.OrderContentId">
+                    <form method="post" action="/Cos/EditDelete/@con.OrderContentId/1">
                         @Html.HttpMethodOverride(HttpVerbs.Delete)
                         <button class="btn btn-danger pull-right" type="submit">Șterge din comanda</button>
                     </form>

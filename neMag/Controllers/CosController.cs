@@ -63,7 +63,7 @@ namespace neMag.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "RestrictedUser,User,Admin")]
+        [Authorize(Roles = "RestrictedUser,User,Collaborator,Admin")]
         public ActionResult AddToOrder(int id)
         {
             string uid = User.Identity.GetUserId();
@@ -125,16 +125,32 @@ namespace neMag.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Admin")]
-        public ActionResult EditDelete(int id)
+        [Authorize(Roles = "Collaborator,Admin")]
+        public ActionResult EditDelete(int id,int page)
         {
+            // page = 1 => redirect to show, page = 2 => redirect to OrdersFromMe
             OrderContent toDelete = db.OrderContents.Find(id);
             Order order = toDelete.Order;
-            order.OrderContents.Remove(toDelete);
-            db.OrderContents.Remove(toDelete);
-            db.SaveChanges();
-            TempData["message"] = "Produsul a fost scos din comanda";
-            return RedirectToAction("Show/"+order.OrderId);
+            if (order.Status == SENT)
+            {
+                order.OrderContents.Remove(toDelete);
+                db.OrderContents.Remove(toDelete);
+                db.SaveChanges();
+                TempData["message"] = "Produsul a fost scos din comanda";
+            }
+            else
+            {
+                ViewBag.message = "Comanda finalizata nu poate fi modificata";
+
+            }
+            if (page == 1)
+            {
+                return RedirectToAction("Show/"+order.OrderId);
+            }
+            else
+            {
+                return RedirectToAction("OrdersFromMe");
+            }
         }
 
 
@@ -181,54 +197,91 @@ namespace neMag.Controllers
             }
             else
             {
-                TempData["message"] = "Eroare la creșterea numărului de produse din coș";
+                TempData["message"] = "Eroare la scaderea numărului de produse din coș";
                 return RedirectToAction("Index");
             }
         }
         [HttpPut]
-        [Authorize(Roles = "Admin")]
-        public ActionResult EditIncrease(int id)
+        [Authorize(Roles = "Collaborator,Admin")]
+        public ActionResult EditIncrease(int id,int page)
         {
             OrderContent oc = db.OrderContents.Find(id);
-            if (TryUpdateModel(oc))
+            string status = (from or in db.Orders
+                          where or.OrderId == oc.Order.OrderId
+                          select or.Status).First();
+            if (status == SENT)
             {
-                oc.Quantity++;
-                oc.Total += oc.Product.Price - oc.Product.Price * oc.Product.Discount;
-                db.SaveChanges();
-                UpdateCartValue();
-                return RedirectToAction("Show/"+oc.Order.OrderId);
+                if (TryUpdateModel(oc))
+                {
+                    oc.Quantity++;
+                    oc.Total += oc.Product.Price - oc.Product.Price * oc.Product.Discount;
+                    db.SaveChanges();
+                    UpdateCartValue();
+                }
+                else
+                {
+                    TempData["message"] = "Eroare la creșterea numărului de produse din coș";
+                }
+
             }
             else
             {
-                TempData["message"] = "Eroare la creșterea numărului de produse din coș";
+                ViewBag.message = "Comanda finalizata nu poate fi modificata";
+            }
+
+            if (page == 1)
+            {
                 return RedirectToAction("Show/" + oc.Order.OrderId);
+            }
+            else
+            {
+                return RedirectToAction("OrdersFromMe");
             }
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
-        public ActionResult EditDecrease(int id)
+        [Authorize(Roles = "Collaborator,Admin")]
+        public ActionResult EditDecrease(int id, int page)
         {
             OrderContent oc = db.OrderContents.Find(id);
-            if (TryUpdateModel(oc))
+            string status = (from or in db.Orders
+                             where or.OrderId == oc.Order.OrderId
+                             select or.Status).First();
+            if (status == SENT)
             {
-                oc.Quantity--;
-                oc.Total -= oc.Product.Price - oc.Product.Price * oc.Product.Discount;
-                db.SaveChanges();
-                UpdateCartValue();
-                if (oc.Quantity == 0)
+                if (TryUpdateModel(oc))
                 {
-                    Order cart = oc.Order;
-                    cart.OrderContents.Remove(oc);
-                    db.OrderContents.Remove(oc);
+                    oc.Quantity--;
+                    oc.Total -= oc.Product.Price - oc.Product.Price * oc.Product.Discount;
                     db.SaveChanges();
+                    UpdateCartValue();
+                    if (oc.Quantity == 0)
+                    {
+                        Order cart = oc.Order;
+                        cart.OrderContents.Remove(oc);
+                        db.OrderContents.Remove(oc);
+                        db.SaveChanges();
+                    }
                 }
-                return RedirectToAction("Show/"+oc.Order.OrderId);
+                else
+                {
+                    TempData["message"] = "Eroare la scaderea numărului de produse din coș";
+                }
+
             }
             else
             {
-                TempData["message"] = "Eroare la creșterea numărului de produse din coș";
+                ViewBag.message = "Comanda finalizata nu poate fi modificata";
+            }
+
+            
+            if (page == 1)
+            {
                 return RedirectToAction("Show/" + oc.Order.OrderId);
+            }
+            else
+            {
+                return RedirectToAction("OrdersFromMe");
             }
         }
         /**
