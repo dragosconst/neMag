@@ -32,6 +32,8 @@ namespace neMag
                 // se adauga utilizatorul administrator
                 var user = new ApplicationUser();
                 user.UserName = "admin@gmail.com";
+                user.FirstName = "Admin";
+                user.LastName = "Admin";
                 user.Email = "admin@gmail.com"; // am schimbat slightly datele de logare pt admin
                 var adminCreated = UserManager.Create(user, "parolasimpla");
 
@@ -42,17 +44,17 @@ namespace neMag
             }
 
             // for testing
-             var userCol = new ApplicationUser();
-             userCol.UserName = "col1@gmail.com";
-             userCol.Email = "col1@gmail.com";
+            var userCol = new ApplicationUser();
+            userCol.UserName = "col1@gmail.com";
+            userCol.Email = "col1@gmail.com";
             userCol.FirstName = "colaborator";
             userCol.LastName = "colaborator";
-             var userCreated = UserManager.Create(userCol, "parolasimpla");
+            var userCreated = UserManager.Create(userCol, "parolasimpla");
 
-             if(userCreated.Succeeded)
-             {
-                 UserManager.AddToRole(userCol.Id, "Collaborator");
-             }
+            if(userCreated.Succeeded)
+            {
+                UserManager.AddToRole(userCol.Id, "Collaborator");
+            }
             var userCol2 = new ApplicationUser();
             userCol2.UserName = "user1@gmail.com";
             userCol2.Email = "user1@gmail.com";
@@ -71,7 +73,7 @@ namespace neMag
                 role.Name = "Collaborator";
                 roleManager.Create(role);
             }
-            
+
 
             if (!roleManager.RoleExists("User"))
             {
