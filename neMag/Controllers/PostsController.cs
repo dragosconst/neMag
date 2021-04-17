@@ -27,7 +27,7 @@ namespace neMag.Controllers
         public ActionResult Edit(int id)
         {
             Post post = db.Posts.Find(id);
-            if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Collaborator") || User.IsInRole("Admin"))
+            if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Admin"))
             {
                 return View(post);
             }
@@ -39,13 +39,13 @@ namespace neMag.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = "User,Collaborator,Admin")]
+        //[Authorize(Roles = "User,Admin")]
         public ActionResult Edit(int id, Post requestPost)
         {
             try
             {
                 Post post = db.Posts.Find(id);
-                if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Collaborator") || User.IsInRole("Admin"))
+                if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Admin"))
                 {
                     if (ModelState.IsValid && TryUpdateModel(post))
                     {
@@ -58,6 +58,7 @@ namespace neMag.Controllers
                         UpdateProductRating(post.ProductId);
                         return RedirectToAction("Show", "Products", new { id = post.ProductId });
                     }
+                    System.Diagnostics.Debug.WriteLine("Ceva.");
                     return View(requestPost);
                 }
                 TempData["message"] = "You cannot edit someone else's post!";
@@ -99,13 +100,13 @@ namespace neMag.Controllers
         }
 
         [HttpDelete]
-        //[Authorize(Roles = "User,Collaborator,Admin")]
+        //[Authorize(Roles = "User,Admin")]
         public ActionResult Delete(int id)
         {
             Post post = db.Posts.Find(id);
             // int ProductId = post.ProductId;
 
-            if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Collaborator") || User.IsInRole("Admin"))
+            if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Admin"))
             {
                 TempData["message"] = "The post has been deleted.";
                 db.Posts.Remove(post);
