@@ -25,6 +25,10 @@
                     {
                         <li><a href="/Cos/Index"><i class="glyphicon glyphicon-shopping-cart"></i>  Cos</a></li>
                     }
+                    @if (User.IsInRole("Collaborator"))
+                    {
+                        <li>@Html.ActionLink("Comenzi din portofoliul meu", "OrdersFromMe", "Cos")</li>
+                    }
 
 
 

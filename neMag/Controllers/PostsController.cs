@@ -70,7 +70,7 @@ namespace neMag.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "User,Collaborator,Admin")]
+        [Authorize(Roles = "User,Collaborator,Admin")]
         public ActionResult New(Post post)
         {
             post.Date = DateTime.Now;
