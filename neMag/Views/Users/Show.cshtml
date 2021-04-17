@@ -16,22 +16,39 @@
         <strong> Nume: </strong> @Model.LastName <br />
         <strong> Prenume: </strong> @Model.FirstName <br />
         <strong> Email: </strong> @Model.Email
-    </div>
-    <div class="panel-footer">
-        <a class="btn btn-primary" href="/Users/Edit/@Model.Id"> Editeaza datele </a>
+
+        @if(User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
+        {
+            <hr />
+            <a class="btn btn-primary" href="/Users/Edit/@Model.Id"> Editeaza datele </a>
+        }
     </div>
 </div>
+
+@{
+    if (User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h3> Comenzile mele </h3>
+            </div>
+        </div>
+    }
+}
 
 <div class="panel panel-default">
     <div class="panel-body">
-        <h3> Activitatea mea: </h3> <hr />
-        <strong> Vezi istoric comenzi </strong> <br />
-        <strong> Vezi istoric postari </strong> <br />
-        <strong> Vezi produse favorite </strong>
+        <h3> Postarile mele </h3>
     </div>
 </div>
 
-<form method="post" action="/Users/Delete/@Model.Id">
-    @Html.HttpMethodOverride(HttpVerbs.Delete)
-    <button class="btn btn-danger" type="submit"> Sterge profil </button>
-</form>
+
+@{
+    if (User.Identity.IsAuthenticated == true && ((User.IsInRole("Admin") && (string)Model.Id != User.Identity.GetUserId()) || (!User.IsInRole("Admin") && (string)Model.Id == User.Identity.GetUserId())))
+    {
+        <form method="post" action="/Users/Delete/@Model.Id">
+            @Html.HttpMethodOverride(HttpVerbs.Delete)
+            <button class="btn btn-danger" type="submit"> Sterge profil </button>
+        </form>
+    }
+}
