@@ -76,7 +76,7 @@
     <hr />
 }
 
-@if (!User.IsInRole("RestrictedUser"))
+@if (User.Identity.IsAuthenticated && !User.IsInRole("RestrictedUser"))
 {
         <div class="container">
             <div class="row">

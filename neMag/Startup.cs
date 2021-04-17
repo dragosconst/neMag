@@ -31,8 +31,10 @@ namespace neMag
                 roleManager.Create(role);
                 // se adauga utilizatorul administrator
                 var user = new ApplicationUser();
-                user.UserName = "admin@gmail.com";
-                user.Email = "admin@gmail.com"; // am schimbat slightly datele de logare pt admin
+                user.LastName = "Adminescu";
+                user.FirstName = "Adminu";
+                user.UserName = "admin1@gmail.com";
+                user.Email = "admin1@gmail.com"; // am schimbat slightly datele de logare pt admin
                 var adminCreated = UserManager.Create(user, "parolasimpla");
 
                 if (adminCreated.Succeeded)
@@ -41,8 +43,30 @@ namespace neMag
                 }
             }
 
+            if (!roleManager.RoleExists("Collaborator"))
+            {
+                var role = new IdentityRole();
+                role.Name = "Collaborator";
+                roleManager.Create(role);
+            }
+
+
+            if (!roleManager.RoleExists("User"))
+            {
+                var role = new IdentityRole();
+                role.Name = "User";
+                roleManager.Create(role);
+            }
+
+            if (!roleManager.RoleExists("RestrictedUser"))
+            {
+                var role = new IdentityRole();
+                role.Name = "RestrictedUser";
+                roleManager.Create(role);
+            }
+
             // for testing
-             var userCol = new ApplicationUser();
+            var userCol = new ApplicationUser();
              userCol.UserName = "col1@gmail.com";
              userCol.Email = "col1@gmail.com";
             userCol.FirstName = "colaborator";
@@ -65,27 +89,7 @@ namespace neMag
                 UserManager.AddToRole(userCol2.Id, "User");
             }
 
-            if (!roleManager.RoleExists("Collaborator"))
-            {
-                var role = new IdentityRole();
-                role.Name = "Collaborator";
-                roleManager.Create(role);
-            }
             
-
-            if (!roleManager.RoleExists("User"))
-            {
-                var role = new IdentityRole();
-                role.Name = "User";
-                roleManager.Create(role);
-            }
-
-            if (!roleManager.RoleExists("RestrictedUser"))
-            {
-                var role = new IdentityRole();
-                role.Name = "RestrictedUser";
-                roleManager.Create(role);
-            }
         }
     }
 }

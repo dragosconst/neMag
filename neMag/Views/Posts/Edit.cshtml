@@ -13,4 +13,8 @@
 
     @Html.HiddenFor(m => m.Date)
     <button class="btn btn-success" type="submit">Editeaza comentariu</button>
+
+    @Html.HiddenFor(m => m.isReview)
+    @Html.HiddenFor(m => m.Rating)
+    @Html.HiddenFor(m => m.ProductId)
 </form>

@@ -39,7 +39,7 @@ namespace neMag.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User,Collaborator,Admin")]
         public ActionResult Edit(int id, Post requestPost)
         {
             try
@@ -71,7 +71,7 @@ namespace neMag.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "User,Collaborator,Admin")]
+        [Authorize(Roles = "User,Collaborator,Admin")]
         public ActionResult New(Post post)
         {
             post.Date = DateTime.Now;
@@ -100,7 +100,7 @@ namespace neMag.Controllers
         }
 
         [HttpDelete]
-        //[Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User,Collaborator,Admin")]
         public ActionResult Delete(int id)
         {
             Post post = db.Posts.Find(id);
