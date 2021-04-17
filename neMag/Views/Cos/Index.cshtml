@@ -1,0 +1,39 @@
+﻿@model neMag.Models.Order
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.TotalPrice == 0)
+{
+    <h2>Coșul este gol</h2>
+}
+@if (Model.TotalPrice > 0)
+{
+    <h2 style="margin-top:65px">Ai următoarele produse în coș: </h2>
+    foreach (neMag.Models.OrderContent cont in Model.OrderContents)
+    {
+        <div class="panel panel-default">
+            @Html.Partial("productInfo", cont.Product)
+            <div class="panel-footer">
+                <form method="post" action="/Cos/Delete/@cont.OrderContentId">
+                    @Html.HttpMethodOverride(HttpVerbs.Delete)
+                    <button class="btn btn-danger pull-right" type="submit">Șterge din coș</button>
+                </form>
+                    <p>Nr. de exemplare: @cont.Quantity</p>
+                    <form method="post" class="quantity_buttons pull-left" action="/Cos/Decrease/@cont.OrderContentId">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <button class="btn btn-info glyphicon glyphicon-minus" type="submit"></button>
+                    </form>
+                    <form method="post" class="quantity_buttons pull-left" action="/Cos/Increase/@cont.OrderContentId">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <button class="btn btn-info glyphicon glyphicon-plus" type="submit"></button>
+                    </form>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    }
+    <h2>Preț total: @Model.TotalPrice RON</h2>
+
+    <a class="btn open" href="/Cos/Order/@Model.OrderId">Plasează comanda</a>
+}

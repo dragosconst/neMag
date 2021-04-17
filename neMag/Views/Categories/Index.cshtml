@@ -13,14 +13,14 @@
         <div class="panel-heading">@cat.Title</div>
         <div class="panel-body">
             <p>@cat.Description</p>
-            <a class="pull-left btn-sm btn btn-info" href="/Categories/Show/@cat.CategoryId">Afiseaza individual</a>
+            <a class="pull-left btn-sm btn btn-info" href="/Categories/Show/@cat.CategoryId">Afișează individual</a>
             <br />
             <br />
             <p>
-                <a class="pull-left btn-sm btn btn-success" href="/Categories/Edit/@cat.CategoryId">Editeaza</a>
+                <a class="pull-left btn-sm btn btn-success" href="/Categories/Edit/@cat.CategoryId">Editează</a>
                 <form method="post" action="/Categories/Delete/@cat.CategoryId">
                     @Html.HttpMethodOverride(HttpVerbs.Delete)
-                    <button class="pull-right btn btn-danger" type="submit">Sterge</button>
+                    <button class="pull-right btn btn-danger" type="submit">Șterge</button>
                 </form>
             </p>
             <div class="clearfix"></div>
@@ -28,6 +28,6 @@
     </div>
 }
 
-<a class="pull-left btn-sm btn btn-success" href="/Categories/New">Adauga o categorie noua</a>
+<a class="pull-left btn-sm btn btn-success" href="/Categories/New">Adaugă o categorie nouă</a>
 <br />
 

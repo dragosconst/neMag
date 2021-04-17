@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace online_shop.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -44,7 +45,7 @@ namespace online_shop.Controllers
                     cat.Title = requestCat.Title;
                     cat.Description = requestCat.Description;
                     db.SaveChanges();
-                    TempData["message"] = "Categorie schimbata cu succes.";
+                    TempData["message"] = "Categorie schimbată cu succes.";
                     return RedirectToAction("Index");
                 }
                 return View(requestCat);
@@ -67,7 +68,7 @@ namespace online_shop.Controllers
             {
                 db.Categories.Add(newCat);
                 db.SaveChanges();
-                TempData["message"] = "Categorie noua adaugata cu succes.";
+                TempData["message"] = "Categorie nouă adaugată cu succes.";
                 return RedirectToAction("Index");
             }catch(Exception e)
             {
@@ -82,7 +83,7 @@ namespace online_shop.Controllers
             Category cat = db.Categories.Find(id);
             db.Categories.Remove(cat);
             db.SaveChanges();
-            TempData["message"] = "Categorie stearsa cu succes.";
+            TempData["message"] = "Categorie ștearsa cu succes.";
             return RedirectToAction("Index");
         }
     }

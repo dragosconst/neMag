@@ -35,10 +35,13 @@ namespace neMag.Models
 
         public bool Accepted { get; set; }
 
+
         public virtual Category Category { get; set; }
 
         public virtual ApplicationUser User { get; set; }
 
         public IEnumerable<SelectListItem> Categ { get; set; }
+
+        public virtual ICollection<Post> Posts { get; set; }
     }
 }

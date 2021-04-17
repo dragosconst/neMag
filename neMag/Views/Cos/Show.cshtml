@@ -1,0 +1,29 @@
+﻿@model neMag.Models.Order
+@{
+    ViewBag.Title = "Show";
+}
+
+<h2>Comanda: @Model.OrderId</h2>
+<br /><hr />
+<h3> Data efectuării: @Model.Date</h3>
+
+<ul style="column-count : 1;display: inline-block;column-width:135px">
+    <li class="row" style="list-style-type: none;width:1000px">
+        <h3 class="pull-left" style="width:50%">Id produs</h3><h3 class="pull-left" style="width:50%">Cantitate</h3>
+    </li>
+    @foreach (neMag.Models.OrderContent con in Model.OrderContents)
+    {
+        if (con.Order.OrderId == Model.OrderId)
+        {
+            <h3 class="pull-left" style="width:50%">@con.Product.ProductId</h3>
+            <h3 class="pull-left" style="width:50%">@con.Quantity</h3>
+        }
+
+    }
+    @if (Model.Status == ViewBag.SENT)
+    {
+        <li class="row" style="list-style-type: none"><a class="btn btn-success pull-left" href="/Cos/Finish/@Model.OrderId">Finalizează</a></li>
+    }
+</ul>
+
+
