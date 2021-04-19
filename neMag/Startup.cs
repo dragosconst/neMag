@@ -31,40 +31,16 @@ namespace neMag
                 roleManager.Create(role);
                 // se adauga utilizatorul administrator
                 var user = new ApplicationUser();
-                user.UserName = "admin@gmail.com";
-                user.FirstName = "Admin";
-                user.LastName = "Admin";
-                user.Email = "admin@gmail.com"; // am schimbat slightly datele de logare pt admin
+                user.LastName = "Adminescu";
+                user.FirstName = "Adminu";
+                user.UserName = "admin1@gmail.com";
+                user.Email = "admin1@gmail.com"; // am schimbat slightly datele de logare pt admin
                 var adminCreated = UserManager.Create(user, "parolasimpla");
 
                 if (adminCreated.Succeeded)
                 {
                     UserManager.AddToRole(user.Id, "Admin");
                 }
-            }
-
-            // for testing
-            var userCol = new ApplicationUser();
-            userCol.UserName = "col1@gmail.com";
-            userCol.Email = "col1@gmail.com";
-            userCol.FirstName = "colaborator";
-            userCol.LastName = "colaborator";
-            var userCreated = UserManager.Create(userCol, "parolasimpla");
-
-            if(userCreated.Succeeded)
-            {
-                UserManager.AddToRole(userCol.Id, "Collaborator");
-            }
-            var userCol2 = new ApplicationUser();
-            userCol2.UserName = "user1@gmail.com";
-            userCol2.Email = "user1@gmail.com";
-            userCol2.FirstName = "user";
-            userCol2.LastName = "user";
-            var userCreated2 = UserManager.Create(userCol2, "parolasimpla");
-
-            if (userCreated2.Succeeded)
-            {
-                UserManager.AddToRole(userCol2.Id, "User");
             }
 
             if (!roleManager.RoleExists("Collaborator"))
@@ -88,6 +64,32 @@ namespace neMag
                 role.Name = "RestrictedUser";
                 roleManager.Create(role);
             }
+
+            // for testing
+            var userCol = new ApplicationUser();
+             userCol.UserName = "col1@gmail.com";
+             userCol.Email = "col1@gmail.com";
+            userCol.FirstName = "colaborator";
+            userCol.LastName = "colaborator";
+            var userCreated = UserManager.Create(userCol, "parolasimpla");
+
+            if(userCreated.Succeeded)
+            {
+                UserManager.AddToRole(userCol.Id, "Collaborator");
+            }
+            var userCol2 = new ApplicationUser();
+            userCol2.UserName = "user1@gmail.com";
+            userCol2.Email = "user1@gmail.com";
+            userCol2.FirstName = "user";
+            userCol2.LastName = "user";
+            var userCreated2 = UserManager.Create(userCol2, "parolasimpla");
+
+            if (userCreated2.Succeeded)
+            {
+                UserManager.AddToRole(userCol2.Id, "User");
+            }
+
+            
         }
     }
 }
