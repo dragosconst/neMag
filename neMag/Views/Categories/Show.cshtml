@@ -1,18 +1,28 @@
-﻿
+﻿@model neMag.Models.Category
+
 @{
     ViewBag.Title = "Show";
 }
 <br />
 <div class="panel panel-default">
-    <div class="panel-heading">@ViewBag.category.Title</div>
+    <div class="panel-heading">@Model.Title</div>
     <div class="panel-body">
         <br />
-        <p>@ViewBag.category.Description</p>
+        <p>@Model.Description</p>
         <p>
-            <a class="pull-left btn-sm btn btn-success" href="/Categories/Edit/@ViewBag.category.CategoryId">Editeaza</a>
-            <form method="post" action="/Categories/Delete/@ViewBag.category.CategoryId">
+            <hr />
+        <p>
+            Categoria părinte: @if (Model.ParentId != -1)
+            {
+                <p>@Model.Parent.Title</p>
+            }
+            else {
+                @:Nu are părinte
+            }</p>
+            <a class="pull-left btn-sm btn btn-success" href="/Categories/Edit/@Model.CategoryId">Editează</a>
+            <form method="post" action="/Categories/Delete/@Model.CategoryId">
                 @Html.HttpMethodOverride(HttpVerbs.Delete)
-                <button class="pull-right btn btn-danger" type="submit">Sterge</button>
+                <button class="pull-right btn btn-danger" type="submit">Șterge</button>
             </form>
         </p>
         <div class="clearfix"></div>
