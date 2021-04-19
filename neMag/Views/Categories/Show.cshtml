@@ -12,7 +12,7 @@
         <p>
             <hr />
         <p>
-            Categoria părinte: @if (Model.ParentId != -1)
+            Categoria părinte: @if (Model.ParentId != -1 && Model.Parent != null)
             {
                 <p>@Model.Parent.Title</p>
             }

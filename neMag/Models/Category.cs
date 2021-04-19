@@ -11,7 +11,7 @@ namespace neMag.Models
     {
         [Key]
         public int CategoryId { get; set; }
-
+        
         public int ParentId { get; set; }
 
         [Required(ErrorMessage = "Title is mandatory!")]
