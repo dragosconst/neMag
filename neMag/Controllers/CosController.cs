@@ -33,8 +33,37 @@ namespace neMag.Controllers
             return View(cart);
         }
 
+        [Authorize(Roles = "Collaborator,Admin")]
+        public ActionResult OrdersFromMe()
+        {
+            IEnumerable<int> orderids = (from order in db.Orders
+                                       where order.Status == SENT
+                                       select order.OrderId).ToList();
+            string uid = User.Identity.GetUserId();
+            IEnumerable<int> productids = (from pr in db.Products
+                                           where pr.UserId == uid
+                                           select pr.ProductId).ToList();
+            List<OrderContent> Contents = new List<OrderContent>();
+            
+            foreach (var x in orderids)
+            {
+                IEnumerable<OrderContent> ocs = (from oc in db.OrderContents
+                                                where oc.Order.OrderId == x
+                                                select oc);
+                foreach (var y in ocs)
+                {
+                    if(productids.Contains(y.Product.ProductId))
+                    {
+                        Contents.Add(y);
+                    }
+                }
+            }
+            ViewBag.Contents = Contents;
+            return View();
+        }
+
         [HttpPut]
-        [Authorize(Roles = "RestrictedUser,User,Admin")]
+        [Authorize(Roles = "RestrictedUser,User,Collaborator,Admin")]
         public ActionResult AddToOrder(int id)
         {
             string uid = User.Identity.GetUserId();
@@ -95,6 +124,37 @@ namespace neMag.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpDelete]
+        [Authorize(Roles = "Collaborator,Admin")]
+        public ActionResult EditDelete(int id,int page)
+        {
+            // page = 1 => redirect to show, page = 2 => redirect to OrdersFromMe
+            OrderContent toDelete = db.OrderContents.Find(id);
+            Order order = toDelete.Order;
+            if (order.Status == SENT)
+            {
+                order.OrderContents.Remove(toDelete);
+                db.OrderContents.Remove(toDelete);
+                db.SaveChanges();
+                TempData["message"] = "Produsul a fost scos din comanda";
+            }
+            else
+            {
+                ViewBag.message = "Comanda finalizata nu poate fi modificata";
+
+            }
+            if (page == 1)
+            {
+                return RedirectToAction("Show/"+order.OrderId);
+            }
+            else
+            {
+                return RedirectToAction("OrdersFromMe");
+            }
+        }
+
+
+
         [HttpPut]
         [Authorize(Roles = "RestrictedUser,User,Admin")]
         public ActionResult Increase(int id)
@@ -137,11 +197,93 @@ namespace neMag.Controllers
             }
             else
             {
-                TempData["message"] = "Eroare la creșterea numărului de produse din coș";
+                TempData["message"] = "Eroare la scaderea numărului de produse din coș";
                 return RedirectToAction("Index");
             }
         }
+        [HttpPut]
+        [Authorize(Roles = "Collaborator,Admin")]
+        public ActionResult EditIncrease(int id,int page)
+        {
+            OrderContent oc = db.OrderContents.Find(id);
+            string status = (from or in db.Orders
+                          where or.OrderId == oc.Order.OrderId
+                          select or.Status).First();
+            if (status == SENT)
+            {
+                if (TryUpdateModel(oc))
+                {
+                    oc.Quantity++;
+                    oc.Total += oc.Product.Price - oc.Product.Price * oc.Product.Discount;
+                    db.SaveChanges();
+                    UpdateCartValue();
+                }
+                else
+                {
+                    TempData["message"] = "Eroare la creșterea numărului de produse din coș";
+                }
 
+            }
+            else
+            {
+                ViewBag.message = "Comanda finalizata nu poate fi modificata";
+            }
+
+            if (page == 1)
+            {
+                return RedirectToAction("Show/" + oc.Order.OrderId);
+            }
+            else
+            {
+                return RedirectToAction("OrdersFromMe");
+            }
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Collaborator,Admin")]
+        public ActionResult EditDecrease(int id, int page)
+        {
+            OrderContent oc = db.OrderContents.Find(id);
+            string status = (from or in db.Orders
+                             where or.OrderId == oc.Order.OrderId
+                             select or.Status).First();
+            if (status == SENT)
+            {
+                if (TryUpdateModel(oc))
+                {
+                    oc.Quantity--;
+                    oc.Total -= oc.Product.Price - oc.Product.Price * oc.Product.Discount;
+                    db.SaveChanges();
+                    UpdateCartValue();
+                    if (oc.Quantity == 0)
+                    {
+                        Order cart = oc.Order;
+                        cart.OrderContents.Remove(oc);
+                        db.OrderContents.Remove(oc);
+                        db.SaveChanges();
+                    }
+                }
+                else
+                {
+                    TempData["message"] = "Eroare la scaderea numărului de produse din coș";
+                }
+
+            }
+            else
+            {
+                ViewBag.message = "Comanda finalizata nu poate fi modificata";
+            }
+
+            
+            if (page == 1)
+            {
+                return RedirectToAction("Show/" + oc.Order.OrderId);
+            }
+            else
+            {
+                return RedirectToAction("OrdersFromMe");
+            }
+        }
         /**
          * If it's not clear enough, this view serves as the final part of the ordering process.
          * The user inputs some extra details and places the order.

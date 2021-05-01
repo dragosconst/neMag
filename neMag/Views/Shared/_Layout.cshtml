@@ -25,9 +25,17 @@
                     {
                         <li><a href="/Cos/Index"><i class="glyphicon glyphicon-shopping-cart"></i>  Cos</a></li>
                     }
+                    @if (User.IsInRole("Collaborator"))
+                    {
+                        <li>@Html.ActionLink("Comenzi din portofoliul meu", "OrdersFromMe", "Cos")</li>
+                    }
+
+
+
                     @if (User.IsInRole("Admin"))
                     {
                         <li>@Html.ActionLink("Panoul administratorului", "AdminBoard", "Account")</li>
+                        <li>@Html.ActionLink("Comenzi din portofoliul meu", "OrdersFromMe", "Cos")</li>
                         <li>@Html.ActionLink("Categorii", "Index", "Categories")</li>
                     }
                     <li>@Html.ActionLink("Adaugare produs", "New", "Products")</li>

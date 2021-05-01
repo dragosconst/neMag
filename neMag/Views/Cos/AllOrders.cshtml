@@ -16,6 +16,7 @@
             <li class="row" style="list-style-type: none">
                 <h3 class="pull-left" style="width:200px">@order.OrderId</h3><h3 class="pull-left" style="width:300px">@order.Date</h3><h3 class="pull-left" style="width:300px">@order.Details</h3><h3 class="pull-right"><a class="btn btn-success" href="/Cos/Show/@order.OrderId">Deschide</a><a class="btn btn-success" href="/Cos/Finish/@order.OrderId">Finalizează</a></h3>
             </li>
+            
         }
         if (order.Status == ViewBag.DONE)
         {

@@ -1,0 +1,34 @@
+﻿
+@{
+    ViewBag.Title = "OrdersFromMe";
+}
+
+<h2>OrdersFromMe</h2>
+<h2>@ViewBag.message</h2>
+<ul style="column-count : 1;display: inline-block;column-width:100px">
+    <li class="row" style="list-style-type: none;width:1000px">
+        <h3 class="pull-left" style="width:20%">Id Comanda</h3><h3 class="pull-left" style="width:30%">Id produs</h3><h3 class="pull-left" style="width:40%">Cantitate</h3>
+    </li>
+    @foreach (var oc in ViewBag.Contents)
+    {
+        <h3 class="pull-left" style="width:20%">@oc.Order.OrderId</h3>
+        <h3 class="pull-left" style="width:30%">@oc.Product.ProductId</h3>
+        <h3 class="pull-left" style="width:30%">
+            <form method="post" class="quantity_buttons pull-left" action="/Cos/EditDecrease/@oc.OrderContentId/2">
+                @Html.HttpMethodOverride(HttpVerbs.Put)
+                <button class="btn btn-info glyphicon glyphicon-minus" type="submit"></button>
+            </form>
+            <div class="pull-left">@oc.Quantity</div>
+            <form method="post" class="quantity_buttons pull-left" action="/Cos/EditIncrease/@oc.OrderContentId/2">
+                @Html.HttpMethodOverride(HttpVerbs.Put)
+                <button class="btn btn-info glyphicon glyphicon-plus" type="submit"></button>
+            </form>
+        </h3>
+        <h3 class="pull-left" style="width:15%">
+            <form method="post" action="/Cos/EditDelete/@oc.OrderContentId/2">
+                @Html.HttpMethodOverride(HttpVerbs.Delete)
+                <button class="btn btn-danger pull-right" type="submit">Șterge din comanda</button>
+            </form>
+        </h3>
+    }
+</ul>

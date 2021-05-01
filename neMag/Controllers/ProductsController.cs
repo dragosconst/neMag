@@ -228,6 +228,7 @@ namespace neMag.Controllers
                 return View();
             }
         }
+        
 
         [NonAction]
         public IEnumerable<SelectListItem> GetAllCategories()
