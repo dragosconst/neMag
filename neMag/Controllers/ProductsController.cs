@@ -136,6 +136,8 @@ namespace neMag.Controllers
             ViewBag.Product = product;
             ViewBag.Category = product.Category;
 
+            ViewBag.userId = User.Identity.GetUserId();
+
             SetAccessRights(product);
 
             return View(product);
