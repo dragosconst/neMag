@@ -10,26 +10,28 @@
 
     @if (ViewBag.showButtons == true)
     {
-        <div class="panel-footer">
-            <a class="btn btn-success pull-left" href="/Products/Edit/@Model.ProductId"><div class="glyphicon glyphicon-pencil"></div>     Modifica Produs</a>
-
-            <form method="post" action="/Products/Delete/@Model.ProductId">
-                @Html.HttpMethodOverride(HttpVerbs.Delete)
-                <button class="btn btn-danger pull-right" type="submit"><div class="glyphicon glyphicon-trash"></div>  Sterge Produs</button>
-            </form>
-            <div class="clearfix"></div>
-        </div>
-    } 
     <div class="panel-footer">
+        <a class="btn btn-success pull-left" href="/Products/Edit/@Model.ProductId"><div class="glyphicon glyphicon-pencil"></div>     Modifica Produs</a>
+
+        <form method="post" action="/Products/Delete/@Model.ProductId">
+            @Html.HttpMethodOverride(HttpVerbs.Delete)
+            <button class="btn btn-danger pull-right" type="submit"><div class="glyphicon glyphicon-trash"></div>  Sterge Produs</button>
+        </form>
         @if (ViewBag.isCollaborator == false)
         {
-            <form method="post" action="/Cos/AddToOrder/@Model.ProductId">
-                @Html.HttpMethodOverride(HttpVerbs.Put)
-                <button class="btn pull-right open" type="submit">Adaugă în cos</button>
-            </form>
+            if (User.IsInRole("Admin") || User.IsInRole("Collaborator") || User.IsInRole("User") || User.IsInRole("RestrictedUser"))
+            {
+                <form method="post" action="/Cos/AddToOrder/@Model.ProductId">
+                    @Html.HttpMethodOverride(HttpVerbs.Put)
+                    <button class="btn pull-right open" type="submit">Adaugă în cos</button>
+                </form>
+            }
+
         }
         <div class="clearfix"></div>
     </div>
+    } 
+    
 </div>
 
 @* Index of posts *@
@@ -75,6 +77,7 @@
     </div>
     <hr />
 }
+
 
 @if (User.Identity.IsAuthenticated && !User.IsInRole("RestrictedUser"))
 {

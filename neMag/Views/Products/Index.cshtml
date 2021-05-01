@@ -23,8 +23,13 @@
 
                 <div class="panel-footer my-panel-footer">
                     <a class="btn  pull-left open" href="/Products/Show/@product.ProductId">Afișează</a>
+                    <form method="post" action="/Cos/AddToOrder/@product.ProductId">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <button class="btn pull-right open" type="submit">Adaugă în cos</button>
+                    </form>
                     <div class="clearfix"></div>
                 </div>
+
             </div>
         }
 
