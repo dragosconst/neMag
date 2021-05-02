@@ -55,9 +55,11 @@ namespace online_shop.Controllers
                     TempData["message"] = "Categorie schimbată cu succes.";
                     return RedirectToAction("Index");
                 }
+                ViewBag.categories = GetAllCategories(null);
                 return View(requestCat);
             }catch(Exception e)
             {
+                ViewBag.categories = GetAllCategories(null);
                 return View(requestCat);    
             }
         }
@@ -83,6 +85,7 @@ namespace online_shop.Controllers
                 return RedirectToAction("Index");
             }catch(Exception e)
             {
+                ViewBag.categories = GetAllCategories(null);
                 return View(newCat);    
             }
         }
@@ -125,7 +128,7 @@ namespace online_shop.Controllers
             });
             foreach (Category cat in (db.Categories).ToList())
             {
-                if (cat != me)
+                if (cat != me && cat.ParentId != me.CategoryId)
                 {
                     selectList.Add(new SelectListItem
                     {
