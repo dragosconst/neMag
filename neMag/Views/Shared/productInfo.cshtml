@@ -31,7 +31,15 @@
 
         <br />
         <picture>
-            <img class="my-image" src="@Model.Photo" alt="@Model.ProductName">
+            @*<img class="my-image" src="@Model.Photo" alt="@Model.ProductName">*@
+            @foreach (var photo in Model.Photos)
+            {
+                if (photo != null)
+                {
+                    <img class="my-image" src="@photo.Path" alt="@Model.ProductName" runat="server">
+                    break;
+                }
+            }
         </picture>
         <div class="my-description">
             Descriere: <strong>@Model.Description</strong>

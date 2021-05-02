@@ -24,8 +24,6 @@ namespace neMag.Models
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        public string Photo { get; set; }
-
         [Required(ErrorMessage = "Price is mandatory!")]
         public double Price { get; set; }
 
@@ -43,5 +41,7 @@ namespace neMag.Models
         public IEnumerable<SelectListItem> Categ { get; set; }
 
         public virtual ICollection<Post> Posts { get; set; }
+
+        public virtual ICollection<Photo> Photos { get; set; }
     }
 }
