@@ -128,7 +128,7 @@ namespace online_shop.Controllers
             });
             foreach (Category cat in (db.Categories).ToList())
             {
-                if (me != null && cat != me && !IsParent(cat.CategoryId, me.CategoryId))
+                if (me == null || (cat != me && !IsParent(cat.CategoryId, me.CategoryId)))
                 {
                     selectList.Add(new SelectListItem
                     {
