@@ -41,7 +41,7 @@ namespace online_shop.Controllers
             {
                 Category cat = db.Categories.Find(id);
 
-                if(TryUpdateModel(cat))
+                if (TryUpdateModel(cat))
                 {
                     cat.Title = requestCat.Title;
                     cat.ParentId = requestCat.ParentId;
@@ -55,11 +55,11 @@ namespace online_shop.Controllers
                     TempData["message"] = "Categorie schimbată cu succes.";
                     return RedirectToAction("Index");
                 }
-                ViewBag.categories = GetAllCategories(null);
+                ViewBag.categories = GetAllCategories(cat);
                 return View(requestCat);
             }catch(Exception e)
             {
-                ViewBag.categories = GetAllCategories(null);
+                ViewBag.categories = GetAllCategories(requestCat);
                 return View(requestCat);    
             }
         }
@@ -128,7 +128,7 @@ namespace online_shop.Controllers
             });
             foreach (Category cat in (db.Categories).ToList())
             {
-                if (me == null || (cat != me && !IsParent(cat.CategoryId, me.CategoryId)))
+                if (me == null || (cat.CategoryId != me.CategoryId && !IsParent(cat.CategoryId, me.CategoryId)))
                 {
                     selectList.Add(new SelectListItem
                     {
