@@ -128,7 +128,7 @@ namespace online_shop.Controllers
             });
             foreach (Category cat in (db.Categories).ToList())
             {
-                if (cat != me && cat.ParentId != me.CategoryId)
+                if (me != null && cat != me && !IsParent(cat.CategoryId, me.CategoryId))
                 {
                     selectList.Add(new SelectListItem
                     {
@@ -138,6 +138,34 @@ namespace online_shop.Controllers
                 }
             }
             return selectList;
+        }
+
+
+        /*
+         * Might be a bit overkill, but checks for all the parents of the current category.
+         * If we check just for the immediate parent, we might end up with more complex
+         * circular dependencies (take for instance the hierarchy c1->c2->c3, without a more
+         * thorough checking mechanism we might think having c3 as the parent of c1 would be
+         * alright).
+         * **/
+        [NonAction]
+        private bool IsParent(int childId, int parId)
+        {
+            /*
+             * childId is 0 when a new category is added without specifying any parent
+             * and it's -1 when specifically selecting no parent option in the dropdown.
+             * Maybe setting it to 0 in both cases would be a better idea? I used -1 since
+             * I'm not sure how the default asp.net c# assignment works when you don't select
+             * anything in the dropdown.
+             * **/
+            while(childId > 0)
+            {
+                Category curr = db.Categories.Find(childId);
+                if (parId == curr.ParentId)
+                    return true;
+                childId = curr.ParentId;
+            }
+            return false;
         }
     }
 }
