@@ -354,6 +354,27 @@ namespace neMag.Controllers
             return View(order);
         }
 
+        [Authorize(Roles = "Admin")]
+        public ActionResult Orders(int id)
+        {
+
+            var comenzi = db.Orders.ToList();
+            ViewBag.CART = CART;
+            ViewBag.SENT = SENT;
+            ViewBag.DONE = DONE;
+            ViewBag.comenzi = comenzi;
+            if (id == 1)
+            {
+                ViewBag.pagina = "processing";
+            }
+            if (id == 2)
+            {
+                ViewBag.pagina = "finished";
+            }
+
+            return View();
+        }
+
         [NonAction]
         private void UpdateCartValue()
         {

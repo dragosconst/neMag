@@ -228,7 +228,54 @@ namespace neMag.Controllers
                 return View();
             }
         }
-        
+
+        [Authorize(Roles = "Admin, Colaborator")]
+        public ActionResult Requests()
+        {
+
+            var products = db.Products.Include("Category");
+            ViewBag.Products = products;
+
+
+            return View();
+        }
+
+
+        public ActionResult MyProducts(string id = "")
+        {
+
+
+            var products = from prod in db.Products
+                           where prod.UserId == id
+                           select prod;
+            var anyPending = products.Where(p => p.Accepted == false).ToList().Any();
+            ViewBag.anyPending = anyPending;
+            ViewBag.Products = products;
+
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult Accept(int id)
+        {
+            Product product = db.Products.Find(id);
+            product.Accepted = true;
+            db.SaveChanges();
+            return RedirectToAction("Requests");
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        public ActionResult DeleteRequest(int id)
+        {
+            Product product = db.Products.Find(id);
+            db.Products.Remove(product);
+            db.SaveChanges();
+
+
+            return RedirectToAction("Requests");
+
+        }
 
         [NonAction]
         public IEnumerable<SelectListItem> GetAllCategories()

@@ -13,7 +13,7 @@ namespace neMag.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var users = from user in db.Users
@@ -85,5 +85,6 @@ namespace neMag.Controllers
             UserManager.Delete(user);
             return RedirectToAction("Index");
         }
+
     }
 }
