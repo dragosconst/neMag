@@ -57,33 +57,33 @@ namespace neMag.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Collaborator")]
-        public ActionResult New(Product product, HttpPostedFileBase[] photos)
+        public ActionResult New(Product product, HttpPostedFileBase[] uploadedPhotos)
         {
             product.Categ = GetAllCategories();
             product.UserId = User.Identity.GetUserId();
             product.User = db.Users.Find(product.UserId);
             try
             {
-                //if (ModelState.IsValid)
-                //{
+                if (ModelState.IsValid)
+                {
                     product.Rating = 0;
                     product.Accepted = false;
                     product.Category = db.Categories.Find(product.CategoryId);
                     db.Products.Add(product);
                     db.SaveChanges();
-                    PhotosController.UploadPhotos(photos, product.ProductId, true);
+                    PhotosController.UploadPhotos(uploadedPhotos, product.ProductId, true);
 
                     TempData["massage"] = "Produsul a fost adaugat";
 
                     return RedirectToAction("Index");
-               // }
-                //else
-                //{
-                //    product.Categ = GetAllCategories();
-                //    product.Price = 1;
-                 //   TempData["massage"] = "Produsul nu a fost adaugat!";
-                //    return RedirectToAction("New");
-               // }
+                }
+                else
+                {
+                    product.Categ = GetAllCategories();
+                    product.Price = 1;
+                    TempData["massage"] = "Produsul nu a fost adaugat!";
+                    return RedirectToAction("New");
+                }
             }
             catch (Exception e)
             {
@@ -92,8 +92,6 @@ namespace neMag.Controllers
                 TempData["massage"] = "Produsul nu a fost adaugat!";
                 return RedirectToAction("New");
             }
-
-
         }
 
         public ActionResult Show(int id)
@@ -147,15 +145,15 @@ namespace neMag.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin,Collaborator")]
-        public ActionResult Edit(int id, Product requestProduct, HttpPostedFileBase[] photos)
+        public ActionResult Edit(int id, Product requestProduct, HttpPostedFileBase[] uploadedPhotos)
         {
             requestProduct.Categ = GetAllCategories();
            // if (photo == null)
            //     requestProduct.Photo = db.Products.Find(id).Photo;
             try
             {
-                if (ModelState.IsValid)
-                {
+               if (ModelState.IsValid)
+               {
                     Product product = db.Products.Find(id);
                     if (User.IsInRole("Collaborator") &&
                         product.UserId != User.Identity.GetUserId())
@@ -181,9 +179,8 @@ namespace neMag.Controllers
                             product.Photo = requestProduct.Photo;
                         }
                         */
-
                         db.SaveChanges();
-                        PhotosController.UploadPhotos(photos, product.ProductId, true);
+                        PhotosController.UploadPhotos(uploadedPhotos, product.ProductId, true);
                         TempData["message"] = "Produsul a fost modificat";
                         return RedirectToAction("Index");
                     }
@@ -191,11 +188,11 @@ namespace neMag.Controllers
                     {
                         return View(requestProduct);
                     }
-                }
-                else
-                {
-                    return View(requestProduct);
-                }
+               }
+               else
+               {
+                   return View(requestProduct);
+               }
             }
             catch (Exception e)
             {

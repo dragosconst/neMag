@@ -30,10 +30,18 @@
     @Html.ValidationMessage("Description", null, new { @class = "text-danger" })
     <br />
     <br />
+    <input type="hidden" name="uploadedPhotos[0]" /> @*necessary for binding the uploadedPhotos array*@
     for (var i = 0; i < 5; i++)
     {
-        <input type="file" name="photos[@i]" />
-        <br />
+        if (i < Model.Photos.Count && Model.Photos[i] != null)
+        {
+            <a class="btn btn-sm btn-warning" href="~/Photos/Delete/@Model.Photos[i].PhotoId">Sterge poza @i</a>
+        }
+        else
+        {
+            <input type="file" name="uploadedPhotos[@i]" />
+            <br />
+        }
     }
     @Html.Label("Price", "Pret", new { htmlAttributes = new { @class = "form-control" } })
     @Html.EditorFor(m => m.Price)

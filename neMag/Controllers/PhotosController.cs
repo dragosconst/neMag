@@ -11,7 +11,7 @@ namespace neMag.Controllers
 {
     public class PhotosController : Controller
     {
-        //private Models.ApplicationDbContext db = new Models.ApplicationDbContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
         //[Authorize(Roles = "User, Colaborator, Admin")]
         //[HttpPut]
         public static void UploadPhotos(HttpPostedFileBase[] uploadedFiles, int Id, bool forProduct)
@@ -43,9 +43,16 @@ namespace neMag.Controllers
                     file.Name = uploadedFileName;
                     file.Path = Path.Combine("/Photos/", uploadedFileName);
                     if (forProduct)
+                    {
                         file.ProductId = Id;
+                        file.PostId = -1;
+                    }
                     else
+                    {
                         file.PostId = Id;
+                        file.ProductId = -1;
+                    }
+                        
 
                     // 4. Se adauga modelul in baza de date
                     db.Photos.Add(file);
@@ -54,5 +61,24 @@ namespace neMag.Controllers
 
             db.SaveChanges();
         }
+
+        //[HttpDelete]
+        [Authorize(Roles = "Admin,Collaborator")]
+        public ActionResult Delete(int id)
+        {
+            Photo photo = db.Photos.Find(id);
+            //if (User.IsInRole("Collaborator") && photo.UserId != User.Identity.GetUserId())
+            //{
+           //     TempData["message"] = "Acces interzis";
+            //    return RedirectToRoute("/");
+            //}
+            db.Photos.Remove(photo);
+            db.SaveChanges();
+            if (photo.ProductId != -1)
+                return RedirectToAction("Edit", "Products", new { id = photo.ProductId});
+
+            return RedirectToAction("Edit", "Posts", new { id = photo.PostId });
+        }
+
     }
 }
