@@ -31,28 +31,44 @@ namespace neMag.Controllers
                 {
                     // Se stocheaza fisierul in folderul Files (folderul trebuie creat in proiect)
 
+                    
+                    
+                    
+
+
                     // 1. Se seteaza calea folderului de upload
-                    string uploadFolderPath = HostingEnvironment.MapPath("~/Photos/");
+                   // string uploadFolderPath = HostingEnvironment.MapPath("~/Photos/");
 
                     // 2. Se salveaza fisierul in acel folder  
-                    uploadedFile.SaveAs(Path.Combine(uploadFolderPath, uploadedFileName));
+                    //uploadedFile.SaveAs(Path.Combine(uploadFolderPath, uploadedFileName));
 
                     // 3. Se face o instanta de model si se populeaza cu datele necesare
                     Photo file = new Photo();
                     file.Extension = uploadedFileExtension;
                     file.Name = uploadedFileName;
-                    file.Path = Path.Combine("/Photos/", uploadedFileName);
+
+                    string path;
                     if (forProduct)
                     {
+                        path = "~/Photos/Products/" + Id + "/";
                         file.ProductId = Id;
-                        file.PostId = -1;
+                        file.PostId = null;
                     }
                     else
                     {
+                        path = "~/Photos/Posts/" + Id + "/";   
                         file.PostId = Id;
-                        file.ProductId = -1;
+                        file.ProductId = null;
                     }
-                        
+
+                    string path2 = path.Remove(0, 1);
+                    file.Path = Path.Combine(path.Remove(0, 1), uploadedFileName);
+                    if (!System.IO.Directory.Exists(HostingEnvironment.MapPath(path)))
+                        System.IO.Directory.CreateDirectory(HostingEnvironment.MapPath(path));
+
+                    string uploadFolderPath = HostingEnvironment.MapPath(path);
+                    uploadedFile.SaveAs(Path.Combine(uploadFolderPath, uploadedFileName));
+
 
                     // 4. Se adauga modelul in baza de date
                     db.Photos.Add(file);
@@ -63,21 +79,24 @@ namespace neMag.Controllers
         }
 
         //[HttpDelete]
-        [Authorize(Roles = "Admin,Collaborator")]
+        [Authorize(Roles = "Admin,Collaborator,User")]
         public ActionResult Delete(int id)
         {
             Photo photo = db.Photos.Find(id);
             //if (User.IsInRole("Collaborator") && photo.UserId != User.Identity.GetUserId())
             //{
-           //     TempData["message"] = "Acces interzis";
+            //     TempData["message"] = "Acces interzis";
             //    return RedirectToRoute("/");
             //}
+            var ProductId = photo.ProductId;
+            var PostId = photo.PostId;
+            
             db.Photos.Remove(photo);
             db.SaveChanges();
-            if (photo.ProductId != -1)
-                return RedirectToAction("Edit", "Products", new { id = photo.ProductId});
+            if (ProductId != null)
+                return RedirectToAction("Edit", "Products", new { id = ProductId });
 
-            return RedirectToAction("Edit", "Posts", new { id = photo.PostId });
+            return RedirectToAction("Edit", "Posts", new { id = PostId });
         }
 
     }

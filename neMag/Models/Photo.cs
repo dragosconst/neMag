@@ -17,9 +17,9 @@ namespace neMag.Models
 
         public string Extension { get; set; }
 
-        public int ProductId { get; set; }
+        public int? ProductId { get; set; }
 
-        public int PostId { get; set; }
+        public int? PostId { get; set; }
 
     }
 }
