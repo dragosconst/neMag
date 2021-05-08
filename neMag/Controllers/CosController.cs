@@ -345,6 +345,16 @@ namespace neMag.Controllers
             db.SaveChanges();
             return RedirectToAction("AllOrders");
         }
+        // secondFinish method is a copy of Finish that redirects to another page
+        // is used only when calling from the Orders/1 page
+        [Authorize(Roles = "Admin")]
+        public ActionResult secondFinish(int id)
+        {
+            Order order = db.Orders.Find(id);
+            order.Status = DONE;
+            db.SaveChanges();
+            return RedirectToAction("Orders/1");
+        }
 
         [Authorize(Roles = "Admin")]
         public ActionResult Show(int id)
@@ -358,11 +368,11 @@ namespace neMag.Controllers
         public ActionResult Orders(int id)
         {
 
-            var comenzi = db.Orders.ToList();
+            var orderList = db.Orders.ToList();
             ViewBag.CART = CART;
             ViewBag.SENT = SENT;
             ViewBag.DONE = DONE;
-            ViewBag.comenzi = comenzi;
+            ViewBag.orderList = orderList;
             if (id == 1)
             {
                 ViewBag.pagina = "processing";
