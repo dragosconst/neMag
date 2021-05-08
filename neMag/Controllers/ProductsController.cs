@@ -249,6 +249,8 @@ namespace neMag.Controllers
                            where prod.UserId == id
                            select prod;
             var anyPending = products.Where(p => p.Accepted == false).ToList().Any();
+            var anyAccepted = products.Where(p => p.Accepted == true).ToList().Any();
+            ViewBag.anyAccepted = anyAccepted;
             ViewBag.anyPending = anyPending;
             ViewBag.Products = products;
 

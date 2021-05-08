@@ -15,7 +15,7 @@
 <h3>Produse in curs de adaugare:</h3>
 @if (!ViewBag.anyPending)
 {
-    <h4>Nu exista produse in asteptare</h4>
+    <h4><i class="glyphicon glyphicon-arrow-right "></i>Nu exista produse in asteptare</h4>
 }
 @foreach (neMag.Models.Product product in ViewBag.Products)
 {
@@ -39,9 +39,9 @@
 
 }
 <h3>Produse active:</h3>
-@if (ViewBag.magazin == 0)
+@if (!ViewBag.anyAccepted)
 {
-    <h4>Nu exista produse in magazin</h4>
+    <h4><i class="glyphicon glyphicon-arrow-right "></i>Nu exista produse in magazin</h4>
 }
 @foreach (neMag.Models.Product product in ViewBag.Products)
 {
