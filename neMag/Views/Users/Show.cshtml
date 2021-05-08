@@ -1,49 +1,143 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Afisare profil";
 }
 
 @model neMag.Models.ApplicationUser
-
 @using neMag.Controllers
 @using Microsoft.AspNet.Identity
 
-<h2>@ViewBag.Title</h2> <br />
+@if (ViewBag.userRole == "Collaborator")
+{
+    <h1> @Model.LastName </h1>
+    <hr />
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        <h3> Datele contului: </h3> <hr />
-        <strong> Nume: </strong> @Model.LastName <br />
-        <strong> Prenume: </strong> @Model.FirstName <br />
-        <strong> Email: </strong> @Model.Email
-
-        @if(User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
-        {
-            <hr />
-            <a class="btn btn-primary" href="/Users/Edit/@Model.Id"> Editeaza datele </a>
-        }
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h3> Descriere </h3> <hr />
+            <p>
+                Companie românească fondată în 2001, eMAG este un pionier al pieței de comerț online din
+                România, locul unde oricine poate căuta și comanda orice, de oriunde. Cu o gamă de produse în
+                continuă creștere atât prin oferta proprie, cât și prin partenerii din Marketplace, investim
+                constant în servicii bazate pe tehnologii dezvoltate în România și am exportat cu succes modelul
+                local și în Bulgaria și Ungaria. Suntem online, pe www.emag.ro și prin aplicația de mobil,
+                și offline prin intermediul showroom-urilor și al rețelei extinse easybox. Aducem clienților
+                programul Genius, livrare și retur la easybox, livrare rapidă prin tazz by eMAG, 30 de zile timp
+                de retur, returnarea rapidă a banilor prin Instant Money Back, deschiderea coletului la livrare,
+                call center 24/7, finanțare în rate prin eCredit și suntem într-un proces continuu de dezvoltare
+                și îmbunătățire a serviciilor pe care le oferim.
+            </p>
+        </div>
     </div>
-</div>
+    <hr />
 
-@{
+    <h3> Produse vandute </h3>
+    foreach (neMag.Models.Product prod in ViewBag.products)
+    {
+        <div class="panel panel-default my-panel product_box">
+            @Html.Partial("productInfo", prod)
+        </div>
+    }
+
     if (User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
     {
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <h3> Comenzile mele </h3>
-            </div>
-        </div>
+        <form method="post" action="/Users/Delete/@Model.Id">
+            @Html.HttpMethodOverride(HttpVerbs.Delete)
+            <button class="btn btn-danger" type="submit"> Sterge profil </button>
+        </form>
     }
 }
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        <h3> Postarile mele </h3>
-    </div>
-</div>
+else
+{
+    if (ViewBag.userRole == "User" || ViewBag.userRole == "RestrictedUser")
+    {
+        <br /> <br />
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h3> Datele contului: </h3> <hr />
+                <strong> Nume: </strong> @Model.LastName <br />
+                <strong> Prenume: </strong> @Model.FirstName <br />
+                <strong> Email: </strong> @Model.Email
 
+                @if (User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
+                {
+                    <hr />
+                    <a class="btn btn-primary" href="/Users/Edit/@Model.Id"> Editeaza datele </a>
+                }
+            </div>
+        </div>
 
-@{
+        if (User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
+        {
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3> Comenzile mele </h3>
+                    @foreach (neMag.Models.Order order in ViewBag.orders)
+                    {
+                        if (order.Status == "Done")
+                        {
+                            <hr />
+                            <div style="display: table; width: 100%">
+                                <strong style="display:table-cell; width: 20%"> Comanda numarul: @order.OrderId </strong> <br/>
+                                <p style="display:table-cell; width: 30%"> Comanda plasata la data: @order.Date </p>
+                                <p style="display:table-cell; width: 10%"> Total: @order.TotalPrice </p>
+                                <p style="display:table-cell; width: 30%"> Status: <strong> Finalizat </strong> </p>
+                                <h3 style="display:table-cell; text-align: right">
+                                    <a class="btn btn-primary" href="/Cos/Show/@order.OrderId"> Detalii </a>
+                                </h3>
+                            </div>
+                        }
+                        if (order.Status == "Sent")
+                        {
+                            <hr />
+                            <div style="display: table; width: 100%">
+                                <strong style="display:table-cell; width: 20%"> Comanda numarul: @order.OrderId </strong> <br />
+                                <p style="display:table-cell; width: 30%"> Comanda plasata la data: @order.Date </p>
+                                <p style="display:table-cell; width: 10%"> Total: @order.TotalPrice </p>
+                                <p style="display:table-cell; width: 30%"> Status: <strong> In curs de procesare </strong> </p>
+                                <h3 style="display:table-cell; text-align: right">
+                                    <a class="btn btn-primary" href="/Cos/Show/@order.OrderId"> Detalii </a>
+                                </h3>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h3> Postarile mele </h3>
+                @foreach (var post in ViewBag.posts)
+                {
+                    <div style="width: 100%">
+                        <hr />
+                        <div style="width:15%; display: inline-block; margin-right: 0.5em">
+                            <picture>
+                                <img class="my-image" src="@post.Product.Photo" alt="@post.Product.ProductName">
+                            </picture> <br /> <br />
+                            <p style="text-align: center"> @post.Product.ProductName </p>
+                        </div>
+                        <div style="width: 70%; display: inline-block; margin-left: 0.5em">
+                            @{
+                                var rating = post.Rating;
+                                for (int i = 1; i <= rating; ++i)
+                                {
+                                    <i class="glyphicon glyphicon-star" style="color: yellow"></i>
+                                }
+                                for (int i = rating + 1; i <= 5; ++i)
+                                {
+                                    <i class="glyphicon glyphicon-star" style="color: gray"></i>
+                                }
+                            }
+                            <p> @post.Content </p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
     if (User.Identity.IsAuthenticated == true && ((User.IsInRole("Admin") && (string)Model.Id != User.Identity.GetUserId()) || (!User.IsInRole("Admin") && (string)Model.Id == User.Identity.GetUserId())))
     {
         <form method="post" action="/Users/Delete/@Model.Id">
