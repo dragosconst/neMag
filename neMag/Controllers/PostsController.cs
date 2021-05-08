@@ -80,16 +80,21 @@ namespace neMag.Controllers
 
             try
             {
-                if (ModelState.IsValid)
+                if (post.isReview &&
+                    !(from user in db.Posts where user.UserId == post.UserId select user).Any())
                 {
-                    db.Posts.Add(post);
-                    db.SaveChanges();
-                    UpdateProductRating(post.ProductId);
-                    TempData["message"] = "The post has been added.";
+                    if (ModelState.IsValid)
+                    {
+                        db.Posts.Add(post);
+                        db.SaveChanges();
+                        UpdateProductRating(post.ProductId);
+                        TempData["message"] = "The post has been added.";
+                    }
+                    else
+                        TempData["message"] = "Content is mandatory.";
                 }
                 else
-                    TempData["message"] = "Content is mandatory.";
-
+                    TempData["message"] = "You can't leave more than one review!";
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
             catch (Exception e)
