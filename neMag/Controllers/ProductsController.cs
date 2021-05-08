@@ -15,13 +15,68 @@ namespace neMag.Controllers
 
         private Models.ApplicationDbContext db = new Models.ApplicationDbContext();
         private int _perPage = 11; // how many products to show per page
+        private const int PRICE_ASC = 1;
+        private const int PRICE_DESC = 2;
+        private const int RATING_ASC = 3;
+        private const int RATING_DESC = 4;
 
         // everyone can see the available products
         public ActionResult Index()
         {
-            var products = (from prod in db.Products
+            //var products = (from prod in db.Products
+            //                where prod.Accepted == true
+            //                select prod).Include("Category").AsQueryable();
+            int id;
+            try
+            {
+                id = Request.Params.Get("id") != null ?
+                     Int32.Parse(Request.Params.Get("id").Trim().ToString()) : 0;
+            }
+            catch (NullReferenceException e)
+            {
+                id = 0;
+            }
+            ViewBag.inorder = id;
+            var products = (from prod in db.Products//daca nu pun AsQueryable nu ruleaza, no idea why
+                            where prod.Accepted == true
                             select prod).Include("Category").AsQueryable();
-
+            //id: 1= pret crescator;2 = pres descrescator; 3= rating crescator; 4 = rating descrescator
+            //(comment dragos) am adaugat niste constante, ca nu vazusem comentariul de mai sus
+            var x = false;
+            if (id == PRICE_ASC)
+            {
+                products = (from prod in db.Products
+                            where prod.Accepted == true
+                            orderby (prod.Price - prod.Price * prod.Discount / 100)
+                            select prod).Include("Category").AsQueryable();
+                x = true;
+            }
+            else if (id == PRICE_DESC)
+            {
+                products = (from prod in db.Products
+                            where prod.Accepted == true
+                            orderby (prod.Price - prod.Price * prod.Discount / 100) descending
+                            select prod).Include("Category").AsQueryable();
+                x = true;
+            }
+            else if (id == RATING_ASC)
+            {
+                products = (from prod in db.Products
+                            where prod.Accepted == true
+                            orderby prod.Rating
+                            select prod).Include("Category").AsQueryable();
+                
+                x = true;
+            }
+            else if (id == RATING_DESC)
+            {
+                products = (from prod in db.Products
+                            where prod.Accepted == true
+                            orderby prod.Rating descending
+                            select prod).Include("Category").AsQueryable();
+                x = true;
+            }
+            ViewBag.x = x;
 
             var totalItems = products.Count();
             var currentPage = Convert.ToInt32(Request.Params.Get("page"));
