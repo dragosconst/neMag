@@ -72,7 +72,12 @@ namespace neMag.Controllers
             IEnumerable<OrderContent> alreadyOrdered = (from oc in db.OrderContents
                                                  where oc.Product.ProductId == id && oc.Order.OrderId == cart.OrderId
                                                 select oc).ToList();
-            if(alreadyOrdered.Count() == 1)
+            if (product.Accepted == false)
+            {
+                TempData["message"] = "Produsul nu poate fi comandat";
+                return RedirectToAction("Index","Products");
+            }
+            if (alreadyOrdered.Count() == 1)
             {
                 /**
                  * If the product already exists in the cart, there's no need for a new OrderContent.
@@ -345,6 +350,16 @@ namespace neMag.Controllers
             db.SaveChanges();
             return RedirectToAction("AllOrders");
         }
+        // secondFinish method is a copy of Finish that redirects to another page
+        // is used only when calling from the Orders/1 page
+        [Authorize(Roles = "Admin")]
+        public ActionResult secondFinish(int id)
+        {
+            Order order = db.Orders.Find(id);
+            order.Status = DONE;
+            db.SaveChanges();
+            return RedirectToAction("Orders/1");
+        }
 
         [Authorize(Roles = "Admin")]
         public ActionResult Show(int id)
@@ -352,6 +367,27 @@ namespace neMag.Controllers
             Order order = db.Orders.Find(id);
             ViewBag.SENT = SENT;
             return View(order);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult Orders(int id)
+        {
+
+            var orderList = db.Orders.ToList();
+            ViewBag.CART = CART;
+            ViewBag.SENT = SENT;
+            ViewBag.DONE = DONE;
+            ViewBag.orderList = orderList;
+            if (id == 1)
+            {
+                ViewBag.pagina = "processing";
+            }
+            if (id == 2)
+            {
+                ViewBag.pagina = "finished";
+            }
+
+            return View();
         }
 
         [NonAction]

@@ -22,6 +22,7 @@ namespace neMag
             ApplicationDbContext context = new ApplicationDbContext();
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+            
             // Se adauga rolurile aplicatiei
             if (!roleManager.RoleExists("Admin"))
             {
@@ -29,12 +30,15 @@ namespace neMag
                 var role = new IdentityRole();
                 role.Name = "Admin";
                 roleManager.Create(role);
+                
                 // se adauga utilizatorul administrator
                 var user = new ApplicationUser();
+
                 user.LastName = "Adminescu";
                 user.FirstName = "Adminu";
                 user.UserName = "admin1@gmail.com";
                 user.Email = "admin1@gmail.com"; // am schimbat slightly datele de logare pt admin
+              
                 var adminCreated = UserManager.Create(user, "parolasimpla");
 
                 if (adminCreated.Succeeded)
@@ -67,16 +71,19 @@ namespace neMag
 
             // for testing
             var userCol = new ApplicationUser();
+
              userCol.UserName = "col1@gmail.com";
              userCol.Email = "col1@gmail.com";
+          
             userCol.FirstName = "colaborator";
             userCol.LastName = "colaborator";
-             var userCreated = UserManager.Create(userCol, "parolasimpla");
+            var userCreated = UserManager.Create(userCol, "parolasimpla");
 
-             if(userCreated.Succeeded)
-             {
-                 UserManager.AddToRole(userCol.Id, "Collaborator");
-             }
+            if(userCreated.Succeeded)
+            {
+                UserManager.AddToRole(userCol.Id, "Collaborator");
+            }
+
             var userCol2 = new ApplicationUser();
             userCol2.UserName = "user1@gmail.com";
             userCol2.Email = "user1@gmail.com";
@@ -88,8 +95,6 @@ namespace neMag
             {
                 UserManager.AddToRole(userCol2.Id, "User");
             }
-
-            
         }
     }
 }

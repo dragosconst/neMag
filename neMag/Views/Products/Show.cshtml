@@ -1,4 +1,4 @@
-﻿@model neMag.Models.Product
+@model neMag.Models.Product
 @{
     ViewBag.Title = "Show";
 }
@@ -19,7 +19,7 @@
         </form>
         @if (ViewBag.isCollaborator == false)
         {
-            if (User.IsInRole("Admin") || User.IsInRole("Collaborator") || User.IsInRole("User") || User.IsInRole("RestrictedUser"))
+            if (User.IsInRole("Admin") || User.IsInRole("User") || User.IsInRole("RestrictedUser"))
             {
                 <form method="post" action="/Cos/AddToOrder/@Model.ProductId">
                     @Html.HttpMethodOverride(HttpVerbs.Put)

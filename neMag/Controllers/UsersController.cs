@@ -13,7 +13,7 @@ namespace neMag.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var users = from user in db.Users
@@ -26,6 +26,27 @@ namespace neMag.Controllers
         public ActionResult Show(string id)
         {
             ApplicationUser user = db.Users.Find(id);
+            var roles = (from userRole in user.Roles
+                         join role in db.Roles on userRole.RoleId
+                         equals role.Id
+                         select role.Name).ToList();
+            ViewBag.userRole = roles[0];
+
+            var products = from prod in db.Products
+                           where prod.UserId == user.Id
+                           select prod;
+            ViewBag.products = products;
+
+            var orders = from ord in db.Orders
+                         where ord.UserId == user.Id
+                         select ord;
+            ViewBag.orders = orders;
+
+            var posts = from post in db.Posts
+                        where post.UserId == user.Id
+                        select post;
+            ViewBag.posts = posts;
+
             return View(user);
         }
 
@@ -59,8 +80,7 @@ namespace neMag.Controllers
                 return View(newData);
             }
         }
-
-        //[Authorize(Roles = "Admin")]
+        
         [HttpDelete]
         public ActionResult Delete(string id)
         {
@@ -85,5 +105,6 @@ namespace neMag.Controllers
             UserManager.Delete(user);
             return RedirectToAction("Index");
         }
+
     }
 }

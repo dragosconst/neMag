@@ -11,6 +11,48 @@
 </head>
 <body>
     <br />
+    @if (true)
+    {
+        <p>
+            Filtreaza dupa:
+            @if (ViewBag.inorder == 1)
+            {
+                <a class=" btn this-order" href="/Products/Index?id=1&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Pret crescator</a>
+            }
+            else
+            {
+                <a class=" btn order" href="/Products/Index?id=1&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Pret crescator</a>
+            }
+            @if (ViewBag.inorder == 2)
+            {
+                <a class=" btn this-order" href="/Products/Index?id=2&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Pret descrescator</a>
+            }
+            else
+            {
+                <a class=" btn order" href="/Products/Index?id=2&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Pret descrescator</a>
+            }
+            @if (ViewBag.inorder == 3)
+            {
+                <a class=" btn this-order" href="/Products/Index?id=3&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Rating crescator</a>
+            }
+            else
+            {
+                <a class=" btn order" href="/Products/Index?id=3&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Rating crescator</a>
+            }
+            @if (ViewBag.inorder == 4)
+            {
+                <a class=" btn this-order" href="/Products/Index?id=4&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Rating descrescator</a>
+            }
+            else
+            {
+                <a class=" btn order" href="/Products/Index?id=4&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Rating descrescator</a>
+            }
+            @if (ViewBag.x == true)
+            {
+                <a class="btn order" href="/Products/Index?id=0&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat"><i class="glyphicon glyphicon-remove"></i></a>
+            }
+        </p>
+    }
     <h1>@ViewBag.Message</h1>
     <hr />
     <div>

@@ -28,6 +28,7 @@
                     @if (User.IsInRole("Collaborator"))
                     {
                         <li>@Html.ActionLink("Comenzi din portofoliul meu", "OrdersFromMe", "Cos")</li>
+                        <li>@Html.ActionLink("Adaugare produs", "New", "Products")</li>
                     }
 
 
@@ -35,9 +36,7 @@
                     @if (User.IsInRole("Admin"))
                     {
                         <li>@Html.ActionLink("Panoul administratorului", "AdminBoard", "Account")</li>
-                        <li>@Html.ActionLink("Comenzi din portofoliul meu", "OrdersFromMe", "Cos")</li>
                     }
-                    <li>@Html.ActionLink("Adaugare produs", "New", "Products")</li>
                     @*<li>@Html.ActionLink("Adaugare postare", "Index", "Posts")</li>*@
                 </ul>
                 @Html.Partial("_LoginPartial")
