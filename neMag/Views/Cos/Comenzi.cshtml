@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = "Comenzi";
+}
+@if (ViewBag.pagina == "finished")
+{
+    <h2>Istoric comenzi</h2>
+    <ul>
+        <li class="row" style="list-style-type: none">
+            <h3 class="pull-left" style="width:200px">Id Comanda</h3><h3 class="pull-left" style="width:300px">Data</h3><h3 class="pull-left" style="width:300px">Detalii livrare</h3>
+        </li>
+        <hr />
+        @foreach (online_shop.Models.Order comanda in ViewBag.comenzi)
+        {
+            if (@comanda.Status == "Comanda finalizata")
+            {
+                <li class="row" style="list-style-type: none">
+                    <h3 class="pull-left" style="width:200px">@comanda.OrderId</h3><h3 class="pull-left" style="width:300px">@comanda.Date</h3><h3 class="pull-left" style="width:300px">@comanda.Details</h3><h3 class="pull-right"><a class="btn btn-success" href="/Cos/Deschide/@comanda.OrderId">Deschide</a></h3>
+                </li>
+            }
+
+        }
+    </ul>
+}
+@if (ViewBag.pagina == "processing")
+{
+    <h2>Comenzi active</h2>
+    <ul>
+        <li class="row" style="list-style-type: none">
+            <h3 class="pull-left" style="width:200px">Id Comanda</h3><h3 class="pull-left" style="width:300px">Data</h3><h3 class="pull-left" style="width:300px">Detalii livrare</h3>
+        </li>
+        <hr />
+        @foreach (online_shop.Models.Order comanda in ViewBag.comenzi)
+        {
+            if (@comanda.Status == "Comanda efectuata")
+            {
+                <li class="row" style="list-style-type: none">
+                    <h3 class="pull-left" style="width:200px">@comanda.OrderId</h3><h3 class="pull-left" style="width:300px">@comanda.Date</h3><h3 class="pull-left" style="width:300px">@comanda.Details</h3><h3 class="pull-right"><a class="btn btn-success" href="/Cos/Deschide/@comanda.OrderId">Deschide</a><a class="btn btn-success" href="/Cos/Finalizeaza/@comanda.OrderId">Finalizeaza</a></h3>
+                </li>
+            }
+
+        }
+    </ul>
+
+}
+
+
+
+
+
+

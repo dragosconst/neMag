@@ -33,10 +33,12 @@ namespace neMag
                 
                 // se adauga utilizatorul administrator
                 var user = new ApplicationUser();
-                user.UserName = "admin@gmail.com";
-                user.Email = "admin@gmail.com"; // am schimbat slightly datele de logare pt admin
-                user.FirstName = "admin";
-                user.LastName = "admin";
+
+                user.LastName = "Adminescu";
+                user.FirstName = "Adminu";
+                user.UserName = "admin1@gmail.com";
+                user.Email = "admin1@gmail.com"; // am schimbat slightly datele de logare pt admin
+              
                 var adminCreated = UserManager.Create(user, "parolasimpla");
 
                 if (adminCreated.Succeeded)
@@ -69,8 +71,10 @@ namespace neMag
 
             // for testing
             var userCol = new ApplicationUser();
-            userCol.UserName = "col1@gmail.com";
-            userCol.Email = "col1@gmail.com";
+
+             userCol.UserName = "col1@gmail.com";
+             userCol.Email = "col1@gmail.com";
+          
             userCol.FirstName = "colaborator";
             userCol.LastName = "colaborator";
             var userCreated = UserManager.Create(userCol, "parolasimpla");

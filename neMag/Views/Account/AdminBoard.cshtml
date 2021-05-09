@@ -11,7 +11,16 @@
     <h1>AdminBoard</h1>
     <div class="AdminBoard">
         <ul>
-            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Comenzi", "AllOrders", "Cos")</li>
+            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Lista utilizatori", "Index", "Users")</li>
+            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Afisare categorii", "Index", "Categories")</li>
+            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Adaugare categorie", "New", "Categories")</li>
+            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Cereri adaugare produse", "Requests", "Products")</li>
+            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Comenzi din portofoliul meu", "OrdersFromMe", "Cos")</li>
+            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Adaugare produs", "New", "Products")</li>
+            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Produsele mele", "MyProducts/" + User.Identity.GetUserId(), "Products")</li>
+            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Toate comenzile", "AllOrders", "Cos")</li>
+            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Comenzi active", "Orders/1", "Cos")</li>
+            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Istoric comenzi", "Orders/2", "Cos")</li>
         </ul>
     </div>
 </body>

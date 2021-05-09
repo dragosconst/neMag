@@ -105,5 +105,6 @@ namespace neMag.Controllers
             UserManager.Delete(user);
             return RedirectToAction("Index");
         }
+
     }
 }
