@@ -286,6 +286,9 @@
     <Content Include="Views\Cos\Show.cshtml" />
     <Content Include="Views\Cos\Comenzi.cshtml" />
     <Content Include="Views\Cos\OrdersFromMe.cshtml" />
+    <Content Include="Views\Products\Requests.cshtml" />
+    <Content Include="Views\Products\MyProducts.cshtml" />
+    <Content Include="Views\Cos\Orders.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202103150653462_Initial.resx">

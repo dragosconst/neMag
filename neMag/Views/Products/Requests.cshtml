@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Requests";
+}
+
+<h1>@ViewBag.Message</h1>
+@if (User.IsInRole("Admin"))
+{
+    <h2>Cereri adaugare produse</h2>
+}
+<br />
+<hr />
+<br />
+<input type="hidden" id="verifica" value=0 />
+@foreach (neMag.Models.Product product in ViewBag.Products)
+{
+    if (product.Accepted == false)
+    {
+        <input type="hidden" id="verifica" value=1 />
+        <div class="panel panel-default">
+
+            @Html.Partial("productInfo", product)
+
+            <div class="panel-footer">
+                @{
+                    TempData["reqSource"] = true;
+                }
+                <a class="btn open pull-left" href="/Products/Show/@product.ProductId">Deschidere</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="btn btn-info pull-left" href="/Products/Accept/@product.ProductId">Acceptare</a>
+                    <form method="post" action="/Products/DeleteRequest/@product.ProductId">
+                        @Html.HttpMethodOverride(HttpVerbs.Delete)
+                        <button class="btn btn-danger pull-right" type="submit"><div class="glyphicon glyphicon-trash"></div>  Sterge Produs</button>
+                    </form>
+                }
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    }
+
+}
