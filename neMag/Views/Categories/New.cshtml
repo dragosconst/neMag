@@ -2,8 +2,7 @@
 @{
     ViewBag.Title = "New";
 }
-@ViewBag.modificare
-<h2>Categorie noua</h2>
+<h2>Categorie nouă</h2>
 @using (Html.BeginForm(actionName: "New", controllerName: "Categories"))
 {
     <br />
@@ -19,6 +18,10 @@
     @Html.TextBox("Description", null, new { @class = "form-control" })
     @Html.ValidationMessageFor(c => c.Description, null, new { @class = "text-danger" })
     <br />
-    <button class="btn btn-sm btn-success" type="submit">Salveaza</button>
+    <br />
+    @Html.Label("ParentId", "Categoria părinte")
+    @Html.DropDownListFor(c => c.ParentId, new SelectList(ViewBag.categories, "Value", "Text"), "Selectați categoria", new { @class = "form-control" })
+    <br />
+    <button class="btn btn-sm btn-success" type="submit">Salvează</button>
 }
 

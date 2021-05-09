@@ -4,7 +4,7 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Editeaza categoria @Model.CategoryName</h2>
+<h2>Editează categoria @Model.Title</h2>
 
 <div class="panel">
     <div class="panel-body">
@@ -21,13 +21,17 @@
 
 
             <br />
-            @Html.Label("Description", "Numele categoriei")
+            @Html.Label("Description", "Descrierea categoriei")
             <br />
             @Html.EditorFor(c => c.Description)
             @Html.ValidationMessageFor(c => c.Description, null, new { @class = "text-danger" })
 
+            <br />
+            @Html.Label("ParentId", "Categoria părinte")
+            @Html.DropDownListFor(c => c.ParentId, new SelectList(ViewBag.categories, "Value", "Text"), "Selectați categoria", new { @class = "form-control" })
+            <br />
 
-            <button class="btn btn-sm btn-success" type="submit">Modifica</button>
+            <button class="btn btn-sm btn-success" type="submit">Modifică</button>
         }
     </div>
 </div>
