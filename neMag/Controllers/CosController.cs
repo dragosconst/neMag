@@ -72,7 +72,12 @@ namespace neMag.Controllers
             IEnumerable<OrderContent> alreadyOrdered = (from oc in db.OrderContents
                                                  where oc.Product.ProductId == id && oc.Order.OrderId == cart.OrderId
                                                 select oc).ToList();
-            if(alreadyOrdered.Count() == 1)
+            if (product.Accepted == false)
+            {
+                TempData["message"] = "Produsul nu poate fi comandat";
+                return RedirectToAction("Index","Products");
+            }
+            if (alreadyOrdered.Count() == 1)
             {
                 /**
                  * If the product already exists in the cart, there's no need for a new OrderContent.
