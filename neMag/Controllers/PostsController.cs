@@ -2,6 +2,7 @@
 using neMag.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -111,6 +112,25 @@ namespace neMag.Controllers
             if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Admin"))
             {
                 TempData["message"] = "The post has been deleted.";
+
+                // Delete the photos before the post.
+                List<int> ids = new List<int>();
+                foreach (var photo in post.Photos)
+                {
+                    ids.Add(photo.PhotoId);
+                }
+                foreach (int photoId in ids)
+                {
+                    // delete from server
+                    FileInfo fileInfo = new FileInfo(db.Photos.Find(photoId).Path);
+                    if (fileInfo.Exists)
+                    {
+                        fileInfo.Delete();
+                    }
+
+                    db.Photos.Remove(db.Photos.Find(photoId));
+                }
+
                 db.Posts.Remove(post);
                 db.SaveChanges();
                 UpdateProductRating(post.ProductId);

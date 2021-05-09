@@ -1,4 +1,5 @@
-﻿using neMag.Models;
+﻿using Microsoft.AspNet.Identity;
+using neMag.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,8 +13,7 @@ namespace neMag.Controllers
     public class PhotosController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        //[Authorize(Roles = "User, Colaborator, Admin")]
-        //[HttpPut]
+
         public static void UploadPhotos(HttpPostedFileBase[] uploadedFiles, int Id, bool forProduct)
         {
             ApplicationDbContext db = new ApplicationDbContext();
@@ -22,32 +22,18 @@ namespace neMag.Controllers
             {
                 if (uploadedFile == null)
                     continue;
-                // Se preia numele fisierul
+
                 string uploadedFileName = uploadedFile.FileName;
                 string uploadedFileExtension = Path.GetExtension(uploadedFileName);
 
-                // Se poate verifica daca extensia este intr-o lista dorita
                 if (uploadedFileExtension == ".png" || uploadedFileExtension == ".jpg")
                 {
-                    // Se stocheaza fisierul in folderul Files (folderul trebuie creat in proiect)
-
-                    
-                    
-                    
-
-
-                    // 1. Se seteaza calea folderului de upload
-                   // string uploadFolderPath = HostingEnvironment.MapPath("~/Photos/");
-
-                    // 2. Se salveaza fisierul in acel folder  
-                    //uploadedFile.SaveAs(Path.Combine(uploadFolderPath, uploadedFileName));
-
-                    // 3. Se face o instanta de model si se populeaza cu datele necesare
                     Photo file = new Photo();
                     file.Extension = uploadedFileExtension;
                     file.Name = uploadedFileName;
+                    file.UserId = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
-                    string path;
+                    string path; // Relative path of where photos are saved
                     if (forProduct)
                     {
                         path = "~/Photos/Products/" + Id + "/";
@@ -56,25 +42,20 @@ namespace neMag.Controllers
                     }
                     else
                     {
-                        path = "~/Photos/Posts/" + Id + "/";   
+                        path = "~/Photos/Posts/" + Id + "/";
                         file.PostId = Id;
                         file.ProductId = null;
                     }
-
-                    string path2 = path.Remove(0, 1);
                     file.Path = Path.Combine(path.Remove(0, 1), uploadedFileName);
-                    if (!System.IO.Directory.Exists(HostingEnvironment.MapPath(path)))
-                        System.IO.Directory.CreateDirectory(HostingEnvironment.MapPath(path));
 
-                    string uploadFolderPath = HostingEnvironment.MapPath(path);
-                    uploadedFile.SaveAs(Path.Combine(uploadFolderPath, uploadedFileName));
+                    string absolutePath = HostingEnvironment.MapPath(path);
+                    if (!System.IO.Directory.Exists(absolutePath))
+                        System.IO.Directory.CreateDirectory(HostingEnvironment.MapPath(absolutePath));
 
-
-                    // 4. Se adauga modelul in baza de date
+                    uploadedFile.SaveAs(Path.Combine(absolutePath, uploadedFileName)); // The photo is saved in the project's directory
                     db.Photos.Add(file);
                 }
             }
-
             db.SaveChanges();
         }
 
@@ -83,20 +64,20 @@ namespace neMag.Controllers
         public ActionResult Delete(int id)
         {
             Photo photo = db.Photos.Find(id);
-            //if (User.IsInRole("Collaborator") && photo.UserId != User.Identity.GetUserId())
-            //{
-            //     TempData["message"] = "Acces interzis";
-            //    return RedirectToRoute("/");
-            //}
-            var ProductId = photo.ProductId;
-            var PostId = photo.PostId;
-            
-            db.Photos.Remove(photo);
-            db.SaveChanges();
-            if (ProductId != null)
-                return RedirectToAction("Edit", "Products", new { id = ProductId });
+            if (User.IsInRole("Admin") || photo.UserId == User.Identity.GetUserId())
+            {
+                var ProductId = photo.ProductId;
+                var PostId = photo.PostId;
 
-            return RedirectToAction("Edit", "Posts", new { id = PostId });
+                db.Photos.Remove(photo);
+                db.SaveChanges();
+                if (ProductId != null)
+                    return RedirectToAction("Edit", "Products", new { id = ProductId });
+                return RedirectToAction("Edit", "Posts", new { id = PostId });
+            }
+
+            TempData["message"] = "Acces interzis";
+            return RedirectToRoute("/");
         }
 
     }

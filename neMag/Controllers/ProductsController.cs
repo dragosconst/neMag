@@ -123,6 +123,29 @@ namespace neMag.Controllers
                 TempData["message"] = "Acces interzis";
                 return RedirectToAction("Index");
             }
+
+            // Delete the photos before deleting the product
+            List<int> ids = new List<int>();
+            foreach (var photo in product.Photos)
+            {
+                ids.Add(photo.PhotoId);
+            }
+            foreach (int photoId in ids)
+            {
+                // delete from server
+                FileInfo fileInfo = new FileInfo(db.Photos.Find(photoId).Path);
+                if (fileInfo.Exists)
+                {
+                    fileInfo.Delete();
+                }
+
+                db.Photos.Remove(db.Photos.Find(photoId));
+            }
+
+
+
+
+
             db.Products.Remove(product);
             db.SaveChanges();
             return RedirectToAction("Index");
