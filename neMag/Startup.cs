@@ -71,12 +71,12 @@ namespace neMag
              userCol.Email = "col1@gmail.com";
             userCol.FirstName = "colaborator";
             userCol.LastName = "colaborator";
-             var userCreated = UserManager.Create(userCol, "parolasimpla");
+            var userCreated = UserManager.Create(userCol, "parolasimpla");
 
-             if(userCreated.Succeeded)
-             {
-                 UserManager.AddToRole(userCol.Id, "Collaborator");
-             }
+            if(userCreated.Succeeded)
+            {
+                UserManager.AddToRole(userCol.Id, "Collaborator");
+            }
             var userCol2 = new ApplicationUser();
             userCol2.UserName = "user1@gmail.com";
             userCol2.Email = "user1@gmail.com";
