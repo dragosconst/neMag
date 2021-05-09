@@ -40,7 +40,7 @@ namespace neMag.Controllers
 
         [HttpPut]
         [Authorize(Roles = "User,Collaborator,Admin")]
-        public ActionResult Edit(int id, Post requestPost)
+        public ActionResult Edit(int id, Post requestPost, HttpPostedFileBase[] uploadedPhotos)
         {
             try
             {
@@ -56,6 +56,7 @@ namespace neMag.Controllers
                         post.Rating = requestPost.Rating;
                         db.SaveChanges();
                         UpdateProductRating(post.ProductId);
+                        PhotosController.UploadPhotos(uploadedPhotos, post.PostId, false);
                         return RedirectToAction("Show", "Products", new { id = post.ProductId });
                     }
                     System.Diagnostics.Debug.WriteLine("Ceva.");
@@ -72,7 +73,7 @@ namespace neMag.Controllers
 
         [HttpPost]
         [Authorize(Roles = "User,Collaborator,Admin")]
-        public ActionResult New(Post post)
+        public ActionResult New(Post post, HttpPostedFileBase[] uploadedPhotos)
         {
             post.Date = DateTime.Now;
             post.isReview = true; // PLACEHOLDER: For now, all posts are reviews.
@@ -80,21 +81,17 @@ namespace neMag.Controllers
 
             try
             {
-                if (post.isReview &&
-                    !(from user in db.Posts where user.UserId == post.UserId select user).Any())
+                if (ModelState.IsValid)
                 {
-                    if (ModelState.IsValid)
-                    {
-                        db.Posts.Add(post);
-                        db.SaveChanges();
-                        UpdateProductRating(post.ProductId);
-                        TempData["message"] = "The post has been added.";
-                    }
-                    else
-                        TempData["message"] = "Content is mandatory.";
+                    db.Posts.Add(post);
+                    db.SaveChanges();
+                    UpdateProductRating(post.ProductId);
+                    PhotosController.UploadPhotos(uploadedPhotos, post.PostId, false);
+                    TempData["message"] = "The post has been added.";
                 }
                 else
-                    TempData["message"] = "You can't leave more than one review!";
+                    TempData["message"] = "Content is mandatory.";
+
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
             catch (Exception e)

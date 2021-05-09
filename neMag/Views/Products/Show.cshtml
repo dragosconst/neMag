@@ -10,28 +10,28 @@
 
     @if (ViewBag.showButtons == true)
     {
-        <div class="panel-footer">
-            <a class="btn btn-success pull-left" href="/Products/Edit/@Model.ProductId"><div class="glyphicon glyphicon-pencil"></div>     Modifica Produs</a>
+    <div class="panel-footer">
+        <a class="btn btn-success pull-left" href="/Products/Edit/@Model.ProductId"><div class="glyphicon glyphicon-pencil"></div>     Modifica Produs</a>
 
-            <form method="post" action="/Products/Delete/@Model.ProductId">
-                @Html.HttpMethodOverride(HttpVerbs.Delete)
-                <button class="btn btn-danger pull-right" type="submit"><div class="glyphicon glyphicon-trash"></div>  Sterge Produs</button>
-            </form>
-            @if (ViewBag.isCollaborator == false)
+        <form method="post" action="/Products/Delete/@Model.ProductId">
+            @Html.HttpMethodOverride(HttpVerbs.Delete)
+            <button class="btn btn-danger pull-right" type="submit"><div class="glyphicon glyphicon-trash"></div>  Sterge Produs</button>
+        </form>
+        @if (ViewBag.isCollaborator == false)
+        {
+            if (User.IsInRole("Admin") || User.IsInRole("Collaborator") || User.IsInRole("User") || User.IsInRole("RestrictedUser"))
             {
-                if (User.IsInRole("Admin") || User.IsInRole("Collaborator") || User.IsInRole("User") || User.IsInRole("RestrictedUser"))
-                {
-                    <form method="post" action="/Cos/AddToOrder/@Model.ProductId">
-                        @Html.HttpMethodOverride(HttpVerbs.Put)
-                        <button class="btn pull-right open" type="submit">Adaugă în cos</button>
-                    </form>
-                }
-
+                <form method="post" action="/Cos/AddToOrder/@Model.ProductId">
+                    @Html.HttpMethodOverride(HttpVerbs.Put)
+                    <button class="btn pull-right open" type="submit">Adaugă în cos</button>
+                </form>
             }
-            <div class="clearfix"></div>
-        </div>
-    }
 
+        }
+        <div class="clearfix"></div>
+    </div>
+    } 
+    
 </div>
 
 @* Index of posts *@
@@ -43,6 +43,39 @@
             <div class="col-md-8">
                 <div>
                     <p style="font-size: 115%; white-space: pre-line;">@post.Content</p>
+
+                    <div id="myCarousel_@post.PostId" class="carousel slide" data-ride="carousel">
+                        <!-- Wrapper for slides -->
+                        <div class="carousel-inner">
+                            @for (var i = 0; i < post.Photos.Count; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    @:<div class="item active">
+                                }
+                                else
+                                {
+                                    @:<div class="item">
+                                }
+
+                                @: <img src="@post.Photos[i].Path" alt="@i">
+                                @:</div>
+                                }
+                        </div>
+
+                        <!-- Left and right controls -->
+                        <a class="left carousel-control" href="#myCarousel_@post.PostId" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#myCarousel_@post.PostId" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+
+
+
                     <small class="pull-right">@post.Date</small>
                     @* PLACEHOLDER: All posts should be made by a registered user.*@
                     @if (post.UserId != null)
@@ -71,7 +104,7 @@
                         </form>
                     </div>
                 }
-            </div>
+                </div>
         </div>
         <div class="col-md-2"></div>
     </div>
@@ -81,49 +114,57 @@
 
 @if (User.Identity.IsAuthenticated && !User.IsInRole("RestrictedUser"))
 {
-    <div class="container">
-        <div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-8">
-                <div class="panel">
-                    <form method="post" action="/Posts/New">
-                        <div class="panel-body">
-                            @if (ViewBag.message == "Content is mandatory.")
-                            {
-                                <p class="text-danger">@ViewBag.message</p>
-                            }
-                            else
-                            {
-                                <p class="text-success">@ViewBag.message</p>
-                            }
-
-                            <input type="hidden" name="ProductId" value="@Model.ProductId" />
-                            <label>Post Content</label>
-                            <br />
-                            <textarea class="form-control" name="Content"></textarea>
-                            <br />
-
-                            <div class="rate">
-                                <input type="radio" id="star5" name="Rating" value="5" />
-                                <label for="star5" title="text">5 stars</label>
-                                <input type="radio" id="star4" name="Rating" value="4" />
-                                <label for="star4" title="text">4 stars</label>
-                                <input type="radio" id="star3" name="Rating" value="3" />
-                                <label for="star3" title="text">3 stars</label>
-                                <input type="radio" id="star2" name="Rating" value="2" />
-                                <label for="star2" title="text">2 stars</label>
-                                <input type="radio" id="star1" name="Rating" value="1" />
-                                <label for="star1" title="text">1 star</label>
-                            </div>
-                            <br />
-
-                            <button class="btn btn-success " type="submit">Add post</button>
-                        </div>
-                    </form>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
                 </div>
+                <div class="col-md-8">
+                    <div class="panel">
+                        @using (Html.BeginForm("New", "Posts", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <div class="panel-body">
+                                @if (ViewBag.message == "Content is mandatory.")
+                                {
+                                    <p class="text-danger">@ViewBag.message</p>
+                                }
+                                else
+                                {
+                                    <p class="text-success">@ViewBag.message</p>
+                                }
+
+                                <input type="hidden" name="ProductId" value="@Model.ProductId" />
+                                <label>Post Content</label>
+                                <br />
+                                <textarea class="form-control" name="Content"></textarea>
+                                <br />
+
+                                <div class="rate">
+                                    <input type="radio" id="star5" name="Rating" value="5" />
+                                    <label for="star5" title="text">5 stars</label>
+                                    <input type="radio" id="star4" name="Rating" value="4" />
+                                    <label for="star4" title="text">4 stars</label>
+                                    <input type="radio" id="star3" name="Rating" value="3" />
+                                    <label for="star3" title="text">3 stars</label>
+                                    <input type="radio" id="star2" name="Rating" value="2" />
+                                    <label for="star2" title="text">2 stars</label>
+                                    <input type="radio" id="star1" name="Rating" value="1" />
+                                    <label for="star1" title="text">1 star</label>
+                                </div>
+                                <br />
+
+                                <div>
+                                    @for (var i = 0; i < 5; i++)
+                                    {
+                                        <input type="file" name="uploadedPhotos[@i]" />
+                                        <br />
+                                    }
+                                </div>
+                                <button class="btn btn-success " type="submit">Add post</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
             </div>
-            <div class="col-md-2"></div>
         </div>
-    </div>
 }

@@ -1,7 +1,8 @@
 ﻿@model neMag.Models.Post
 
 <h2>Edit post</h2>
-<form method="post" action="@Url.Action("Edit", "Posts", new { id = Model.PostId})">
+@using (Html.BeginForm("Edit", "Posts", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
     @Html.HttpMethodOverride(HttpVerbs.Put)
 
     @Html.Label("Content", "Post content")
@@ -11,10 +12,25 @@
     @Html.ValidationMessageFor(m => m.Content, null, new { @class = "text-danger" })
     <br />
 
+    <input type="hidden" name="uploadedPhotos[0]" /> @*necessary for binding the uploadedPhotos array*@
+    for (var i = 0; i < 5; i++)
+    {
+        if (i < Model.Photos.Count && Model.Photos[i] != null)
+        {
+        <a class="btn btn-sm btn-warning" href="~/Photos/Delete/@Model.Photos[i].PhotoId">Sterge poza @i</a>
+        }
+        else
+        {
+        <input type="file" name="uploadedPhotos[@i]" />
+        <br />
+        }
+    }
+
     @Html.HiddenFor(m => m.Date)
     <button class="btn btn-success" type="submit">Editeaza comentariu</button>
 
     @Html.HiddenFor(m => m.isReview)
     @Html.HiddenFor(m => m.Rating)
     @Html.HiddenFor(m => m.ProductId)
+}
 </form>

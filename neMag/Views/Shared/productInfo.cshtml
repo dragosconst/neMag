@@ -1,48 +1,87 @@
 ﻿@model neMag.Models.Product
-<!DOCTYPE html>
-<html>
-<head>
+<div class="my-panel-header panel-heading " onClick="location.href='/Products/Show/@Model.ProductId';">
+    <a class="name" style="text-decoration:none; color:black" href="/Products/Show/@Model.ProductId">@Model.ProductName</a>
     @{
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>@ViewBag.Title - My ASP.NET Application</title>
-        @Styles.Render("~/Content/css")
-        @Scripts.Render("~/bundles/modernizr")
-        <link href="@Url.Content("~/Content/Site.css")"
-              rel="stylesheet" type="text/css" />
+        var price = Model.Price;
+        var disc = Model.Discount / 100;
+        price -= price * disc; // n am gasit o varianta mai eleganta decat asta ca sa includ discount ul in partial
+        @:<span class="label label-success pull-right price">Pret: @price lei</span>
     }
-</head>
-<body>
-    <div class="my-panel-header panel-heading " onClick="location.href='/Products/Show/@Model.ProductId';">
-        <a class="name" style="text-decoration:none; color:black" href="/Products/Show/@Model.ProductId">@Model.ProductName</a>
-        @{
-            var price = Model.Price;
-            var disc = Model.Discount / 100;
-            price -= price * disc; // n am gasit o varianta mai eleganta decat asta ca sa includ discount ul in partial
-            @:<span class="label label-success pull-right price">Pret: @price lei</span>
-        }
-        @if (Model.Discount != 0)
+    @if (Model.Discount != 0)
+    {
+        <span class="label label-danger discount">Discount : @Model.Discount%</span>
+    }
+    <div class="clearfix"></div>
+</div>
+
+<div class="panel-body my-panel-body" onClick="location.href='/Products/Show/@Model.ProductId';">
+
+    @*
+    <br />
+    <picture>
+        @foreach (var photo in Model.Photos)
         {
-            <span class="label label-danger discount">Discount : @Model.Discount%</span>
+            if (photo != null)
+            {
+                <img class="my-image" src="@photo.Path" alt="@Model.ProductName" runat="server">
+                break;
+            }
         }
-        <div class="clearfix"></div>
-    </div>
-    <div class="panel-body my-panel-body" onClick="location.href='/Products/Show/@Model.ProductId';">
+    </picture>
+    *@
 
-        <br />
-        <picture>
-            <img class="my-image" src="@Model.Photo" alt="@Model.ProductName">
-        </picture>
-        <div class="my-description">
-            Descriere: <strong>@Model.Description</strong>
+
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        @*
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+        </ol>
+        *@
+
+
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+            @for (var i = 0; i < Model.Photos.Count; i++)
+            {
+                if (i == 0)
+                {
+                    @:<div class="item active">
+                }
+                else
+                {
+                    @:<div class="item">
+                }
+
+                @: <img src="@Model.Photos[i].Path" alt="@Model.ProductName">
+                @:</div>
+            }
         </div>
-        <br />
 
-        <i class="label label-info ">Rating: @Model.Rating/5   <i class="glyphicon glyphicon-star"></i></i><br />
-        <br />
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+        </a>
+        </div>
 
-        <i class="glyphicon glyphicon-globe"></i> @Model.Category.Title
-        <br />
+        
+
+
+    <div class="my-description">
+        Descriere: <strong>@Model.Description</strong>
     </div>
-</body>
-</html>
+    <br />
+
+    <i class="label label-info ">Rating: @Model.Rating/5   <i class="glyphicon glyphicon-star"></i></i><br />
+    <br />
+
+    <i class="glyphicon glyphicon-globe"></i> @Model.Category.Title
+    <br />
+</div>

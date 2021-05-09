@@ -28,9 +28,12 @@
     @Html.Editor("Description", new { htmlAttributes = new { @class = "form-control" } })
     @Html.ValidationMessage("Description", null, new { @class = "text-danger" })
 
-    <label for="photo"></label>
-    <input id="photo" type="file" name="photo" />
-    <br />
+    for (var i = 0; i < 5; i++)
+    {
+        <input type="file" name="uploadedPhotos[@i]" />
+        <br />
+    }
+
     @Html.LabelFor(p => p.Price, "Preț", new { htmlAttributes = new { @class = "form-control" } })
     @Html.EditorFor(p => p.Price)
     @Html.ValidationMessage("Price", null, new { @class = "text-danger" })
