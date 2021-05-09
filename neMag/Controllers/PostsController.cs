@@ -80,16 +80,21 @@ namespace neMag.Controllers
 
             try
             {
-                if (ModelState.IsValid)
+                if (post.isReview &&
+                    !(from p in db.Posts where p.UserId == post.UserId && p.ProductId == post.ProductId select p).Any())
                 {
-                    db.Posts.Add(post);
-                    db.SaveChanges();
-                    UpdateProductRating(post.ProductId);
-                    TempData["message"] = "The post has been added.";
+                    if (ModelState.IsValid)
+                    {
+                        db.Posts.Add(post);
+                        db.SaveChanges();
+                        UpdateProductRating(post.ProductId);
+                        TempData["message"] = "Mesajul a fost postat.";
+                    }
+                    else
+                        TempData["message"] = "Continutul este obligatoriu.";
                 }
                 else
-                    TempData["message"] = "Content is mandatory.";
-
+                    TempData["message"] = "Nu puteti lasa mai mult de o recenzie.";
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
             catch (Exception e)
