@@ -1,5 +1,5 @@
 ﻿@model neMag.Models.Product
-<div class="my-panel-header panel-heading " onClick="location.href='/Products/Show/@Model.ProductId';">
+<div class="my-panel-header panel-heading ">
     <a class="name" style="text-decoration:none; color:black" href="/Products/Show/@Model.ProductId">@Model.ProductName</a>
     @{
         var price = Model.Price;
@@ -14,7 +14,7 @@
     <div class="clearfix"></div>
 </div>
 
-<div class="panel-body my-panel-body" onClick="location.href='/Products/Show/@Model.ProductId';">
+<div class="panel-body my-panel-body">
 
     @*
     <br />
