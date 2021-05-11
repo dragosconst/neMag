@@ -50,7 +50,7 @@ namespace neMag.Controllers
 
                     string absolutePath = HostingEnvironment.MapPath(path);
                     if (!System.IO.Directory.Exists(absolutePath))
-                        System.IO.Directory.CreateDirectory(HostingEnvironment.MapPath(absolutePath));
+                        System.IO.Directory.CreateDirectory(absolutePath);
 
                     uploadedFile.SaveAs(Path.Combine(absolutePath, uploadedFileName)); // The photo is saved in the project's directory
                     db.Photos.Add(file);

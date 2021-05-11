@@ -198,9 +198,6 @@ namespace neMag.Controllers
             }
 
 
-
-
-
             db.Products.Remove(product);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -226,8 +223,6 @@ namespace neMag.Controllers
         public ActionResult Edit(int id, Product requestProduct, HttpPostedFileBase[] uploadedPhotos)
         {
             requestProduct.Categ = GetAllCategories();
-           // if (photo == null)
-           //     requestProduct.Photo = db.Products.Find(id).Photo;
             try
             {
                if (ModelState.IsValid)
@@ -245,18 +240,6 @@ namespace neMag.Controllers
                         product.Description = requestProduct.Description;
                         product.CategoryId = requestProduct.CategoryId;
                         product.Category = db.Categories.Find(product.CategoryId);
-
-                        /*
-                        if (photo != null)
-                        {
-                            // var newPhotoPath = UploadPhoto(photo);
-                            product.Photo = "";
-                        }
-                        else
-                        {
-                            product.Photo = requestProduct.Photo;
-                        }
-                        */
                         db.SaveChanges();
                         PhotosController.UploadPhotos(uploadedPhotos, product.ProductId, true);
                         TempData["message"] = "Produsul a fost modificat";
@@ -320,6 +303,23 @@ namespace neMag.Controllers
         public ActionResult DeleteRequest(int id)
         {
             Product product = db.Products.Find(id);
+            // Delete the photos before deleting the product
+            List<int> ids = new List<int>();
+            foreach (var photo in product.Photos)
+            {
+                ids.Add(photo.PhotoId);
+            }
+            foreach (int photoId in ids)
+            {
+                // delete from server
+                FileInfo fileInfo = new FileInfo(db.Photos.Find(photoId).Path);
+                if (fileInfo.Exists)
+                {
+                    fileInfo.Delete();
+                }
+
+                db.Photos.Remove(db.Photos.Find(photoId));
+            }
             db.Products.Remove(product);
             db.SaveChanges();
 
