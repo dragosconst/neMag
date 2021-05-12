@@ -58,6 +58,10 @@ textarea {
     float: center;
 }
 
+/*Align the searchbar nicely.*/
+.right-margin {
+    margin-right: 400px;
+}
 
 
 /* CSS for rating products. */

@@ -23,9 +23,6 @@ namespace neMag.Controllers
         // everyone can see the available products
         public ActionResult Index()
         {
-            //var products = (from prod in db.Products
-            //                where prod.Accepted == true
-            //                select prod).Include("Category").AsQueryable();
             int id;
             try
             {
@@ -37,46 +34,37 @@ namespace neMag.Controllers
                 id = 0;
             }
             ViewBag.inorder = id;
-            var products = (from prod in db.Products//daca nu pun AsQueryable nu ruleaza, no idea why
-                            where prod.Accepted == true
-                            select prod).Include("Category").AsQueryable();
-            //id: 1= pret crescator;2 = pres descrescator; 3= rating crescator; 4 = rating descrescator
-            //(comment dragos) am adaugat niste constante, ca nu vazusem comentariul de mai sus
-            var x = false;
+            var products = db.Products.Where(p => p.Accepted == true).Include("Category").AsQueryable();
+            var search = "";
+            if (Request.Params.Get("search") != null)
+            {
+                search = Request.Params.Get("search").Trim(); // maybe implement some smarter search? right now I only look for substrings
+
+                products = db.Products.Where(p => p.ProductName.ToUpper().Contains(search.ToUpper()))
+                                    .AsQueryable();
+            }
+
+            var removeFilter = false;
             if (id == PRICE_ASC)
             {
-                products = (from prod in db.Products
-                            where prod.Accepted == true
-                            orderby (prod.Price - prod.Price * prod.Discount / 100)
-                            select prod).Include("Category").AsQueryable();
-                x = true;
+                products = products.OrderBy(p => p.Price - p.Price * p.Discount / 100).Include("Category").AsQueryable();
+                removeFilter = true;
             }
             else if (id == PRICE_DESC)
             {
-                products = (from prod in db.Products
-                            where prod.Accepted == true
-                            orderby (prod.Price - prod.Price * prod.Discount / 100) descending
-                            select prod).Include("Category").AsQueryable();
-                x = true;
+                products = products.OrderByDescending(p => p.Price - p.Price * p.Discount / 100).Include("Category").AsQueryable();
+                removeFilter = true;
             }
             else if (id == RATING_ASC)
             {
-                products = (from prod in db.Products
-                            where prod.Accepted == true
-                            orderby prod.Rating
-                            select prod).Include("Category").AsQueryable();
-                
-                x = true;
+                products = products.OrderBy(p => p.Rating).Include("Category").AsQueryable();
+                removeFilter = true;
             }
             else if (id == RATING_DESC)
             {
-                products = (from prod in db.Products
-                            where prod.Accepted == true
-                            orderby prod.Rating descending
-                            select prod).Include("Category").AsQueryable();
-                x = true;
+                products = products.OrderByDescending(p => p.Rating).Include("Category").AsQueryable();
+                removeFilter = true;
             }
-            ViewBag.x = x;
 
             var totalItems = products.Count();
             var currentPage = Convert.ToInt32(Request.Params.Get("page"));
@@ -94,10 +82,12 @@ namespace neMag.Controllers
             {
                 ViewBag.Message = TempData["message"].ToString();
             }
-            ViewBag.totalItems = totalItems;
-            ViewBag.categories = categories;
-            ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)this._perPage);
-            ViewBag.Products = prodsOnPage;
+            ViewBag.totalItems   = totalItems;
+            ViewBag.search       = search;
+            ViewBag.removeFilter = removeFilter;
+            ViewBag.categories   = categories;
+            ViewBag.lastPage     = Math.Ceiling((float)totalItems / (float)this._perPage);
+            ViewBag.Products     = prodsOnPage;
             return View();
         }
 

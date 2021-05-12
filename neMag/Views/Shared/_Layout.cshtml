@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿    <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -42,6 +42,28 @@
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
+    </div>
+
+    <!--Not entirely sure how this works tbh, but what it essentially does is that
+        it will go to Products/Index and add a search GET attribute at the end of the link.
+        The attribute is literally named "search".-->
+    <br />
+    <div class="row justify-content-center">
+        <form id="search_form" class="card card-sm" action="/Products/Index" method="GET">
+            <div class="card-body row no-gutters align-items-center right-margin">
+                <div class="col-auto">
+                    <i class="fas fa-search h4 text-body"></i>
+                </div><!--end of col-->
+                <div class="col-auto">
+                    <button class="btn btn-success pull-right glyphicon glyphicon-search" type="submit"></button>
+                </div><!--end of col-->
+                <div class="col">
+                    <input id="search_item" class="form-control form-control-lgform-control-borderless pull-right" type="text" name="search" value="@ViewBag.SearchStr" placeholder="Scrie numele produsului...">
+                </div><!--end of col-->
+            </div>
+
+        </form>
+        <!--end of col-->
     </div>
     <div class="container body-content">
         @RenderBody()
