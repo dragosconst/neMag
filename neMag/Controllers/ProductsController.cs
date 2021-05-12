@@ -40,7 +40,7 @@ namespace neMag.Controllers
             {
                 search = Request.Params.Get("search").Trim(); // maybe implement some smarter search? right now I only look for substrings
 
-                products = db.Products.Where(p => p.ProductName.ToUpper().Contains(search.ToUpper()))
+                products = products.Where(p => p.ProductName.ToUpper().Contains(search.ToUpper()))
                                     .AsQueryable();
             }
 
