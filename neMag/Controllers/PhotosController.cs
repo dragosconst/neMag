@@ -69,6 +69,11 @@ namespace neMag.Controllers
                 var ProductId = photo.ProductId;
                 var PostId = photo.PostId;
 
+                // delete from server
+                FileInfo fileInfo = new FileInfo(photo.Path);
+                if (fileInfo.Exists)
+                    fileInfo.Delete();
+
                 db.Photos.Remove(photo);
                 db.SaveChanges();
                 if (ProductId != null)
