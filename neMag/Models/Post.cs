@@ -29,5 +29,7 @@ namespace neMag.Models
 
 
         public virtual Product Product { get; set; }
+
+        public virtual IList<Photo> Photos { get; set; }
     }
 }
