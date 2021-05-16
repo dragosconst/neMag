@@ -88,6 +88,16 @@ namespace neMag.Controllers
                 offset = (currentPage - 1) * this._perPage;
 
             var categories = db.Categories;
+            var crrCateg = 0;
+            if (Request.Params.Get("category") != null)
+            {
+                crrCateg = Convert.ToInt32(Request.Params.Get("category").Trim().ToString());
+
+                if (crrCateg != 0) // minor bug fix la ceva legat de paginare
+                    products = products.Where(p => p.CategoryId.Equals(crrCateg));
+            }
+
+
 
             var prodsOnPage = products.ToList().Skip(offset).Take(this._perPage);
 

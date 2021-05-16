@@ -114,3 +114,39 @@ textarea {
     color: black;
     font-size: 15px;
 }
+
+.fake_link {
+    background: none !important;
+    border: none;
+    padding: 0 !important;
+    display: block;
+    /*optional*/
+    font-family: arial, sans-serif;
+    /*input has OS specific font-family*/
+    color: white;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.categories {
+    position: fixed;
+    top: 30%;
+    left: 5%;
+    animation: 1s ease-out 0s 1 slideInFromLeft;
+}
+
+.cat-panel {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    padding-bottom: 0px;
+    padding-top: 10px;
+    padding-left: 5px;
+    height: 40px;
+    width: 105%;
+    border: 1px solid gray;
+    background-color: #59cff2;
+}
+
+    .cat-panel:hover {
+        transform: scale(1.07);
+    }

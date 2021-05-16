@@ -8,6 +8,12 @@
     @Scripts.Render("~/bundles/modernizr")
     <link href="@Url.Content("~/Content/Site.css")"
           rel="stylesheet" type="text/css" />
+    <script>
+    $("#categ_form").submit(function () {
+        $(this).attr('action', $(this).attr('action') + '&' + $('#categ_id').val());
+        return true;
+    });
+    </script>
 </head>
 <body>
     <br />
@@ -55,6 +61,19 @@
     }
     <h1>@ViewBag.Message</h1>
     <hr />
+
+    <div class="categories">
+        Mergi direct la categoria:
+        @foreach (neMag.Models.Category cat in ViewBag.categories)
+        {
+            <div class="panel panel-default cat-panel">
+                <form method="post" id="categ_form" class="card card-sm" action="/Products/Index?id=0&page=1">
+                    <button class="fake_link" id="categ_id" name="category" value="@cat.CategoryId" type="submit">@cat.Title</button>
+                </form>
+            </div>
+        }
+    </div>
+
     <div>
         @foreach (neMag.Models.Product product in ViewBag.Products)
         {
