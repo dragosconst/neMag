@@ -64,7 +64,7 @@
         @foreach (neMag.Models.Category cat in ViewBag.categories)
         {
             <div class="panel panel-default cat-panel">
-                <form method="post" id="categ_form" class="card card-sm" action="/Products/Index?id=0&page=1">
+                <form method="post" id="categ_form" class="card card-sm" action="/Products/Index?id=@ViewBag.inorder&page=1&search=@ViewBag.search">
                     <button class="fake_link" id="categ_id" name="category" value="@cat.CategoryId" type="submit">@cat.Title</button>
                 </form>
             </div>
@@ -104,22 +104,22 @@
                 {
                     if (ViewBag.search != "")
                     {
-                        <li><a href="/Products/Index?page=@i" class="glyphicon">@(i)</a></li>
+                        <li><a href="/Products/Index?page=@i&category=@ViewBag.cat" class="glyphicon">@(i)</a></li>
                     }
                     else
                     {
-                        <li><a href="/Products/Index?page=@i" class="glyphicon">@(i)</a></li>
+                        <li><a href="/Products/Index?page=@i&category=@ViewBag.cat" class="glyphicon">@(i)</a></li>
                     }
                 }
                 <li>
                     @if (ViewBag.search != "")
                     {
-                        <a href="/Products/Index?page=@(ViewBag.lastPage)" class="glyphicon glyphicon-chevron-right" aria-label="Next">
+                        <a href="/Products/Index?page=@(ViewBag.lastPage)&category=@ViewBag.cat" class="glyphicon glyphicon-chevron-right" aria-label="Next">
                         </a>
                     }
                     else
                     {
-                        <a href="/Products/Index?page=@(ViewBag.lastPage)" class="glyphicon glyphicon-chevron-right" aria-label="Next">
+                        <a href="/Products/Index?page=@(ViewBag.lastPage)&category=@ViewBag.cat" class="glyphicon glyphicon-chevron-right" aria-label="Next">
                         </a>
                     }
                 </li>
