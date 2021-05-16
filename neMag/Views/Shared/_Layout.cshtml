@@ -55,7 +55,7 @@
                     <i class="fas fa-search h4 text-body"></i>
                 </div><!--end of col-->
                 <div class="col-auto">
-                    <button class="btn btn-success pull-right glyphicon glyphicon-search" type="submit"></button>
+                    <button style="color: white !important; background-color: #D10024 !important;" class="btn pull-right glyphicon glyphicon-search" type="submit"></button>
                 </div><!--end of col-->
                 <div class="col">
                     <input id="search_item" class="form-control form-control-lgform-control-borderless pull-right" type="text" name="search" value="@ViewBag.search" placeholder="Scrie numele produsului...">
@@ -76,12 +76,5 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
-
-    <script>
-        $(function(){
-            // Activate Carousel
-            $("#myCarousel").carousel();
-        });
-    </script>
 </body>
 </html>

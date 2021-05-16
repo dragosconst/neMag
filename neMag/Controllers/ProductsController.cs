@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 
@@ -156,6 +158,8 @@ namespace neMag.Controllers
         public ActionResult Show(int id)
         {
             Product product = db.Products.Find(id);
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("us"); // placeholder
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("us");
             if (product == null)
             {
                 TempData["message"] = "Bad id" + id;
