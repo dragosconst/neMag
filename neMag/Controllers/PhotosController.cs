@@ -1,4 +1,5 @@
-﻿using neMag.Models;
+﻿using Microsoft.AspNet.Identity;
+using neMag.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,8 +13,6 @@ namespace neMag.Controllers
     public class PhotosController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        //[Authorize(Roles = "User, Colaborator, Admin")]
-        //[HttpPut]
         public static void UploadPhotos(HttpPostedFileBase[] uploadedFiles, int Id, bool forProduct)
         {
             ApplicationDbContext db = new ApplicationDbContext();
@@ -22,27 +21,11 @@ namespace neMag.Controllers
             {
                 if (uploadedFile == null)
                     continue;
-                // Se preia numele fisierul
                 string uploadedFileName = uploadedFile.FileName;
                 string uploadedFileExtension = Path.GetExtension(uploadedFileName);
-
-                // Se poate verifica daca extensia este intr-o lista dorita
+                
                 if (uploadedFileExtension == ".png" || uploadedFileExtension == ".jpg")
                 {
-                    // Se stocheaza fisierul in folderul Files (folderul trebuie creat in proiect)
-
-                    
-                    
-                    
-
-
-                    // 1. Se seteaza calea folderului de upload
-                   // string uploadFolderPath = HostingEnvironment.MapPath("~/Photos/");
-
-                    // 2. Se salveaza fisierul in acel folder  
-                    //uploadedFile.SaveAs(Path.Combine(uploadFolderPath, uploadedFileName));
-
-                    // 3. Se face o instanta de model si se populeaza cu datele necesare
                     Photo file = new Photo();
                     file.Extension = uploadedFileExtension;
                     file.Name = uploadedFileName;
@@ -69,8 +52,7 @@ namespace neMag.Controllers
                     string uploadFolderPath = HostingEnvironment.MapPath(path);
                     uploadedFile.SaveAs(Path.Combine(uploadFolderPath, uploadedFileName));
 
-
-                    // 4. Se adauga modelul in baza de date
+                    
                     db.Photos.Add(file);
                 }
             }
@@ -83,11 +65,6 @@ namespace neMag.Controllers
         public ActionResult Delete(int id)
         {
             Photo photo = db.Photos.Find(id);
-            //if (User.IsInRole("Collaborator") && photo.UserId != User.Identity.GetUserId())
-            //{
-            //     TempData["message"] = "Acces interzis";
-            //    return RedirectToRoute("/");
-            //}
             var ProductId = photo.ProductId;
             var PostId = photo.PostId;
             

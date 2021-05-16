@@ -213,8 +213,6 @@ namespace neMag.Controllers
         public ActionResult Edit(int id, Product requestProduct, HttpPostedFileBase[] uploadedPhotos)
         {
             requestProduct.Categ = GetAllCategories();
-           // if (photo == null)
-           //     requestProduct.Photo = db.Products.Find(id).Photo;
             try
             {
                if (ModelState.IsValid)
@@ -232,18 +230,7 @@ namespace neMag.Controllers
                         product.Description = requestProduct.Description;
                         product.CategoryId = requestProduct.CategoryId;
                         product.Category = db.Categories.Find(product.CategoryId);
-
-                        /*
-                        if (photo != null)
-                        {
-                            // var newPhotoPath = UploadPhoto(photo);
-                            product.Photo = "";
-                        }
-                        else
-                        {
-                            product.Photo = requestProduct.Photo;
-                        }
-                        */
+                        
                         db.SaveChanges();
                         PhotosController.UploadPhotos(uploadedPhotos, product.ProductId, true);
                         TempData["message"] = "Produsul a fost modificat";
