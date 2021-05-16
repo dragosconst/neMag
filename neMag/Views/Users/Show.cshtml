@@ -6,6 +6,14 @@
 @using neMag.Controllers
 @using Microsoft.AspNet.Identity
 
+<p> @Model.UserProducts.Id </p>
+<!---foreach (neMag.Models.Product prod in Model.UserProducts.Product)
+{
+    <div class="panel panel-default my-panel product_box">
+       Html.Partial("productInfo", prod)
+    </div>
+}-->
+
 @if (ViewBag.userRole == "Collaborator")
 {
     <h1> @Model.LastName </h1>
@@ -78,7 +86,7 @@ else
                         {
                             <hr />
                             <div style="display: table; width: 100%">
-                                <strong style="display:table-cell; width: 20%"> Comanda numarul: @order.OrderId </strong> <br/>
+                                <strong style="display:table-cell; width: 20%"> Comanda numarul: @order.OrderId </strong> <br />
                                 <p style="display:table-cell; width: 30%"> Comanda plasata la data: @order.Date </p>
                                 <p style="display:table-cell; width: 10%"> Total: @order.TotalPrice </p>
                                 <p style="display:table-cell; width: 30%"> Status: <strong> Finalizat </strong> </p>

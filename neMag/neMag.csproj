@@ -210,10 +210,6 @@
     <Content Include="App_Data\Database1_log.ldf">
       <DependentUpon>Database1.mdf</DependentUpon>
     </Content>
-    <Content Include="App_Data\Database1_prost.mdf" />
-    <Content Include="App_Data\Database1_prost_log.ldf">
-      <DependentUpon>Database1_prost.mdf</DependentUpon>
-    </Content>
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -378,7 +374,6 @@
     <Content Include="Views\Cos\Show.cshtml" />
     <Content Include="Views\Cos\Comenzi.cshtml" />
     <Content Include="Views\Cos\OrdersFromMe.cshtml" />
-    
     <!-- Extra files from bootstrap -->
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
@@ -390,7 +385,6 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    
     <Content Include="Views\Products\Requests.cshtml" />
     <Content Include="Views\Products\MyProducts.cshtml" />
     <Content Include="Views\Cos\Orders.cshtml" />

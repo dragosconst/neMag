@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -23,6 +24,8 @@ namespace neMag.Models
             // Add custom user claims here
             return userIdentity;
         }
+        
+        public virtual ICollection<UserProducts> UserProducts { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
