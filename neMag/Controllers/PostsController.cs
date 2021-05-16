@@ -85,6 +85,7 @@ namespace neMag.Controllers
                 if (post.isReview &&
                     !(from p in db.Posts where p.UserId == post.UserId && p.ProductId == post.ProductId select p).Any())
                 {
+
                     if (ModelState.IsValid)
                     {
                         db.Posts.Add(post);
@@ -95,6 +96,7 @@ namespace neMag.Controllers
                     }
                     else
                         TempData["message"] = "Continutul este obligatoriu.";
+
                 }
                 else
                     TempData["message"] = "Nu puteti lasa mai mult de o recenzie.";

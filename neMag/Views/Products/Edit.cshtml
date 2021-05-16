@@ -30,6 +30,7 @@
     @Html.ValidationMessage("Description", null, new { @class = "text-danger" })
     <br />
     <br />
+
     for (var i = 0; i < 5; i++)
     {
         if (i < Model.Photos.Count && Model.Photos[i] != null)
@@ -53,5 +54,5 @@
     <br />
 
 
-    <button class="btn btn-sm btn-success" type="submit">Modifica produs</button>
+    <button class="btn btn-sm btn-success" type="submit">Modifică produs</button>
 }
