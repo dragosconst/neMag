@@ -47,8 +47,6 @@ namespace neMag.Controllers
                         file.ProductId = null;
                     }
                     file.Path = Path.Combine(path.Remove(0, 1), uploadedFileName);
-
-                    file.Path = Path.Combine(path.Remove(0, 1), uploadedFileName);
                     if (!System.IO.Directory.Exists(HostingEnvironment.MapPath(path)))
                         System.IO.Directory.CreateDirectory(HostingEnvironment.MapPath(path));
 
