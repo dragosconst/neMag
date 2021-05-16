@@ -38,10 +38,12 @@ namespace neMag.Models
         public DbSet<Post> Posts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderContent> OrderContents { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
         }
+
     }
 }
