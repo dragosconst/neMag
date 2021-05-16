@@ -44,5 +44,6 @@ namespace neMag.Models
         {
             return new ApplicationDbContext();
         }
+
     }
 }

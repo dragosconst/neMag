@@ -378,6 +378,8 @@
     <Content Include="Views\Cos\Show.cshtml" />
     <Content Include="Views\Cos\Comenzi.cshtml" />
     <Content Include="Views\Cos\OrdersFromMe.cshtml" />
+    
+    <!-- Extra files from bootstrap -->
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper.js.flow" />
@@ -388,6 +390,10 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
+    
+    <Content Include="Views\Products\Requests.cshtml" />
+    <Content Include="Views\Products\MyProducts.cshtml" />
+    <Content Include="Views\Cos\Orders.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202103150653462_Initial.resx">

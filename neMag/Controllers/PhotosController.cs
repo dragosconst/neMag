@@ -25,7 +25,7 @@ namespace neMag.Controllers
 
                 string uploadedFileName = uploadedFile.FileName;
                 string uploadedFileExtension = Path.GetExtension(uploadedFileName);
-                
+
                 if (uploadedFileExtension == ".png" || uploadedFileExtension == ".jpg")
                 {
                     Photo file = new Photo();
@@ -33,7 +33,9 @@ namespace neMag.Controllers
                     file.Name = uploadedFileName;
                     file.UserId = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
-                    string path;
+
+                    string path; // Relative path of where photos are saved
+
                     if (forProduct)
                     {
                         path = "~/Photos/Products/" + Id + "/";
@@ -42,18 +44,19 @@ namespace neMag.Controllers
                     }
                     else
                     {
-                        path = "~/Photos/Posts/" + Id + "/";   
+
+                        path = "~/Photos/Posts/" + Id + "/";
+
                         file.PostId = Id;
                         file.ProductId = null;
                     }
                     file.Path = Path.Combine(path.Remove(0, 1), uploadedFileName);
-                    if (!System.IO.Directory.Exists(HostingEnvironment.MapPath(path)))
-                        System.IO.Directory.CreateDirectory(HostingEnvironment.MapPath(path));
 
-                    string uploadFolderPath = HostingEnvironment.MapPath(path);
-                    uploadedFile.SaveAs(Path.Combine(uploadFolderPath, uploadedFileName));
+                    string absolutePath = HostingEnvironment.MapPath(path);
+                    if (!System.IO.Directory.Exists(absolutePath))
+                        System.IO.Directory.CreateDirectory(absolutePath);
 
-                    
+                    uploadedFile.SaveAs(Path.Combine(absolutePath, uploadedFileName)); // The photo is saved in the project's directory
                     db.Photos.Add(file);
                 }
             }

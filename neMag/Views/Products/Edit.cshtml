@@ -30,11 +30,12 @@
     @Html.ValidationMessage("Description", null, new { @class = "text-danger" })
     <br />
     <br />
-    <input type="hidden" name="uploadedPhotos[0]" /> @*necessary for binding the uploadedPhotos array*@
+
     for (var i = 0; i < 5; i++)
     {
         if (i < Model.Photos.Count && Model.Photos[i] != null)
         {
+            <input type="hidden" name="uploadedPhotos[@i]" /> @*necessary for binding the uploadedPhotos array*@
             <a class="btn btn-sm btn-warning" href="~/Photos/Delete/@Model.Photos[i].PhotoId">Sterge poza @i</a>
         }
         else
@@ -53,5 +54,5 @@
     <br />
 
 
-    <button class="btn btn-sm btn-success" type="submit">Modifica produs</button>
+    <button class="btn btn-sm btn-success" type="submit">Modifică produs</button>
 }
