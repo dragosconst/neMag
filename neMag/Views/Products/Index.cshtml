@@ -26,78 +26,28 @@
 
     <!-- Custom stlylesheet -->
     <link type="text/css" rel="stylesheet" href="~/Content/Product.css" />
-
-    <script>
-    $("#categ_form").submit(function () {
-        $(this).attr('action', $(this).attr('action') + '&' + $('#categ_id').val());
-        return true;
-    });
-    </script>
 </head>
 <body>
     <br />
-    <p>
-        Filtrează după:
-        @if (ViewBag.inorder == 1)
-        {
-            <a class=" btn this-order" href="/Products/Index?id=1&search=@ViewBag.search&category=@ViewBag.cat">Pret crescator</a>
-        }
-        else
-        {
-            <a class=" btn order" href="/Products/Index?id=1&search=@ViewBag.search&category=@ViewBag.cat">Pret crescator</a>
-        }
-        @if (ViewBag.inorder == 2)
-        {
-            <a class=" btn this-order" href="/Products/Index?id=2&search=@ViewBag.search&category=@ViewBag.cat">Pret descrescator</a>
-        }
-        else
-        {
-            <a class=" btn order" href="/Products/Index?id=2&search=@ViewBag.search&category=@ViewBag.cat">Pret descrescator</a>
-        }
-        @if (ViewBag.inorder == 3)
-        {
-            <a class=" btn this-order" href="/Products/Index?id=3&search=@ViewBag.search&category=@ViewBag.cat">Rating crescator</a>
-        }
-        else
-        {
-            <a class=" btn order" href="/Products/Index?id=3&search=@ViewBag.search&category=@ViewBag.cat">Rating crescator</a>
-        }
-        @if (ViewBag.inorder == 4)
-        {
-            <a class=" btn this-order" href="/Products/Index?id=4&search=@ViewBag.search&category=@ViewBag.cat">Rating descrescator</a>
-        }
-        else
-        {
-            <a class=" btn order" href="/Products/Index?id=4&search=@ViewBag.search&category=@ViewBag.cat">Rating descrescator</a>
-        }
-        @if (ViewBag.removeFilter == true)
-        {
-            <a class="btn order" href="/Products/Index?id=0&search=@ViewBag.search&category=@ViewBag.cat"><i class="glyphicon glyphicon-remove"></i></a>
-        }
-    </p>
     <h1>@ViewBag.Message</h1>
     <hr />
-  
+
     <div class="categories">
         Mergi direct la categoria:
         @foreach (neMag.Models.Category cat in ViewBag.categories)
         {
-            <div class="panel panel-default cat-panel">
+            <div class="cat-panel">
                 <form method="post" id="categ_form" class="card card-sm" action="/Products/Index?id=@ViewBag.inorder&page=1&search=@ViewBag.search">
-                    <button class="fake_link" id="categ_id" name="category" value="@cat.CategoryId" type="submit">@cat.Title</button>
+                    <button class="primary-btn" id="categ_id" name="category" value="@cat.CategoryId" type="submit">@cat.Title</button>
                 </form>
             </div>
         }
     </div>
 
-    @if(ViewBag.search != "")
+    @if (ViewBag.search != "")
     {
         <h3>Ați căutat produse care conțin <b>@ViewBag.search</b></h3>
     }
-    <div>
-        @foreach (neMag.Models.Product product in ViewBag.Products)
-        {
-
     <!-- SECTION -->
     <div class="section">
         <!-- container -->
@@ -111,10 +61,54 @@
                         <h3 class="title">Produse</h3>
                         <div class="section-nav">
                             <ul class="section-tab-nav tab-nav">
-                                <li class="active"><a data-toggle="tab" href="#tab1">Laptops</a></li>
-                                <li><a data-toggle="tab" href="#tab1">Smartphones</a></li>
-                                <li><a data-toggle="tab" href="#tab1">Cameras</a></li>
-                                <li><a data-toggle="tab" href="#tab1">Accessories</a></li>
+
+                                <li>
+                                    @if (ViewBag.inorder == 1)
+                                    {
+                                        <a class=" btn this-order" href="/Products/Index?id=1&search=@ViewBag.search&category=@ViewBag.cat">Pret crescator</a>
+                                    }
+                                    else
+                                    {
+                                        <a class=" btn order" href="/Products/Index?id=1&search=@ViewBag.search&category=@ViewBag.cat">Pret crescator</a>
+                                    }
+                                </li>
+                                <li>
+                                    @if (ViewBag.inorder == 2)
+                                    {
+                                        <a class=" btn this-order" href="/Products/Index?id=2&search=@ViewBag.search&category=@ViewBag.cat">Pret descrescator</a>
+                                    }
+                                    else
+                                    {
+                                        <a class=" btn order" href="/Products/Index?id=2&search=@ViewBag.search&category=@ViewBag.cat">Pret descrescator</a>
+                                    }
+                                </li>
+                                <li>
+                                    @if (ViewBag.inorder == 3)
+                                    {
+                                        <a class=" btn this-order" href="/Products/Index?id=3&search=@ViewBag.search&category=@ViewBag.cat">Rating crescator</a>
+                                    }
+                                    else
+                                    {
+                                        <a class=" btn order" href="/Products/Index?id=3&search=@ViewBag.search&category=@ViewBag.cat">Rating crescator</a>
+                                    }
+                                </li>
+                                <li>
+                                    @if (ViewBag.inorder == 4)
+                                    {
+                                        <a class=" btn this-order" href="/Products/Index?id=4&search=@ViewBag.search&category=@ViewBag.cat">Rating descrescator</a>
+                                    }
+
+                                    else
+                                    {
+                                        <a class=" btn order" href="/Products/Index?id=4&search=@ViewBag.search&category=@ViewBag.cat">Rating descrescator</a>
+                                    }
+                                </li>
+                                <li>
+                                    @if (ViewBag.removeFilter == true)
+                                    {
+                                        <a class="btn order" href="/Products/Index?id=0&search=@ViewBag.search&category=@ViewBag.cat"><i class="glyphicon glyphicon-remove"></i></a>
+                                    }
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -135,22 +129,26 @@
                                                 @if (product.Photos != null)
                                                 {
                                                     <img src="@product.Photos[0].Path" alt="@product.ProductName">
-                                                    <!-- discount-->
-                                                    <div class="product-label">
-                                                        <span class="sale">-30%</span>
-                                                        <span class="new">NEW</span>
-                                                    </div>
-                                                    <!-- /discount-->
                                                 }
                                             </div>
                                             <div class="product-body">
                                                 <p class="product-category">@product.Category.Title</p>
                                                 <h3 class="product-name"><a href="/Products/Show/@product.ProductId">@product.ProductName</a></h3>
-                                                <h4 class="product-price">@product.Price</h4>
+                                                <h4 class="product-price">
+                                                    @if (product.Discount > 0)
+                                                    {
+                                                        @(@product.Price - @product.Price * @product.Discount / 100)<del class="product-old-price">@product.Price</del>
+                                                    }
+                                                    else
+                                                    {
+                                                        @product.Price
+                                                    }
+                                                    Lei
+                                                </h4>
                                                 <div class="product-rating">
                                                     @for (var i = 1; i <= 5; i++)
                                                     {
-                                                        if (i <= (int) product.Rating)
+                                                        if (i <= (int)product.Rating)
                                                         {
                                                             <i class="fa fa-star"></i>
                                                         }
@@ -160,16 +158,12 @@
                                                         }
                                                     }
                                                 </div>
-                                                <!--
-                                                <div class="product-btns">
-                                                    <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                                                    <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                                                    <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-                                                </div>
-                                                -->
                                             </div>
                                             <div class="add-to-cart">
-                                                <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                                                <form method="post" action="/Cos/AddToOrder/@product.ProductId" style="display: inline;">
+                                                    @Html.HttpMethodOverride(HttpVerbs.Put)
+                                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
+                                                </form>
                                             </div>
                                         </div>
                                     }
@@ -187,7 +181,6 @@
         <!-- /container -->
     </div>
     <!-- /SECTION -->
-
 
 
 
@@ -228,5 +221,12 @@
     <script src="~/Scripts/nouislider.min.js"></script>
     <script src="~/Scripts/jquery.zoom.min.js"></script>
     <script src="~/Scripts/main.js"></script>
+
+    <script>
+        $("#categ_form").submit(function () {
+            $(this).attr('action', $(this).attr('action') + '&' + $('#categ_id').val());
+            return true;
+        });
+    </script>
 </body>
 </html>
