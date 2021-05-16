@@ -13,6 +13,7 @@ namespace neMag.Controllers
     public class PhotosController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
         public static void UploadPhotos(HttpPostedFileBase[] uploadedFiles, int Id, bool forProduct)
         {
             ApplicationDbContext db = new ApplicationDbContext();
@@ -21,6 +22,7 @@ namespace neMag.Controllers
             {
                 if (uploadedFile == null)
                     continue;
+
                 string uploadedFileName = uploadedFile.FileName;
                 string uploadedFileExtension = Path.GetExtension(uploadedFileName);
                 
@@ -29,6 +31,7 @@ namespace neMag.Controllers
                     Photo file = new Photo();
                     file.Extension = uploadedFileExtension;
                     file.Name = uploadedFileName;
+                    file.UserId = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
                     string path;
                     if (forProduct)
@@ -43,8 +46,8 @@ namespace neMag.Controllers
                         file.PostId = Id;
                         file.ProductId = null;
                     }
+                    file.Path = Path.Combine(path.Remove(0, 1), uploadedFileName);
 
-                    string path2 = path.Remove(0, 1);
                     file.Path = Path.Combine(path.Remove(0, 1), uploadedFileName);
                     if (!System.IO.Directory.Exists(HostingEnvironment.MapPath(path)))
                         System.IO.Directory.CreateDirectory(HostingEnvironment.MapPath(path));
@@ -65,15 +68,25 @@ namespace neMag.Controllers
         public ActionResult Delete(int id)
         {
             Photo photo = db.Photos.Find(id);
-            var ProductId = photo.ProductId;
-            var PostId = photo.PostId;
-            
-            db.Photos.Remove(photo);
-            db.SaveChanges();
-            if (ProductId != null)
-                return RedirectToAction("Edit", "Products", new { id = ProductId });
+            if (User.IsInRole("Admin") || photo.UserId == User.Identity.GetUserId())
+            {
+                var ProductId = photo.ProductId;
+                var PostId = photo.PostId;
 
-            return RedirectToAction("Edit", "Posts", new { id = PostId });
+                // delete from server
+                FileInfo fileInfo = new FileInfo(photo.Path);
+                if (fileInfo.Exists)
+                    fileInfo.Delete();
+
+                db.Photos.Remove(photo);
+                db.SaveChanges();
+                if (ProductId != null)
+                    return RedirectToAction("Edit", "Products", new { id = ProductId });
+                return RedirectToAction("Edit", "Posts", new { id = PostId });
+            }
+
+            TempData["message"] = "Acces interzis";
+            return RedirectToRoute("/");
         }
 
     }
