@@ -33,7 +33,9 @@ namespace neMag.Controllers
                     file.Name = uploadedFileName;
                     file.UserId = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
+
                     string path; // Relative path of where photos are saved
+
                     if (forProduct)
                     {
                         path = "~/Photos/Products/" + Id + "/";
@@ -42,7 +44,9 @@ namespace neMag.Controllers
                     }
                     else
                     {
+
                         path = "~/Photos/Posts/" + Id + "/";
+
                         file.PostId = Id;
                         file.ProductId = null;
                     }
@@ -56,6 +60,7 @@ namespace neMag.Controllers
                     db.Photos.Add(file);
                 }
             }
+
             db.SaveChanges();
         }
 

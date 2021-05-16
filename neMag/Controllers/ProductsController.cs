@@ -40,9 +40,11 @@ namespace neMag.Controllers
             if (Request.Params.Get("search") != null)
             {
                 search = Request.Params.Get("search").Trim(); // maybe implement some smarter search? right now I only look for substrings
-
-                products = products.Where(p => p.ProductName.ToUpper().Contains(search.ToUpper()))
-                                    .AsQueryable();
+                if (search != "")
+                {
+                    products = products.Where(p => p.ProductName.ToUpper().Contains(search.ToUpper()))
+                                      .AsQueryable();
+                }
             }
 
             var removeFilter = false;
@@ -76,6 +78,18 @@ namespace neMag.Controllers
                 offset = (currentPage - 1) * this._perPage;
 
             var categories = db.Categories;
+            var crrCateg = 0;
+            if (Request.Params.Get("category") != null && Request.Params.Get("category").Trim().ToString() != "")
+            {
+                System.Diagnostics.Debug.WriteLine(Request.Params.Get("category").Trim().ToString());
+                crrCateg = Convert.ToInt32(Request.Params.Get("category").Trim().ToString());
+
+                if (crrCateg != 0)
+                    products = products.Where(p => p.CategoryId.Equals(crrCateg));
+            }
+            ViewBag.cat = crrCateg;
+
+
 
             var prodsOnPage = products.ToList().Skip(offset).Take(this._perPage);
 
@@ -230,6 +244,7 @@ namespace neMag.Controllers
                         product.Description = requestProduct.Description;
                         product.CategoryId = requestProduct.CategoryId;
                         product.Category = db.Categories.Find(product.CategoryId);
+
                         db.SaveChanges();
                         PhotosController.UploadPhotos(uploadedPhotos, product.ProductId, true);
                         TempData["message"] = "Produsul a fost modificat";
