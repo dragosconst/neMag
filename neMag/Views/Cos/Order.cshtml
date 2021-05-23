@@ -1,24 +1,55 @@
 ﻿@model neMag.Models.Order
-@{
-    ViewBag.Title = "Order";
-}
+<!DOCTYPE html >
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-<br /><br />
-<h3>Total Comandă: @ViewBag.pret lei</h3>
-<h3>Timp estimat de livrare: se va calcula după trimiterea comenzii</h3>
-@using (Html.BeginForm(actionName: "Order", controllerName: "Cos"))
-{
-    @Html.HttpMethodOverride(HttpVerbs.Put)
+    <title>neMag</title>
 
-    @Html.HiddenFor(m => m.OrderId)
-    @Html.HiddenFor(m => m.UserId)
-    @Html.HiddenFor(m => m.Date)
-    @Html.HiddenFor(m => m.TotalPrice)
-    @Html.HiddenFor(m => m.Status)
-    @Html.Label("Details", "Detalii livrare:", new { htmlAttributes = new { @class = "form-control", @style = "font-size:30px" } })
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
-    <div style="font-size: 15px">(ex: Adresa, Interval de livrare preferat, etc...)</div>
-    @Html.Editor("Details", new { htmlAttributes = new { @class = "form-control" } })
-    <button class="btn btn-sm open" style="margin-top:5px" type="submit">Trimite comanda</button>
-}
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="~/Content/bootstrap.min.css" />
 
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick.css" />
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick-theme.css" />
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" href="~/Content/noUiSlider/jquery.nouislider.css" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="~/Content/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="~/Content/Product.css" />
+</head>
+<body>
+    @{
+        ViewBag.Title = "Plasare comanda";
+    }
+
+    <br /><br />
+    <h3>Total Comandă: @Model.TotalPrice lei</h3>
+    <h3>Timp estimat de livrare: se va calcula după trimiterea comenzii</h3>
+    @using (Html.BeginForm(actionName: "Order", controllerName: "Cos"))
+    {
+        @Html.HttpMethodOverride(HttpVerbs.Put)
+
+        @Html.HiddenFor(m => m.OrderId)
+        @Html.HiddenFor(m => m.UserId)
+        @Html.HiddenFor(m => m.Date)
+        @Html.HiddenFor(m => m.TotalPrice)
+        @Html.HiddenFor(m => m.Status)
+        @Html.Label("Details", "Detalii livrare:", new { htmlAttributes = new { @class = "form-control", @style = "font-size:30px" } })
+
+        <div style="font-size: 15px">(ex: Adresa, Interval de livrare preferat, etc...)</div>
+        @Html.Editor("Details", new { htmlAttributes = new { @class = "form-control" } })
+        <button class="primary-btn" style="margin-top:5px" type="submit">Trimite comanda</button>
+    }
+
+</body>
