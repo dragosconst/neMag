@@ -53,6 +53,7 @@ namespace neMag.Controllers
         public ActionResult Edit(string id)
         {
             ApplicationUser user = db.Users.Find(id);
+            user.AllRoles = GetAllRoles();
             return View(user);
         }
 
@@ -62,12 +63,19 @@ namespace neMag.Controllers
             ApplicationUser user = db.Users.Find(id);
             try
             {
+                ApplicationDbContext context = new ApplicationDbContext();
+                var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+                var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+
                 if (TryUpdateModel(user))
                 {
                     user.FirstName = newData.FirstName;
                     user.LastName = newData.LastName;
                     user.Email = newData.Email;
                     user.PhoneNumber = newData.PhoneNumber;
+
+                    var selectedRole = db.Roles.Find(HttpContext.Request.Params.Get("newRole"));
+                    UserManager.AddToRole(id, selectedRole.Name);
 
                     db.SaveChanges();
                 }
@@ -106,5 +114,26 @@ namespace neMag.Controllers
             return RedirectToAction("Index");
         }
 
+        [NonAction]
+        public IEnumerable<SelectListItem> GetAllRoles()
+        {
+            var selectList = new List<SelectListItem>();
+            
+
+            var roleStore = new RoleStore<IdentityRole>(db);
+            var roleMngr = new RoleManager<IdentityRole>(roleStore);
+
+            var roles = roleMngr.Roles.ToList();
+
+            foreach (var r in roles)
+            {
+                selectList.Add(new SelectListItem
+                {
+                    Value = r.Id.ToString(),
+                    Text = r.Name.ToString() // ToString might be redundant
+                });
+            }
+            return selectList;
+        }
     }
 }
