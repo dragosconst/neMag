@@ -25,7 +25,7 @@ namespace neMag.Models
             return userIdentity;
         }
         
-        public virtual ICollection<UserProducts> UserProducts { get; set; }
+        //public virtual ICollection<UserProducts> UserProducts { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
