@@ -6,7 +6,6 @@
 @using neMag.Controllers
 @using Microsoft.AspNet.Identity
 
-<p> @Model.UserProducts.Id </p>
 <!---foreach (neMag.Models.Product prod in Model.UserProducts.Product)
 {
     <div class="panel panel-default my-panel product_box">
@@ -14,7 +13,7 @@
     </div>
 }-->
 
-@if (ViewBag.userRole == "Collaborator")
+@if (ViewBag.userRole == "Collaborator" || ViewBag.userRole == "Admin")
 {
     <h1> @Model.LastName </h1>
     <hr />
@@ -46,7 +45,7 @@
         </div>
     }
 
-    if (User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
+    if (User.Identity.IsAuthenticated == true && ((User.IsInRole("Admin") && (string)Model.Id != User.Identity.GetUserId()) || (!User.IsInRole("Admin") && (string)Model.Id == User.Identity.GetUserId())))
     {
         <form method="post" action="/Users/Delete/@Model.Id">
             @Html.HttpMethodOverride(HttpVerbs.Delete)
