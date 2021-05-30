@@ -40,23 +40,38 @@
                 <!-- Product main img -->
                 <div class="col-md-5 col-md-push-2">
                     <div id="product-main-img">
-                        @for (var i = 0; i < Model.Photos.Count; i++)
+                        @if (Model.Photos.Count() > 0)
                         {
-                            @:<div class="product-preview">
-                                @:    <img src="@Model.Photos[i].Path" alt="@Model.ProductName">
-                            @:</div>
+                            for (var i = 0; i < Model.Photos.Count; i++)
+                            {
+                                @:<div class="product-preview">
+                                    @:    <img src="@Model.Photos[i].Path" alt="@Model.ProductName">
+                                @:</div>
+                            }
                         }
+                        else
+                        {
+                            <img src="https://i.imgur.com/S3AdcES.png" alt="defaultImage">
+                        }
+
                     </div>
                 </div>
                 <!-- /Product main img -->
                 <!-- Product thumb imgs -->
                 <div class="col-md-2  col-md-pull-5">
                     <div id="product-imgs">
-                        @for (var i = 0; i < Model.Photos.Count; i++)
+                        @if (Model.Photos.Count() > 0)
                         {
-                            @:<div class="product-preview">
-                                @:    <img src="@Model.Photos[i].Path" alt="@Model.ProductName">
-                            @:</div>
+                            for (var i = 0; i < Model.Photos.Count; i++)
+                            {
+                                @:<div class="product-preview">
+                                    @:    <img src="@Model.Photos[i].Path" alt="@Model.ProductName">
+                                @:</div>
+                            }
+                        }
+                        else
+                        {
+                            <img src="https://i.imgur.com/S3AdcES.png" alt="defaultImage">
                         }
                     </div>
                 </div>
