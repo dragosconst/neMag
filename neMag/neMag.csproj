@@ -273,6 +273,7 @@
     <Content Include="Content\Slick\fonts\slick.svg" />
     <Content Include="Content\Slick\slick-theme.css" />
     <Content Include="Content\Slick\slick.css" />
+    <Content Include="Content\User.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
