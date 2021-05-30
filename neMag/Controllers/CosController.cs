@@ -6,6 +6,23 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+public class CartOrderAuthorize : AuthorizeAttribute
+{
+    public override void OnAuthorization(AuthorizationContext filterContext)
+    {
+        // If they are authorized, handle accordingly
+        if (this.AuthorizeCore(filterContext.HttpContext))
+        {
+            base.OnAuthorization(filterContext);
+        }
+        else
+        {
+            // Otherwise redirect to your specific authorized area
+            filterContext.Result = new RedirectResult("~/Products/Index");
+        }
+    }
+}
+
 namespace neMag.Controllers
 {
     public class CosController : Controller
@@ -63,9 +80,12 @@ namespace neMag.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "RestrictedUser,User,Collaborator,Admin")]
         public ActionResult AddToOrder(int id)
         {
+            if(!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             string uid = User.Identity.GetUserId();
             Order cart = GetCart();
             Product product = db.Products.Find(id);
