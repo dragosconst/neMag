@@ -1,170 +1,485 @@
 @model neMag.Models.Product
-@{
-    ViewBag.Title = "Show";
-}
-<br />
-<br />
-<br />
-<div class="panel panel-default my-border show">
-    @Html.Partial("productInfo", Model)
+@using Microsoft.AspNet.Identity;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    @if (ViewBag.showButtons == true)
-    {
-    <div class="panel-footer">
-        <a class="btn btn-success pull-left" href="/Products/Edit/@Model.ProductId"><div class="glyphicon glyphicon-pencil"></div>     Modifica Produs</a>
+    <title>neMag</title>
 
-        <form method="post" action="/Products/Delete/@Model.ProductId">
-            @Html.HttpMethodOverride(HttpVerbs.Delete)
-            <button class="btn btn-danger pull-right" type="submit"><div class="glyphicon glyphicon-trash"></div>  Sterge Produs</button>
-        </form>
-        @if (ViewBag.isCollaborator == false)
-        {
-            if (User.IsInRole("Admin") || User.IsInRole("User") || User.IsInRole("RestrictedUser"))
-            {
-                <form method="post" action="/Cos/AddToOrder/@Model.ProductId">
-                    @Html.HttpMethodOverride(HttpVerbs.Put)
-                    <button class="btn pull-right open" type="submit">Adaugă în cos</button>
-                </form>
-            }
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
-        }
-        <div class="clearfix"></div>
-    </div>
-    } 
-    
-</div>
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="~/Content/bootstrap.min.css" />
 
-@* Index of posts *@
-@foreach (var post in Model.Posts)
-{
-    <div class="container">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <div>
-                    <p style="font-size: 115%; white-space: pre-line;">@post.Content</p>
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick.css" />
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick-theme.css" />
 
-                    <div id="myCarousel_@post.PostId" class="carousel slide" data-ride="carousel">
-                        <!-- Wrapper for slides -->
-                        <div class="carousel-inner">
-                            @for (var i = 0; i < post.Photos.Count; i++)
-                            {
-                                if (i == 0)
-                                {
-                                    @:<div class="item active">
-                                }
-                                else
-                                {
-                                    @:<div class="item">
-                                }
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" href="~/Content/noUiSlider/jquery.nouislider.css" />
 
-                                @: <img src="@post.Photos[i].Path" alt="@i">
-                                @:</div>
-                                }
-                        </div>
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="~/Content/font-awesome.min.css">
 
-                        <!-- Left and right controls -->
-                        <a class="left carousel-control" href="#myCarousel_@post.PostId" data-slide="prev">
-                            <span class="glyphicon glyphicon-chevron-left"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="right carousel-control" href="#myCarousel_@post.PostId" data-slide="next">
-                            <span class="glyphicon glyphicon-chevron-right"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="~/Content/Product.css" />
 
-
-
-                    <small class="pull-right">@post.Date</small>
-                    @* PLACEHOLDER: All posts should be made by a registered user.*@
-                    @if (post.UserId != null)
-                    {
-                        <a class="glyphicon glyphicon-user" href="/Users/Show/@post.UserId"></a>
-                        <i>written by</i> <strong> @post.User.UserName </strong>
-                    }
-                    @if (post.isReview)
-                    {
-                        <i class="label label-info ">Rating: @post.Rating/5   <i class="glyphicon glyphicon-star"></i></i>
-                    }
-
-                </div>
-                @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
-                {
-                    <br />
-
-                    <div style="display: inline-block; float : left; margin-right: 15px">
-                        <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
-                    </div>
-
-                    <div style="display: inline-block; float : left">
-                        <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId})">
-                            @Html.HttpMethodOverride(HttpVerbs.Delete)
-                            <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
-                        </form>
-                    </div>
-                }
-                </div>
-        </div>
-        <div class="col-md-2"></div>
-    </div>
-    <hr />
-}
-
-
-@if (User.Identity.IsAuthenticated && !User.IsInRole("RestrictedUser"))
-{
+</head>
+<body>
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
         <div class="container">
+            <!-- row -->
             <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-8">
-                    <div class="panel">
-                        @using (Html.BeginForm("New", "Posts", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                <!-- Product main img -->
+                <div class="col-md-5 col-md-push-2">
+                    <div id="product-main-img">
+                        @for (var i = 0; i < Model.Photos.Count; i++)
                         {
-                            <div class="panel-body">
-                                @if (ViewBag.message == "Content is mandatory.")
-                                {
-                                    <p class="text-danger">@ViewBag.message</p>
-                                }
-                                else
-                                {
-                                    <p class="text-success">@ViewBag.message</p>
-                                }
-
-                                <input type="hidden" name="ProductId" value="@Model.ProductId" />
-                                <label>Post Content</label>
-                                <br />
-                                <textarea class="form-control" name="Content"></textarea>
-                                <br />
-
-                                <div class="rate">
-                                    <input type="radio" id="star5" name="Rating" value="5" />
-                                    <label for="star5" title="text">5 stars</label>
-                                    <input type="radio" id="star4" name="Rating" value="4" />
-                                    <label for="star4" title="text">4 stars</label>
-                                    <input type="radio" id="star3" name="Rating" value="3" />
-                                    <label for="star3" title="text">3 stars</label>
-                                    <input type="radio" id="star2" name="Rating" value="2" />
-                                    <label for="star2" title="text">2 stars</label>
-                                    <input type="radio" id="star1" name="Rating" value="1" />
-                                    <label for="star1" title="text">1 star</label>
-                                </div>
-                                <br />
-
-                                <div>
-                                    @for (var i = 0; i < 5; i++)
-                                    {
-                                        <input type="file" name="uploadedPhotos[@i]" />
-                                        <br />
-                                    }
-                                </div>
-                                <button class="btn btn-success " type="submit">Add post</button>
-                            </div>
+                            @:<div class="product-preview">
+                                @:    <img src="@Model.Photos[i].Path" alt="@Model.ProductName">
+                            @:</div>
                         }
                     </div>
                 </div>
-                <div class="col-md-2"></div>
+                <!-- /Product main img -->
+                <!-- Product thumb imgs -->
+                <div class="col-md-2  col-md-pull-5">
+                    <div id="product-imgs">
+                        @for (var i = 0; i < Model.Photos.Count; i++)
+                        {
+                            @:<div class="product-preview">
+                                @:    <img src="@Model.Photos[i].Path" alt="@Model.ProductName">
+                            @:</div>
+                        }
+                    </div>
+                </div>
+                <!-- /Product thumb imgs -->
+                <!-- Product details -->
+                <div class="col-md-5">
+                    <div class="product-details">
+                        <h2 class="product-name">@Model.ProductName</h2>
+                        <div>
+                            <div class="product-rating">
+                                @for (var i = 1; i <= 5; i++)
+                                {
+                                    if (i <= (int)Model.Rating)
+                                    {
+                                        <i class="fa fa-star"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-star-o empty"></i>
+                                    }
+                                }
+                            </div>
+                            @*TODO: count only reviews*@
+                            <a class="review-link" href="#tab3">@Model.Posts.Count Recenzii | Adauga o recenzie!</a>
+                        </div>
+                        <div>
+                            <h3 class="product-price">@(@Model.Price - @Model.Price * @Model.Discount / 100)<del class="product-old-price">@Model.Price</del> Lei</h3>
+                            <span class="product-available">In stoc</span>
+                        </div>
+                        <p>@Model.Description</p>
+
+                        <div class="add-to-cart">
+                            <!--
+                            <div class="qty-label">
+                                Qty
+                                <div class="input-number">
+                                    <input type="number">
+                                    <span class="qty-up">+</span>
+                                    <span class="qty-down">-</span>
+                                </div>
+                            </div>
+                            -->
+                            <form method="post" action="/Cos/AddToOrder/@Model.ProductId" style="display: inline;">
+                                @Html.HttpMethodOverride(HttpVerbs.Put)
+                                <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
+                            </form>
+
+                        </div>
+
+                        <ul class="product-links">
+                            @*Display the product's category and all ancestors categories*@
+                            <li>Categorii:</li>
+                            @{
+                                var cat = Model.Category;
+                                while (cat != null)
+                                {
+                                    <li><a href="#">@cat.Title</a></li>
+                                    if (cat.ParentId > 0)
+                                    {
+                                        cat = cat.Parent;
+                                    }
+                                    else
+                                    {
+                                        cat = null;
+                                    }
+                                }
+                            }
+                        </ul>
+
+                    </div>
+                </div>
+                <!-- /Product details -->
+
+                @if (User.IsInRole("Admin") || (User.IsInRole("Collaborator") && User.Identity.GetUserId() == Model.UserId))
+                {
+                    <!-- Modify product buttons-->
+                    <div class="col-md-4">
+                        <br />
+                        <div class="row">
+                            <div class="col-sm">
+                                <a class="btn btn-success pull-left" href="/Products/Edit/@Model.ProductId"><div class="glyphicon glyphicon-pencil"></div> Modifica Produs</a>
+                            </div>
+                            <div class="col-sm">
+                                <form method="post" action="/Products/Delete/@Model.ProductId">
+                                    @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                    <button class="btn btn-danger pull-right" type="submit"><div class="glyphicon glyphicon-trash"></div>  Sterge Produs</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Modify product buttons-->
+                }
+
+                <!-- Product tab -->
+                <div class="col-md-12">
+                    <div id="product-tab">
+                        <!-- product tab nav -->
+                        <ul class="tab-nav">
+                            <li class="active"><a data-toggle="tab" href="#tab1">Descriere produs</a></li>
+                            <li><a data-toggle="tab" href="#tab2">Recenzii (@Model.Posts.Count)</a></li>
+                            <li><a data-toggle="tab" href="#tab3">Intrebari si raspunsuri</a></li>
+                        </ul>
+                        <!-- /product tab nav -->
+                        <!-- product tab content -->
+                        <div class="tab-content">
+                            <!-- tab1  -->
+                            <div id="tab1" class="tab-pane fade in active">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>@Model.Description</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /tab1  -->
+                            <!-- tab2  -->
+                            <div id="tab2" class="tab-pane fade in">
+                                <div class="row">
+                                    <!-- Rating -->
+                                    <div class="col-md-3">
+                                        <div id="rating">
+                                            <div class="rating-avg">
+                                                <span>@Model.Rating</span>
+                                                <div class="rating-stars">
+                                                    @for (var i = 1; i <= 5; i++)
+                                                    {
+                                                        if (i <= (int)Model.Rating)
+                                                        {
+                                                            <i class="fa fa-star"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fa fa-star-o empty"></i>
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                            <ul class="rating">
+                                                @for (var stars = 5; stars >= 1; stars--)
+                                                {
+                                                    <li>
+                                                        <div class="rating-stars">
+                                                            @for (var i = 1; i <= 5; i++)
+                                                            {
+                                                                if (i <= stars)
+                                                                {
+                                                                    <i class="fa fa-star"></i>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <i class="fa fa-star-o empty"></i>
+                                                                }
+                                                            }
+
+                                                            @{
+                                                                double nr = @Model.Posts.Count(p => p.Rating == stars);
+                                                            }
+
+                                                        </div>
+                                                        <div class="rating-progress">
+                                                            <div style="width: @((@nr / @Model.Posts.Count) * 100)%;"></div>
+                                                        </div>
+                                                        <span class="sum">@nr</span>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- /Rating -->
+                                    <!-- Reviews -->
+                                    <div class="col-md-6">
+                                        <div id="reviews">
+                                            <ul class="reviews">
+                                                @foreach (var post in Model.Posts)
+                                                {
+                                                    if (post.isReview)
+                                                    {
+                                                        <li>
+                                                            <div class="review-heading">
+                                                                <h5 class="name">@post.User.Email</h5>
+                                                                <p class="date">@post.Date</p>
+                                                                <div class="review-rating">
+                                                                    @for (var i = 1; i <= 5; i++)
+                                                                    {
+                                                                        if (i <= post.Rating)
+                                                                        {
+                                                                            <i class="fa fa-star"></i>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <i class="fa fa-star-o empty"></i>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                            <div class="review-body">
+                                                                <p>@post.Content</p>
+                                                                @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
+                                                                {
+                                                                    <div style="display: inline-block; float : left; margin-right: 15px">
+                                                                        <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
+                                                                    </div>
+
+                                                                    <div style="display: inline-block; float : left">
+                                                                        <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId})">
+                                                                            @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                                                            <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
+                                                                        </form>
+                                                                    </div>
+                                                                }
+                                                            </div>
+
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                            <ul class="reviews-pagination">
+                                                <li class="active">1</li>
+                                                <li><a href="#">2</a></li>
+                                                <li><a href="#">3</a></li>
+                                                <li><a href="#">4</a></li>
+                                                <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- /Reviews -->
+
+                                    @if (User.Identity.IsAuthenticated && !User.IsInRole("RestrictedUser"))
+                                    {
+                                        <!-- Review Form -->
+                                        <div class="col-md-3">
+                                            <div id="review-form">
+                                                <form class="review-form" method="post" action="/Posts/New">
+                                                    <input type="hidden" name="ProductId" value="@Model.ProductId" />
+                                                    <textarea class="input" name="Content" placeholder="Recenzia ta"></textarea>
+                                                    <div class="input-rating">
+                                                        <span>Your Rating: </span>
+                                                        <div class="stars">
+                                                            <input id="star5" name="Rating" value="5" type="radio"><label for="star5"></label>
+                                                            <input id="star4" name="Rating" value="4" type="radio"><label for="star4"></label>
+                                                            <input id="star3" name="Rating" value="3" type="radio"><label for="star3"></label>
+                                                            <input id="star2" name="Rating" value="2" type="radio"><label for="star2"></label>
+                                                            <input id="star1" name="Rating" value="1" type="radio"><label for="star1"></label>
+                                                        </div>
+                                                    </div>
+
+                                                    @for (var i = 0; i < 5; i++)
+                                                    {
+                                                        <input type="file" name="uploadedPhotos[@i]" />
+                                                        <br />
+                                                    }
+                                                    <button class="primary-btn" type="submit">Submit</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <!-- /Review Form -->
+                                    }
+                                    else
+                                    {
+                                        <p>Trebuie sa fii autentificat pentru a posta o recenzie!</p>
+                                    }
+                                </div>
+                            </div>
+                            <!-- /tab2  -->
+                            <!-- tab3  -->
+                            <div id="tab3" class="tab-pane fade in">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Sectiune Q&A</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /tab3  -->
+                        </div>
+                        <!-- /product tab content  -->
+                    </div>
+                </div>
+                <!-- /product tab -->
             </div>
+            <!-- /row -->
         </div>
-}
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+    @* 
+    Section  - Related products
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="section-title text-center">
+                        <h3 class="title">Related Products</h3>
+                    </div>
+                </div>
+
+                <!-- product -->
+                <div class="col-md-3 col-xs-6">
+                    <div class="product">
+                        <div class="product-img">
+                            <img src="/Photos/phone.jpg" alt="">
+                            <div class="product-label">
+                                <span class="sale">-30%</span>
+                            </div>
+                        </div>
+                        <div class="product-body">
+                            <p class="product-category">Category</p>
+                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                            <div class="product-rating">
+                            </div>
+                        </div>
+                        <div class="add-to-cart">
+                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /product -->
+                <!-- product -->
+                <div class="col-md-3 col-xs-6">
+                    <div class="product">
+                        <div class="product-img">
+                            <img src="/Photos/phone.jpg" alt="">
+                            <div class="product-label">
+                                <span class="new">NEW</span>
+                            </div>
+                        </div>
+                        <div class="product-body">
+                            <p class="product-category">Category</p>
+                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                            <div class="product-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="product-btns">
+                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                            </div>
+                        </div>
+                        <div class="add-to-cart">
+                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /product -->
+
+                <div class="clearfix visible-sm visible-xs"></div>
+
+                <!-- product -->
+                <div class="col-md-3 col-xs-6">
+                    <div class="product">
+                        <div class="product-img">
+                            <img src="/Photos/phone.jpg" alt="">
+                        </div>
+                        <div class="product-body">
+                            <p class="product-category">Category</p>
+                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                            <div class="product-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star-o"></i>
+                            </div>
+                            <div class="product-btns">
+                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                            </div>
+                        </div>
+                        <div class="add-to-cart">
+                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /product -->
+                <!-- product -->
+                <div class="col-md-3 col-xs-6">
+                    <div class="product">
+                        <div class="product-img">
+                            <img src="/Photos/phone.jpg" alt="">
+                        </div>
+                        <div class="product-body">
+                            <p class="product-category">Category</p>
+                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                            <div class="product-rating">
+                            </div>
+                            <div class="product-btns">
+                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                            </div>
+                        </div>
+                        <div class="add-to-cart">
+                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /product -->
+
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /Section -->
+    *@
+    
+    <!-- jQuery Plugins -->
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/Slick/slick.min.js"></script>
+    <script src="~/Scripts/nouislider.min.js"></script>
+    <script src="~/Scripts/jquery.zoom.min.js"></script>
+    <script src="~/Scripts/main.js"></script>
+
+</body>
+</html>
