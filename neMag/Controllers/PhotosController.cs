@@ -33,7 +33,9 @@ namespace neMag.Controllers
                     file.Name = uploadedFileName;
                     file.UserId = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
+
                     string path; // Relative path of where photos are saved
+
                     if (forProduct)
                     {
                         path = "~/Photos/Products/" + Id + "/";
@@ -42,7 +44,9 @@ namespace neMag.Controllers
                     }
                     else
                     {
+
                         path = "~/Photos/Posts/" + Id + "/";
+
                         file.PostId = Id;
                         file.ProductId = null;
                     }
@@ -50,12 +54,13 @@ namespace neMag.Controllers
 
                     string absolutePath = HostingEnvironment.MapPath(path);
                     if (!System.IO.Directory.Exists(absolutePath))
-                        System.IO.Directory.CreateDirectory(HostingEnvironment.MapPath(absolutePath));
+                        System.IO.Directory.CreateDirectory(absolutePath);
 
                     uploadedFile.SaveAs(Path.Combine(absolutePath, uploadedFileName)); // The photo is saved in the project's directory
                     db.Photos.Add(file);
                 }
             }
+
             db.SaveChanges();
         }
 
@@ -68,6 +73,11 @@ namespace neMag.Controllers
             {
                 var ProductId = photo.ProductId;
                 var PostId = photo.PostId;
+
+                // delete from server
+                FileInfo fileInfo = new FileInfo(photo.Path);
+                if (fileInfo.Exists)
+                    fileInfo.Delete();
 
                 db.Photos.Remove(photo);
                 db.SaveChanges();

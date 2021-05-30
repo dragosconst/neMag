@@ -12,17 +12,19 @@
     @Html.ValidationMessageFor(m => m.Content, null, new { @class = "text-danger" })
     <br />
 
-    <input type="hidden" name="uploadedPhotos[0]" /> @*necessary for binding the uploadedPhotos array*@
+
     for (var i = 0; i < 5; i++)
     {
         if (i < Model.Photos.Count && Model.Photos[i] != null)
         {
-        <a class="btn btn-sm btn-warning" href="~/Photos/Delete/@Model.Photos[i].PhotoId">Sterge poza @i</a>
+
+            <input type="hidden" name="uploadedPhotos[@i]" /> @*necessary for binding the uploadedPhotos array*@
+            <a class="btn btn-sm btn-warning" href="~/Photos/Delete/@Model.Photos[i].PhotoId">Sterge poza @i</a>
         }
         else
         {
-        <input type="file" name="uploadedPhotos[@i]" />
-        <br />
+            <input type="file" name="uploadedPhotos[@i]" />
+            <br />
         }
     }
 

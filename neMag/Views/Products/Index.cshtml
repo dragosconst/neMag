@@ -8,53 +8,73 @@
     @Scripts.Render("~/bundles/modernizr")
     <link href="@Url.Content("~/Content/Site.css")"
           rel="stylesheet" type="text/css" />
+    <script>
+    $("#categ_form").submit(function () {
+        $(this).attr('action', $(this).attr('action') + '&' + $('#categ_id').val());
+        return true;
+    });
+    </script>
 </head>
 <body>
     <br />
-    @if (true)
-    {
-        <p>
-            Filtreaza dupa:
-            @if (ViewBag.inorder == 1)
-            {
-                <a class=" btn this-order" href="/Products/Index?id=1&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Pret crescator</a>
-            }
-            else
-            {
-                <a class=" btn order" href="/Products/Index?id=1&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Pret crescator</a>
-            }
-            @if (ViewBag.inorder == 2)
-            {
-                <a class=" btn this-order" href="/Products/Index?id=2&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Pret descrescator</a>
-            }
-            else
-            {
-                <a class=" btn order" href="/Products/Index?id=2&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Pret descrescator</a>
-            }
-            @if (ViewBag.inorder == 3)
-            {
-                <a class=" btn this-order" href="/Products/Index?id=3&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Rating crescator</a>
-            }
-            else
-            {
-                <a class=" btn order" href="/Products/Index?id=3&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Rating crescator</a>
-            }
-            @if (ViewBag.inorder == 4)
-            {
-                <a class=" btn this-order" href="/Products/Index?id=4&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Rating descrescator</a>
-            }
-            else
-            {
-                <a class=" btn order" href="/Products/Index?id=4&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat">Rating descrescator</a>
-            }
-            @if (ViewBag.x == true)
-            {
-                <a class="btn order" href="/Products/Index?id=0&page=1&search=@ViewBag.SearchStr&category=@ViewBag.cat"><i class="glyphicon glyphicon-remove"></i></a>
-            }
-        </p>
-    }
+    <p>
+        Filtrează după:
+        @if (ViewBag.inorder == 1)
+        {
+            <a class=" btn this-order" href="/Products/Index?id=1&search=@ViewBag.search&category=@ViewBag.cat">Pret crescator</a>
+        }
+        else
+        {
+            <a class=" btn order" href="/Products/Index?id=1&search=@ViewBag.search&category=@ViewBag.cat">Pret crescator</a>
+        }
+        @if (ViewBag.inorder == 2)
+        {
+            <a class=" btn this-order" href="/Products/Index?id=2&search=@ViewBag.search&category=@ViewBag.cat">Pret descrescator</a>
+        }
+        else
+        {
+            <a class=" btn order" href="/Products/Index?id=2&search=@ViewBag.search&category=@ViewBag.cat">Pret descrescator</a>
+        }
+        @if (ViewBag.inorder == 3)
+        {
+            <a class=" btn this-order" href="/Products/Index?id=3&search=@ViewBag.search&category=@ViewBag.cat">Rating crescator</a>
+        }
+        else
+        {
+            <a class=" btn order" href="/Products/Index?id=3&search=@ViewBag.search&category=@ViewBag.cat">Rating crescator</a>
+        }
+        @if (ViewBag.inorder == 4)
+        {
+            <a class=" btn this-order" href="/Products/Index?id=4&search=@ViewBag.search&category=@ViewBag.cat">Rating descrescator</a>
+        }
+        else
+        {
+            <a class=" btn order" href="/Products/Index?id=4&search=@ViewBag.search&category=@ViewBag.cat">Rating descrescator</a>
+        }
+        @if (ViewBag.removeFilter == true)
+        {
+            <a class="btn order" href="/Products/Index?id=0&search=@ViewBag.search&category=@ViewBag.cat"><i class="glyphicon glyphicon-remove"></i></a>
+        }
+    </p>
     <h1>@ViewBag.Message</h1>
     <hr />
+
+    <div class="categories">
+        Mergi direct la categoria:
+        @foreach (neMag.Models.Category cat in ViewBag.categories)
+        {
+            <div class="panel panel-default cat-panel">
+                <form method="post" id="categ_form" class="card card-sm" action="/Products/Index?id=@ViewBag.inorder&page=1&search=@ViewBag.search">
+                    <button class="fake_link" id="categ_id" name="category" value="@cat.CategoryId" type="submit">@cat.Title</button>
+                </form>
+            </div>
+        }
+    </div>
+
+    @if(ViewBag.search != "")
+    {
+        <h3>Ați căutat produse care conțin <b>@ViewBag.search</b></h3>
+    }
     <div>
         @foreach (neMag.Models.Product product in ViewBag.Products)
         {
@@ -84,22 +104,22 @@
                 {
                     if (ViewBag.search != "")
                     {
-                        <li><a href="/Products/Index?page=@i" class="glyphicon">@(i)</a></li>
+                        <li><a href="/Products/Index?page=@i&category=@ViewBag.cat" class="glyphicon">@(i)</a></li>
                     }
                     else
                     {
-                        <li><a href="/Products/Index?page=@i" class="glyphicon">@(i)</a></li>
+                        <li><a href="/Products/Index?page=@i&category=@ViewBag.cat" class="glyphicon">@(i)</a></li>
                     }
                 }
                 <li>
                     @if (ViewBag.search != "")
                     {
-                        <a href="/Products/Index?page=@(ViewBag.lastPage)" class="glyphicon glyphicon-chevron-right" aria-label="Next">
+                        <a href="/Products/Index?page=@(ViewBag.lastPage)&category=@ViewBag.cat" class="glyphicon glyphicon-chevron-right" aria-label="Next">
                         </a>
                     }
                     else
                     {
-                        <a href="/Products/Index?page=@(ViewBag.lastPage)" class="glyphicon glyphicon-chevron-right" aria-label="Next">
+                        <a href="/Products/Index?page=@(ViewBag.lastPage)&category=@ViewBag.cat" class="glyphicon glyphicon-chevron-right" aria-label="Next">
                         </a>
                     }
                 </li>

@@ -24,9 +24,6 @@ namespace neMag.Controllers
         // everyone can see the available products
         public ActionResult Index()
         {
-            //var products = (from prod in db.Products
-            //                where prod.Accepted == true
-            //                select prod).Include("Category").AsQueryable();
             int id;
             try
             {
@@ -38,46 +35,39 @@ namespace neMag.Controllers
                 id = 0;
             }
             ViewBag.inorder = id;
-            var products = (from prod in db.Products//daca nu pun AsQueryable nu ruleaza, no idea why
-                            where prod.Accepted == true
-                            select prod).Include("Category").AsQueryable();
-            //id: 1= pret crescator;2 = pres descrescator; 3= rating crescator; 4 = rating descrescator
-            //(comment dragos) am adaugat niste constante, ca nu vazusem comentariul de mai sus
-            var x = false;
+            var products = db.Products.Where(p => p.Accepted == true).Include("Category").AsQueryable();
+            var search = "";
+            if (Request.Params.Get("search") != null)
+            {
+                search = Request.Params.Get("search").Trim(); // maybe implement some smarter search? right now I only look for substrings
+                if (search != "")
+                {
+                    products = products.Where(p => p.ProductName.ToUpper().Contains(search.ToUpper()))
+                                      .AsQueryable();
+                }
+            }
+
+            var removeFilter = false;
             if (id == PRICE_ASC)
             {
-                products = (from prod in db.Products
-                            where prod.Accepted == true
-                            orderby (prod.Price - prod.Price * prod.Discount / 100)
-                            select prod).Include("Category").AsQueryable();
-                x = true;
+                products = products.OrderBy(p => p.Price - p.Price * p.Discount / 100).Include("Category").AsQueryable();
+                removeFilter = true;
             }
             else if (id == PRICE_DESC)
             {
-                products = (from prod in db.Products
-                            where prod.Accepted == true
-                            orderby (prod.Price - prod.Price * prod.Discount / 100) descending
-                            select prod).Include("Category").AsQueryable();
-                x = true;
+                products = products.OrderByDescending(p => p.Price - p.Price * p.Discount / 100).Include("Category").AsQueryable();
+                removeFilter = true;
             }
             else if (id == RATING_ASC)
             {
-                products = (from prod in db.Products
-                            where prod.Accepted == true
-                            orderby prod.Rating
-                            select prod).Include("Category").AsQueryable();
-                
-                x = true;
+                products = products.OrderBy(p => p.Rating).Include("Category").AsQueryable();
+                removeFilter = true;
             }
             else if (id == RATING_DESC)
             {
-                products = (from prod in db.Products
-                            where prod.Accepted == true
-                            orderby prod.Rating descending
-                            select prod).Include("Category").AsQueryable();
-                x = true;
+                products = products.OrderByDescending(p => p.Rating).Include("Category").AsQueryable();
+                removeFilter = true;
             }
-            ViewBag.x = x;
 
             var totalItems = products.Count();
             var currentPage = Convert.ToInt32(Request.Params.Get("page"));
@@ -88,6 +78,18 @@ namespace neMag.Controllers
                 offset = (currentPage - 1) * this._perPage;
 
             var categories = db.Categories;
+            var crrCateg = 0;
+            if (Request.Params.Get("category") != null && Request.Params.Get("category").Trim().ToString() != "")
+            {
+                System.Diagnostics.Debug.WriteLine(Request.Params.Get("category").Trim().ToString());
+                crrCateg = Convert.ToInt32(Request.Params.Get("category").Trim().ToString());
+
+                if (crrCateg != 0)
+                    products = products.Where(p => p.CategoryId.Equals(crrCateg));
+            }
+            ViewBag.cat = crrCateg;
+
+
 
             var prodsOnPage = products.ToList().Skip(offset).Take(this._perPage);
 
@@ -95,10 +97,12 @@ namespace neMag.Controllers
             {
                 ViewBag.Message = TempData["message"].ToString();
             }
-            ViewBag.totalItems = totalItems;
-            ViewBag.categories = categories;
-            ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)this._perPage);
-            ViewBag.Products = prodsOnPage;
+            ViewBag.totalItems   = totalItems;
+            ViewBag.search       = search;
+            ViewBag.removeFilter = removeFilter;
+            ViewBag.categories   = categories;
+            ViewBag.lastPage     = Math.Ceiling((float)totalItems / (float)this._perPage);
+            ViewBag.Products     = prodsOnPage;
             return View();
         }
 
@@ -198,9 +202,6 @@ namespace neMag.Controllers
             }
 
 
-
-
-
             db.Products.Remove(product);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -226,8 +227,6 @@ namespace neMag.Controllers
         public ActionResult Edit(int id, Product requestProduct, HttpPostedFileBase[] uploadedPhotos)
         {
             requestProduct.Categ = GetAllCategories();
-           // if (photo == null)
-           //     requestProduct.Photo = db.Products.Find(id).Photo;
             try
             {
                if (ModelState.IsValid)
@@ -246,17 +245,6 @@ namespace neMag.Controllers
                         product.CategoryId = requestProduct.CategoryId;
                         product.Category = db.Categories.Find(product.CategoryId);
 
-                        /*
-                        if (photo != null)
-                        {
-                            // var newPhotoPath = UploadPhoto(photo);
-                            product.Photo = "";
-                        }
-                        else
-                        {
-                            product.Photo = requestProduct.Photo;
-                        }
-                        */
                         db.SaveChanges();
                         PhotosController.UploadPhotos(uploadedPhotos, product.ProductId, true);
                         TempData["message"] = "Produsul a fost modificat";
@@ -320,6 +308,23 @@ namespace neMag.Controllers
         public ActionResult DeleteRequest(int id)
         {
             Product product = db.Products.Find(id);
+            // Delete the photos before deleting the product
+            List<int> ids = new List<int>();
+            foreach (var photo in product.Photos)
+            {
+                ids.Add(photo.PhotoId);
+            }
+            foreach (int photoId in ids)
+            {
+                // delete from server
+                FileInfo fileInfo = new FileInfo(db.Photos.Find(photoId).Path);
+                if (fileInfo.Exists)
+                {
+                    fileInfo.Delete();
+                }
+
+                db.Photos.Remove(db.Photos.Find(photoId));
+            }
             db.Products.Remove(product);
             db.SaveChanges();
 
