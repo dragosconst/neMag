@@ -18,8 +18,7 @@ namespace neMag.Controllers
 
         public ActionResult Index()
         {
-            var posts = from post in db.Posts
-                        select post;
+            var posts = db.Posts;
             ViewBag.posts = posts;
 
             return View();
@@ -83,7 +82,7 @@ namespace neMag.Controllers
             try
             {
                 if (post.isReview &&
-                    !(from p in db.Posts where p.UserId == post.UserId && p.ProductId == post.ProductId select p).Any())
+                    !db.Posts.Where(p => p.UserId == post.UserId && p.ProductId == post.ProductId).Any())
                 {
 
                     if (ModelState.IsValid)
@@ -153,9 +152,7 @@ namespace neMag.Controllers
         {
             double sum = 0.0;
             int n;
-            var revs = from post in db.Posts
-                       where post.ProductId == id && post.isReview == true
-                       select post;
+            var revs = db.Posts.Where(p => p.ProductId == id && p.isReview == true);
 
             n = revs.Count();
             foreach (var rev in revs)
