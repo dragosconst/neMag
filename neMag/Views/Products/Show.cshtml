@@ -94,8 +94,7 @@
                                     }
                                 }
                             </div>
-                            @*TODO: count only reviews*@
-                            <a class="review-link" href="#tab3">@Model.Posts.Count Recenzii | Adauga o recenzie!</a>
+                            <a class="review-link" href="#tab3">@(((ICollection<neMag.Models.Post>)@ViewBag.reviews).Count) Recenzii | Adauga o recenzie!</a>
                         </div>
                         <div>
                             <h3 class="product-price">@(@Model.Price - @Model.Price * @Model.Discount / 100)<del class="product-old-price">@Model.Price</del> Lei</h3>
@@ -171,8 +170,8 @@
                         <!-- product tab nav -->
                         <ul class="tab-nav">
                             <li class="active"><a data-toggle="tab" href="#tab1">Descriere produs</a></li>
-                            <li><a data-toggle="tab" href="#tab2">Recenzii (@Model.Posts.Count)</a></li>
-                            <li><a data-toggle="tab" href="#tab3">Intrebari si raspunsuri</a></li>
+                            <li><a data-toggle="tab" href="#tab2">Recenzii (@(((ICollection<neMag.Models.Post>)@ViewBag.reviews).Count))</a></li>
+                            <li><a data-toggle="tab" href="#tab3">Intrebari si raspunsuri (@(((ICollection<neMag.Models.Post>)@ViewBag.posts).Count))</a></li>
                         </ul>
                         <!-- /product tab nav -->
                         <!-- product tab content -->
@@ -226,12 +225,13 @@
                                                             }
 
                                                             @{
-                                                                double nr = @Model.Posts.Count(p => p.Rating == stars);
+                                                                double nr = (((ICollection<neMag.Models.Post>)ViewBag.reviews)).Count(p => p.Rating == stars);
+                                                                int n = ((ICollection<neMag.Models.Post>)ViewBag.reviews).Count;
                                                             }
 
                                                         </div>
                                                         <div class="rating-progress">
-                                                            <div style="width: @((@nr / @Model.Posts.Count) * 100)%;"></div>
+                                                            <div style="width: @((@nr / @n * 100))%;"></div>
                                                         </div>
                                                         <span class="sum">@nr</span>
                                                     </li>
@@ -244,47 +244,61 @@
                                     <div class="col-md-6">
                                         <div id="reviews">
                                             <ul class="reviews">
-                                                @foreach (var post in Model.Posts)
+                                                @foreach (var post in (ICollection<neMag.Models.Post>)ViewBag.reviews)
                                                 {
-                                                    if (post.isReview)
-                                                    {
-                                                        <li>
-                                                            <div class="review-heading">
-                                                                <h5 class="name">@post.User.Email</h5>
-                                                                <p class="date">@post.Date</p>
-                                                                <div class="review-rating">
-                                                                    @for (var i = 1; i <= 5; i++)
-                                                                    {
-                                                                        if (i <= post.Rating)
-                                                                        {
-                                                                            <i class="fa fa-star"></i>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <i class="fa fa-star-o empty"></i>
-                                                                        }
-                                                                    }
-                                                                </div>
-                                                            </div>
-                                                            <div class="review-body">
-                                                                <p>@post.Content</p>
-                                                                @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
+                                                    <li>
+                                                        <!-- Review heading-->
+                                                        <div class="review-heading">
+                                                            <h5 class="name">@post.User.Email</h5>
+                                                            <p class="date">@post.Date</p>
+                                                            <div class="review-rating">
+                                                                @for (var i = 1; i <= 5; i++)
                                                                 {
-                                                                    <div style="display: inline-block; float : left; margin-right: 15px">
-                                                                        <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
-                                                                    </div>
-
-                                                                    <div style="display: inline-block; float : left">
-                                                                        <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId})">
-                                                                            @Html.HttpMethodOverride(HttpVerbs.Delete)
-                                                                            <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
-                                                                        </form>
-                                                                    </div>
+                                                                    if (i <= post.Rating)
+                                                                    {
+                                                                        <i class="fa fa-star"></i>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <i class="fa fa-star-o empty"></i>
+                                                                    }
                                                                 }
                                                             </div>
+                                                        </div>
+                                                        <!-- /Review heading-->
+                                                        <!-- Review body-->
+                                                        <div class="review-body">
+                                                            <p>@post.Content</p>
+                                                            @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
+                                                            {
+                                                                <div style="display: inline-block; float : left; margin-right: 15px">
+                                                                    <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
+                                                                </div>
 
-                                                        </li>
-                                                    }
+                                                                <div style="display: inline-block; float : left">
+                                                                    <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId })">
+                                                                        @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                                                        <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
+                                                                    </form>
+                                                                </div>
+                                                            }
+                                                            @if (post.Photos.Count > 0)
+                                                            {
+                                                                <!--TODO: Make sure the carousel displays correctly when there is only one image-->
+                                                                <!-- Review thumb imgs -->
+                                                                <div class="post-imgs">
+                                                                    <div class="post-img">
+                                                                        @for (var i = 0; i < post.Photos.Count; i++)
+                                                                        {
+                                                                            <div><img src="@post.Photos[i].Path" alt="review photo"></div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <!-- /Review thumb imgs -->
+                                                            }
+                                                        </div>
+                                                        <!-- /Review body-->
+                                                    </li>
                                                 }
                                             </ul>
                                             <ul class="reviews-pagination">
@@ -303,8 +317,10 @@
                                         <!-- Review Form -->
                                         <div class="col-md-3">
                                             <div id="review-form">
-                                                <form class="review-form" method="post" action="/Posts/New">
+                                                @using (Html.BeginForm("New", "Posts", FormMethod.Post, new { enctype = "multipart/form-data", @class = "review-form" }))
+                                                {
                                                     <input type="hidden" name="ProductId" value="@Model.ProductId" />
+                                                    <input type="hidden" name="isReview" value="true" />
                                                     <textarea class="input" name="Content" placeholder="Recenzia ta"></textarea>
                                                     <div class="input-rating">
                                                         <span>Your Rating: </span>
@@ -317,13 +333,13 @@
                                                         </div>
                                                     </div>
 
-                                                    @for (var i = 0; i < 5; i++)
+                                                    for (var i = 0; i < 5; i++)
                                                     {
                                                         <input type="file" name="uploadedPhotos[@i]" />
                                                         <br />
                                                     }
                                                     <button class="primary-btn" type="submit">Submit</button>
-                                                </form>
+                                                }
                                             </div>
                                         </div>
                                         <!-- /Review Form -->
@@ -338,9 +354,97 @@
                             <!-- tab3  -->
                             <div id="tab3" class="tab-pane fade in">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <p>Sectiune Q&A</p>
+                                    <!-- Q&A -->
+                                    <div class="col-md-6">
+                                        <div id="reviews">
+                                            <ul class="reviews">
+                                                @foreach (var post in (ICollection<neMag.Models.Post>)ViewBag.posts)
+                                                {
+                                                    <li>
+                                                        <div class="review-heading">
+                                                            <h5 class="name">@post.User.Email</h5>
+                                                            @if (post.User.Roles.Any(r => r.RoleId == ViewBag.collaboratorRoleId))
+                                                            {
+                                                                <p class="badge">Colaborator</p>
+                                                            }
+                                                            else if (post.User.Roles.Any(r => r.RoleId == ViewBag.adminRoleId))
+                                                            {
+                                                                <p class="badge">Administrator</p>
+                                                            }
+                                                            <p class="date">@post.Date</p>
+                                                        </div>
+                                                        <div class="review-body">
+                                                            <p>@post.Content</p>
+                                                            @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
+                                                            {
+                                                                <div style="display: inline-block; float : left; margin-right: 15px">
+                                                                    <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
+                                                                </div>
+
+                                                                <div style="display: inline-block; float : left">
+                                                                    <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId})">
+                                                                        @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                                                        <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
+                                                                    </form>
+                                                                </div>
+                                                            }
+                                                            @if (post.Photos.Count > 0)
+                                                            {
+                                                                <!--TODO: Make sure the carousel displays correctly when there is only one image-->
+                                                                <!-- Q&A thumb imgs -->
+                                                                <div class="post-imgs">
+                                                                    <div class="post-img">
+                                                                        @for (var i = 0; i < post.Photos.Count; i++)
+                                                                        {
+                                                                            <div><img src="@post.Photos[i].Path" alt="review photo"></div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <!-- /Q&A thumb imgs -->
+                                                            }
+                                                        </div>
+
+                                                    </li>
+                                                }
+                                            </ul>
+                                            <ul class="reviews-pagination">
+                                                <li class="active">1</li>
+                                                <li><a href="#">2</a></li>
+                                                <li><a href="#">3</a></li>
+                                                <li><a href="#">4</a></li>
+                                                <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                                            </ul>
+                                        </div>
                                     </div>
+                                    <!-- /Q&A -->
+
+                                    @if (User.Identity.IsAuthenticated && !User.IsInRole("RestrictedUser"))
+                                    {
+                                        <!-- Q&A Form -->
+                                        <div class="col-md-3">
+                                            <div id="review-form">
+                                                @using (Html.BeginForm("New", "Posts", FormMethod.Post, new { enctype = "multipart/form-data", @class = "review-form" }))
+                                                {
+                                                    <input type="hidden" name="ProductId" value="@Model.ProductId" />
+                                                    <input type="hidden" name="isReview" value="false" />
+                                                    <textarea class="input" name="Content" placeholder="Intrebarea ta"></textarea>
+
+                                                    for (var i = 0; i < 5; i++)
+                                                    {
+                                                        <input type="file" name="uploadedPhotos[@i]" />
+                                                        <br />
+                                                    }
+
+                                                    <button class="primary-btn" type="submit">Submit</button>
+                                                }
+                                            </div>
+                                        </div>
+                                        <!-- /Q&A Form -->
+                                    }
+                                    else
+                                    {
+                                        <p>Trebuie sa fii autentificat pentru a posta o intrebare/raspuns!</p>
+                                    }
                                 </div>
                             </div>
                             <!-- /tab3  -->
@@ -355,139 +459,139 @@
         <!-- /container -->
     </div>
     <!-- /SECTION -->
-    @* 
-    Section  - Related products
-    <div class="section">
-        <!-- container -->
-        <div class="container">
-            <!-- row -->
-            <div class="row">
+    @*
+        Section  - Related products
+        <div class="section">
+            <!-- container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
 
-                <div class="col-md-12">
-                    <div class="section-title text-center">
-                        <h3 class="title">Related Products</h3>
-                    </div>
-                </div>
-
-                <!-- product -->
-                <div class="col-md-3 col-xs-6">
-                    <div class="product">
-                        <div class="product-img">
-                            <img src="/Photos/phone.jpg" alt="">
-                            <div class="product-label">
-                                <span class="sale">-30%</span>
-                            </div>
-                        </div>
-                        <div class="product-body">
-                            <p class="product-category">Category</p>
-                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                            <div class="product-rating">
-                            </div>
-                        </div>
-                        <div class="add-to-cart">
-                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
+                    <div class="col-md-12">
+                        <div class="section-title text-center">
+                            <h3 class="title">Related Products</h3>
                         </div>
                     </div>
-                </div>
-                <!-- /product -->
-                <!-- product -->
-                <div class="col-md-3 col-xs-6">
-                    <div class="product">
-                        <div class="product-img">
-                            <img src="/Photos/phone.jpg" alt="">
-                            <div class="product-label">
-                                <span class="new">NEW</span>
+
+                    <!-- product -->
+                    <div class="col-md-3 col-xs-6">
+                        <div class="product">
+                            <div class="product-img">
+                                <img src="/Photos/phone.jpg" alt="">
+                                <div class="product-label">
+                                    <span class="sale">-30%</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="product-body">
-                            <p class="product-category">Category</p>
-                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                            <div class="product-rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
+                            <div class="product-body">
+                                <p class="product-category">Category</p>
+                                <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                <div class="product-rating">
+                                </div>
                             </div>
-                            <div class="product-btns">
-                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                            <div class="add-to-cart">
+                                <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
                             </div>
-                        </div>
-                        <div class="add-to-cart">
-                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
                         </div>
                     </div>
-                </div>
-                <!-- /product -->
-
-                <div class="clearfix visible-sm visible-xs"></div>
-
-                <!-- product -->
-                <div class="col-md-3 col-xs-6">
-                    <div class="product">
-                        <div class="product-img">
-                            <img src="/Photos/phone.jpg" alt="">
-                        </div>
-                        <div class="product-body">
-                            <p class="product-category">Category</p>
-                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                            <div class="product-rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star-o"></i>
+                    <!-- /product -->
+                    <!-- product -->
+                    <div class="col-md-3 col-xs-6">
+                        <div class="product">
+                            <div class="product-img">
+                                <img src="/Photos/phone.jpg" alt="">
+                                <div class="product-label">
+                                    <span class="new">NEW</span>
+                                </div>
                             </div>
-                            <div class="product-btns">
-                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                            <div class="product-body">
+                                <p class="product-category">Category</p>
+                                <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                <div class="product-rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product-btns">
+                                    <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                    <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                    <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="add-to-cart">
-                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                            <div class="add-to-cart">
+                                <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- /product -->
-                <!-- product -->
-                <div class="col-md-3 col-xs-6">
-                    <div class="product">
-                        <div class="product-img">
-                            <img src="/Photos/phone.jpg" alt="">
-                        </div>
-                        <div class="product-body">
-                            <p class="product-category">Category</p>
-                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                            <div class="product-rating">
+                    <!-- /product -->
+
+                    <div class="clearfix visible-sm visible-xs"></div>
+
+                    <!-- product -->
+                    <div class="col-md-3 col-xs-6">
+                        <div class="product">
+                            <div class="product-img">
+                                <img src="/Photos/phone.jpg" alt="">
                             </div>
-                            <div class="product-btns">
-                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                            <div class="product-body">
+                                <p class="product-category">Category</p>
+                                <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                <div class="product-rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                </div>
+                                <div class="product-btns">
+                                    <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                    <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                    <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="add-to-cart">
-                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                            <div class="add-to-cart">
+                                <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- /product -->
+                    <!-- /product -->
+                    <!-- product -->
+                    <div class="col-md-3 col-xs-6">
+                        <div class="product">
+                            <div class="product-img">
+                                <img src="/Photos/phone.jpg" alt="">
+                            </div>
+                            <div class="product-body">
+                                <p class="product-category">Category</p>
+                                <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                <div class="product-rating">
+                                </div>
+                                <div class="product-btns">
+                                    <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                    <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                    <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                </div>
+                            </div>
+                            <div class="add-to-cart">
+                                <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /product -->
 
+                </div>
+                <!-- /row -->
             </div>
-            <!-- /row -->
+            <!-- /container -->
         </div>
-        <!-- /container -->
-    </div>
-    <!-- /Section -->
+        <!-- /Section -->
     *@
-    
+
     <!-- jQuery Plugins -->
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>

@@ -94,6 +94,12 @@
 		]
 	});
 
+	$('.post-img').slick({
+		slidesToShow: 1,
+		dots: false,
+		centerMode: true,
+	})
+
 	// Product img zoom
 	var zoomMainProduct = document.getElementById('product-main-img');
 	if (zoomMainProduct) {

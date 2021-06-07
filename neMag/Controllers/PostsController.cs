@@ -77,13 +77,15 @@ namespace neMag.Controllers
         public ActionResult New(Post post, HttpPostedFileBase[] uploadedPhotos)
         {
             post.Date = DateTime.Now;
-            post.isReview = true; // PLACEHOLDER: For now, all posts are reviews.
+            // post.isReview = true; // PLACEHOLDER: For now, all posts are reviews.
             post.UserId = User.Identity.GetUserId();
 
             try
             {
-                if (post.isReview &&
-                    !(from p in db.Posts where p.UserId == post.UserId && p.ProductId == post.ProductId select p).Any())
+                // Make sure that a user cannot make multiple reviews on the same product
+                if ((post.isReview &&
+                    !(from p in db.Posts where p.UserId == post.UserId && p.ProductId == post.ProductId && p.isReview select p).Any())
+                    || !post.isReview)
                 {
 
                     if (ModelState.IsValid)
@@ -154,7 +156,7 @@ namespace neMag.Controllers
             double sum = 0.0;
             int n;
             var revs = from post in db.Posts
-                       where post.ProductId == id && post.isReview == true
+                       where post.ProductId == id && post.isReview
                        select post;
 
             n = revs.Count();
