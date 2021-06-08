@@ -175,8 +175,8 @@
                         <!-- product tab nav -->
                         <ul class="tab-nav">
                             <li class="active"><a data-toggle="tab" href="#tab1">Descriere produs</a></li>
-                            <li><a data-toggle="tab" href="#tab2">Recenzii (@(((List<Post>)@ViewBag.reviews).Count))</a></li>
-                            <li><a data-toggle="tab" href="#tab3">Intrebari si raspunsuri (@(((List<Post>)@ViewBag.posts).Count))</a></li>
+                            <li><a data-toggle="tab" href="#tab2" onclick="slick_refresh()">Recenzii (@(((List<Post>)@ViewBag.reviews).Count))</a></li>
+                            <li><a data-toggle="tab" href="#tab3" onclick="slick_refresh()">Intrebari si raspunsuri (@(((List<Post>)@ViewBag.posts).Count))</a></li>
                         </ul>
                         <!-- /product tab nav -->
                         <!-- product tab content -->
@@ -316,10 +316,10 @@
                                                 }
                                             </div>
                                             <ul class="reviews-pagination">
-                                                <li class="active"><a href="#reviews-pagination-1" data-toggle="tab">1</a></li>
+                                                <li class="active"><a href="#reviews-pagination-1" onclick="slick_refresh()" data-toggle="tab">1</a></li>
                                                 @for (var i = 2; i <= ViewBag.pagesReviews; i++)
                                                 {
-                                                    <li><a href="#reviews-pagination-@i" data-toggle="tab">@i</a></li>
+                                                    <li><a href="#reviews-pagination-@i" onclick="slick_refresh()" data-toggle="tab">@i</a></li>
                                                 }
                                             </ul>
                                         </div>
@@ -408,7 +408,7 @@
                                                                                 </form>
                                                                             </div>
                                                                         }
-                                                                        @if (post.Photos.Count > 0)
+                                                                        @if (post.Photos.Count > 1)
                                                                         {
                                                                             <!--TODO: Make sure the carousel displays correctly when there is only one image-->
                                                                             <!-- Q&A thumb imgs -->
@@ -422,6 +422,12 @@
                                                                             </div>
                                                                             <!-- /Q&A thumb imgs -->
                                                                         }
+                                                                        else if (post.Photos.Count == 1)
+                                                                        {
+                                                                            <div class="post-img-no-carousel">
+                                                                                <img src="@post.Photos[0].Path" alt="review photo">
+                                                                            </div>
+                                                                        }
                                                                     </div>
                                                                 </li>
                                                             }
@@ -430,10 +436,10 @@
                                                 }
                                             </div>
                                             <ul class="reviews-pagination">
-                                                <li class="active"><a href="#postsQA-pagination-1" data-toggle="tab">1</a></li>
+                                                <li class="active"><a href="#postsQA-pagination-1" onclick="slick_refresh()" data-toggle="tab">1</a></li>
                                                 @for (var i = 2; i <= ViewBag.pagesQA; i++)
                                                 {
-                                                    <li><a href="#postsQA-pagination-@i" data-toggle="tab">@i</a></li>
+                                                    <li><a href="#postsQA-pagination-@i" onclick="slick_refresh()" data-toggle="tab">@i</a></li>
                                                 }
                                             </ul>
                                         </div>
@@ -621,6 +627,15 @@
     <script src="~/Scripts/nouislider.min.js"></script>
     <script src="~/Scripts/jquery.zoom.min.js"></script>
     <script src="~/Scripts/main.js"></script>
+
+    <script>
+        function slick_refresh() {
+            $(".slick-next").map(function () {
+                $(this).click();
+                console.log("Am dat click din cod!");
+            });
+        }
+    </script>
 
 </body>
 </html>

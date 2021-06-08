@@ -2212,6 +2212,12 @@ textarea.input {
     left: -15%;
 }
 
+.post-img-no-carousel > img {
+    width: 50%;
+    margin: 7% auto;
+    left: -15%;
+}
+
 .slick-slide {
     margin: 10px;
 }
