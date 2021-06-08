@@ -49,14 +49,14 @@
                         {
                             for (var i = 0; i < Model.Photos.Count; i++)
                             {
-                                @:<div class="product-preview">
-                                    @:    <img src="@Model.Photos[i].Path" alt="@Model.ProductName">
-                                @:</div>
+                        @:<div class="product-preview">
+                            @:    <img src="@Model.Photos[i].Path" alt="@Model.ProductName">
+                        @:</div>
                             }
                         }
                         else
                         {
-                            <img src="https://i.imgur.com/S3AdcES.png" alt="defaultImage">
+                        <img src="https://i.imgur.com/S3AdcES.png" alt="defaultImage">
                         }
 
                     </div>
@@ -69,14 +69,14 @@
                         {
                             for (var i = 0; i < Model.Photos.Count; i++)
                             {
-                                @:<div class="product-preview">
-                                    @:    <img src="@Model.Photos[i].Path" alt="@Model.ProductName">
-                                @:</div>
+                        @:<div class="product-preview">
+                            @:    <img src="@Model.Photos[i].Path" alt="@Model.ProductName">
+                        @:</div>
                             }
                         }
                         else
                         {
-                            <img src="https://i.imgur.com/S3AdcES.png" alt="defaultImage">
+                        <img src="https://i.imgur.com/S3AdcES.png" alt="defaultImage">
                         }
                     </div>
                 </div>
@@ -91,11 +91,11 @@
                                 {
                                     if (i <= (int)Model.Rating)
                                     {
-                                        <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
                                     }
                                     else
                                     {
-                                        <i class="fa fa-star-o empty"></i>
+                                <i class="fa fa-star-o empty"></i>
                                     }
                                 }
                             </div>
@@ -132,7 +132,7 @@
                                 var cat = Model.Category;
                                 while (cat != null)
                                 {
-                                    <li><a href="#">@cat.Title</a></li>
+                                <li><a href="#">@cat.Title</a></li>
                                     if (cat.ParentId > 0)
                                     {
                                         cat = cat.Parent;
@@ -152,21 +152,21 @@
                 @if (User.IsInRole("Admin") || (User.IsInRole("Collaborator") && User.Identity.GetUserId() == Model.UserId))
                 {
                     <!-- Modify product buttons-->
-                    <div class="col-md-4">
-                        <br />
-                        <div class="row">
-                            <div class="col-sm">
-                                <a class="btn btn-success pull-left" href="/Products/Edit/@Model.ProductId"><div class="glyphicon glyphicon-pencil"></div> Modifica Produs</a>
-                            </div>
-                            <div class="col-sm">
-                                <form method="post" action="/Products/Delete/@Model.ProductId">
-                                    @Html.HttpMethodOverride(HttpVerbs.Delete)
-                                    <button class="btn btn-danger pull-right" type="submit"><div class="glyphicon glyphicon-trash"></div>  Sterge Produs</button>
-                                </form>
-                            </div>
+                <div class="col-md-4">
+                    <br />
+                    <div class="row">
+                        <div class="col-sm">
+                            <a class="btn btn-success pull-left" href="/Products/Edit/@Model.ProductId"><div class="glyphicon glyphicon-pencil"></div> Modifica Produs</a>
+                        </div>
+                        <div class="col-sm">
+                            <form method="post" action="/Products/Delete/@Model.ProductId">
+                                @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                <button class="btn btn-danger pull-right" type="submit"><div class="glyphicon glyphicon-trash"></div>  Sterge Produs</button>
+                            </form>
                         </div>
                     </div>
-                    <!-- /Modify product buttons-->
+                </div>
+ <!-- /Modify product buttons-->
                 }
 
                 <!-- Product tab -->
@@ -203,11 +203,11 @@
                                                     {
                                                         if (i <= (int)Model.Rating)
                                                         {
-                                                            <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
                                                         }
                                                         else
                                                         {
-                                                            <i class="fa fa-star-o empty"></i>
+                                                    <i class="fa fa-star-o empty"></i>
                                                         }
                                                     }
                                                 </div>
@@ -215,31 +215,31 @@
                                             <ul class="rating">
                                                 @for (var stars = 5; stars >= 1; stars--)
                                                 {
-                                                    <li>
-                                                        <div class="rating-stars">
-                                                            @for (var i = 1; i <= 5; i++)
+                                                <li>
+                                                    <div class="rating-stars">
+                                                        @for (var i = 1; i <= 5; i++)
                                                             {
                                                                 if (i <= stars)
                                                                 {
-                                                                    <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
                                                                 }
                                                                 else
                                                                 {
-                                                                    <i class="fa fa-star-o empty"></i>
+                                                        <i class="fa fa-star-o empty"></i>
                                                                 }
                                                             }
 
-                                                            @{
+                                                        @{
                                                                 double nr = (((List<Post>)ViewBag.reviews)).Count(p => p.Rating == stars);
                                                                 int n = ((List<Post>)ViewBag.reviews).Count;
-                                                            }
+                                                        }
 
-                                                        </div>
-                                                        <div class="rating-progress">
-                                                            <div style="width: @((@nr / @n * 100))%;"></div>
-                                                        </div>
-                                                        <span class="sum">@nr</span>
-                                                    </li>
+                                                    </div>
+                                                    <div class="rating-progress">
+                                                        <div style="width: @((@nr / @n * 100))%;"></div>
+                                                    </div>
+                                                    <span class="sum">@nr</span>
+                                                </li>
                                                 }
                                             </ul>
                                         </div>
@@ -251,81 +251,81 @@
                                             <div class="tab-content">
                                                 @for (var page = 1; page <= ViewBag.pagesReviews; page++)
                                                 {
-                                                    <div id="reviews-pagination-@page" class="tab-pane fade in @(page == 1 ? "active" : "")">
-                                                        <ul class="reviews">
-                                                            @for (var i = (page - 1) * ViewBag.postsPerPage;
+                                                <div id="reviews-pagination-@page" class="tab-pane fade in @(page == 1 ? "active" : "")">
+                                                    <ul class="reviews">
+                                                        @for (var i = (page - 1) * ViewBag.postsPerPage;
                                                                 i < page * ViewBag.postsPerPage && i < ((List<Post>)ViewBag.reviews).Count; i++)
                                                             {
                                                                 Post post = ((List<Post>)ViewBag.reviews)[i];
-                                                                <li>
-                                                                    <!-- Review heading-->
-                                                                    <div class="review-heading">
-                                                                        <h5 class="name">@post.User.Email</h5>
-                                                                        <p class="date">@post.Date</p>
-                                                                        <div class="review-rating">
-                                                                            @for (var stars = 1; stars <= 5; stars++)
+                                                        <li>
+                                                            <!-- Review heading-->
+                                                            <div class="review-heading">
+                                                                <h5 class="name">@post.User.Email</h5>
+                                                                <p class="date">@post.Date</p>
+                                                                <div class="review-rating">
+                                                                    @for (var stars = 1; stars <= 5; stars++)
                                                                             {
                                                                                 if (stars <= post.Rating)
                                                                                 {
-                                                                                    <i class="fa fa-star"></i>
+                                                                    <i class="fa fa-star"></i>
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    <i class="fa fa-star-o empty"></i>
+                                                                    <i class="fa fa-star-o empty"></i>
                                                                                 }
                                                                             }
-                                                                        </div>
-                                                                    </div>
-                                                                    <!-- /Review heading-->
-                                                                    <!-- Review body-->
-                                                                    <div class="review-body">
-                                                                        <p>@post.Content</p>
-                                                                        @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
+                                                                </div>
+                                                            </div>
+                                                            <!-- /Review heading-->
+                                                            <!-- Review body-->
+                                                            <div class="review-body">
+                                                                <p>@post.Content</p>
+                                                                @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
                                                                         {
-                                                                            <div style="display: inline-block; float : left; margin-right: 15px">
-                                                                                <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
-                                                                            </div>
+                                                                <div style="display: inline-block; float : left; margin-right: 15px">
+                                                                    <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
+                                                                </div>
 
-                                                                            <div style="display: inline-block; float : left">
-                                                                                <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId })">
-                                                                                    @Html.HttpMethodOverride(HttpVerbs.Delete)
-                                                                                    <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
-                                                                                </form>
-                                                                            </div>
+                                                                <div style="display: inline-block; float : left">
+                                                                    <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId })">
+                                                                        @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                                                        <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
+                                                                    </form>
+                                                                </div>
                                                                         }
-                                                                        @if (post.Photos.Count > 1)
+                                                                @if (post.Photos.Count > 1)
                                                                         {
                                                                             <!--TODO: Make sure the carousel displays correctly when there is only one image-->
-                                                                            <!-- Review thumb imgs -->
-                                                                            <div class="post-imgs">
-                                                                                <div class="post-img">
-                                                                                    @for (var idx = 0; idx < post.Photos.Count; idx++)
+ <!-- Review thumb imgs -->
+                                                                <div class="post-imgs">
+                                                                    <div class="post-img">
+                                                                        @for (var idx = 0; idx < post.Photos.Count; idx++)
                                                                                     {
-                                                                                        <div><img src="@post.Photos[idx].Path" alt="review photo"></div>
+                                                                        <div><img src="@post.Photos[idx].Path" alt="review photo"></div>
                                                                                     }
-                                                                                </div>
-                                                                            </div>
-                                                                            <!-- /Review thumb imgs -->
+                                                                    </div>
+                                                                </div>
+ <!-- /Review thumb imgs -->
                                                                         }
                                                                         else if (post.Photos.Count == 1)
                                                                         {
-                                                                            <div class="post-img-no-carousel">
-                                                                                <img src="@post.Photos[0].Path" alt="review photo">
-                                                                            </div>
+                                                                <div class="post-img-no-carousel">
+                                                                    <img src="@post.Photos[0].Path" alt="review photo">
+                                                                </div>
                                                                         }
-                                                                    </div>
-                                                                    <!-- /Review body-->
-                                                                </li>
+                                                            </div>
+                                                            <!-- /Review body-->
+                                                        </li>
                                                             }
-                                                        </ul>
-                                                    </div>
+                                                    </ul>
+                                                </div>
                                                 }
                                             </div>
                                             <ul class="reviews-pagination">
                                                 <li class="active"><a href="#reviews-pagination-1" onclick="slick_refresh()" data-toggle="tab">1</a></li>
                                                 @for (var i = 2; i <= ViewBag.pagesReviews; i++)
                                                 {
-                                                    <li><a href="#reviews-pagination-@i" onclick="slick_refresh()" data-toggle="tab">@i</a></li>
+                                                <li><a href="#reviews-pagination-@i" onclick="slick_refresh()" data-toggle="tab">@i</a></li>
                                                 }
                                             </ul>
                                         </div>
@@ -335,38 +335,38 @@
                                     @if (User.Identity.IsAuthenticated && !User.IsInRole("RestrictedUser"))
                                     {
                                         <!-- Review Form -->
-                                        <div class="col-md-3">
-                                            <div id="review-form">
-                                                @using (Html.BeginForm("New", "Posts", FormMethod.Post, new { enctype = "multipart/form-data", @class = "review-form" }))
+                                    <div class="col-md-3">
+                                        <div id="review-form">
+                                            @using (Html.BeginForm("New", "Posts", FormMethod.Post, new { enctype = "multipart/form-data", @class = "review-form" }))
                                                 {
-                                                    <input type="hidden" name="ProductId" value="@Model.ProductId" />
-                                                    <input type="hidden" name="isReview" value="true" />
-                                                    <textarea class="input" name="Content" placeholder="Recenzia ta"></textarea>
-                                                    <div class="input-rating">
-                                                        <span>Your Rating: </span>
-                                                        <div class="stars">
-                                                            <input id="star5" name="Rating" value="5" type="radio"><label for="star5"></label>
-                                                            <input id="star4" name="Rating" value="4" type="radio"><label for="star4"></label>
-                                                            <input id="star3" name="Rating" value="3" type="radio"><label for="star3"></label>
-                                                            <input id="star2" name="Rating" value="2" type="radio"><label for="star2"></label>
-                                                            <input id="star1" name="Rating" value="1" type="radio"><label for="star1"></label>
-                                                        </div>
-                                                    </div>
+                                            <input type="hidden" name="ProductId" value="@Model.ProductId" />
+                                            <input type="hidden" name="isReview" value="true" />
+                                            <textarea class="input" name="Content" placeholder="Recenzia ta"></textarea>
+                                            <div class="input-rating">
+                                                <span>Your Rating: </span>
+                                                <div class="stars">
+                                                    <input id="star5" name="Rating" value="5" type="radio"><label for="star5"></label>
+                                                    <input id="star4" name="Rating" value="4" type="radio"><label for="star4"></label>
+                                                    <input id="star3" name="Rating" value="3" type="radio"><label for="star3"></label>
+                                                    <input id="star2" name="Rating" value="2" type="radio"><label for="star2"></label>
+                                                    <input id="star1" name="Rating" value="1" type="radio"><label for="star1"></label>
+                                                </div>
+                                            </div>
 
                                                     for (var i = 0; i < 5; i++)
                                                     {
-                                                        <input type="file" name="uploadedPhotos[@i]" />
-                                                        <br />
+                                            <input type="file" name="uploadedPhotos[@i]" />
+                                            <br />
                                                     }
-                                                    <button class="primary-btn" type="submit">Submit</button>
+                                            <button class="primary-btn" type="submit">Submit</button>
                                                 }
-                                            </div>
                                         </div>
-                                        <!-- /Review Form -->
+                                    </div>
+ <!-- /Review Form -->
                                     }
                                     else
                                     {
-                                        <p>Trebuie sa fii autentificat pentru a posta o recenzie!</p>
+                                    <p>Trebuie sa fii autentificat pentru a posta o recenzie!</p>
                                     }
                                 </div>
                             </div>
@@ -380,72 +380,72 @@
                                             <div class="tab-content">
                                                 @for (var page = 1; page <= ViewBag.pagesQA; page++)
                                                 {
-                                                    <div id="postsQA-pagination-@page" class="tab-pane fade in @(page == 1 ? "active" : "")">
-                                                        <ul class="reviews">
-                                                            @for (var i = (page - 1) * ViewBag.postsPerPage;
+                                                <div id="postsQA-pagination-@page" class="tab-pane fade in @(page == 1 ? "active" : "")">
+                                                    <ul class="reviews">
+                                                        @for (var i = (page - 1) * ViewBag.postsPerPage;
                                                                 i < page * ViewBag.postsPerPage && i < ((List<Post>)ViewBag.posts).Count; i++)
                                                             {
                                                                 Post post = ((List<Post>)ViewBag.posts)[i];
-                                                                <li>
-                                                                    <div class="review-heading">
-                                                                        <h5 class="name">@post.User.Email</h5>
-                                                                        @if (post.User.Roles.Any(r => r.RoleId == ViewBag.collaboratorRoleId))
+                                                        <li>
+                                                            <div class="review-heading">
+                                                                <h5 class="name">@post.User.Email</h5>
+                                                                @if (post.User.Roles.Any(r => r.RoleId == ViewBag.collaboratorRoleId))
                                                                         {
-                                                                            <p class="badge">Colaborator</p>
+                                                                <p class="badge">Colaborator</p>
                                                                         }
                                                                         else if (post.User.Roles.Any(r => r.RoleId == ViewBag.adminRoleId))
                                                                         {
-                                                                            <p class="badge">Administrator</p>
+                                                                <p class="badge">Administrator</p>
                                                                         }
-                                                                        <p class="date">@post.Date</p>
-                                                                    </div>
-                                                                    <div class="review-body">
-                                                                        <p>@post.Content</p>
-                                                                        @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
+                                                                <p class="date">@post.Date</p>
+                                                            </div>
+                                                            <div class="review-body">
+                                                                <p>@post.Content</p>
+                                                                @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
                                                                         {
-                                                                            <div style="display: inline-block; float : left; margin-right: 15px">
-                                                                                <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
-                                                                            </div>
+                                                                <div style="display: inline-block; float : left; margin-right: 15px">
+                                                                    <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
+                                                                </div>
 
-                                                                            <div style="display: inline-block; float : left">
-                                                                                <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId})">
-                                                                                    @Html.HttpMethodOverride(HttpVerbs.Delete)
-                                                                                    <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
-                                                                                </form>
-                                                                            </div>
+                                                                <div style="display: inline-block; float : left">
+                                                                    <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId})">
+                                                                        @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                                                        <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
+                                                                    </form>
+                                                                </div>
                                                                         }
-                                                                        @if (post.Photos.Count > 1)
+                                                                @if (post.Photos.Count > 1)
                                                                         {
                                                                             <!--TODO: Make sure the carousel displays correctly when there is only one image-->
-                                                                            <!-- Q&A thumb imgs -->
-                                                                            <div class="post-imgs">
-                                                                                <div class="post-img">
-                                                                                    @for (var idx = 0; idx < post.Photos.Count; idx++)
+ <!-- Q&A thumb imgs -->
+                                                                <div class="post-imgs">
+                                                                    <div class="post-img">
+                                                                        @for (var idx = 0; idx < post.Photos.Count; idx++)
                                                                                     {
-                                                                                        <div><img src="@post.Photos[idx].Path" alt="review photo"></div>
+                                                                        <div><img src="@post.Photos[idx].Path" alt="review photo"></div>
                                                                                     }
-                                                                                </div>
-                                                                            </div>
-                                                                            <!-- /Q&A thumb imgs -->
+                                                                    </div>
+                                                                </div>
+ <!-- /Q&A thumb imgs -->
                                                                         }
                                                                         else if (post.Photos.Count == 1)
                                                                         {
-                                                                            <div class="post-img-no-carousel">
-                                                                                <img src="@post.Photos[0].Path" alt="review photo">
-                                                                            </div>
+                                                                <div class="post-img-no-carousel">
+                                                                    <img src="@post.Photos[0].Path" alt="review photo">
+                                                                </div>
                                                                         }
-                                                                    </div>
-                                                                </li>
+                                                            </div>
+                                                        </li>
                                                             }
-                                                        </ul>
-                                                    </div>
+                                                    </ul>
+                                                </div>
                                                 }
                                             </div>
                                             <ul class="reviews-pagination">
                                                 <li class="active"><a href="#postsQA-pagination-1" onclick="slick_refresh()" data-toggle="tab">1</a></li>
                                                 @for (var i = 2; i <= ViewBag.pagesQA; i++)
                                                 {
-                                                    <li><a href="#postsQA-pagination-@i" onclick="slick_refresh()" data-toggle="tab">@i</a></li>
+                                                <li><a href="#postsQA-pagination-@i" onclick="slick_refresh()" data-toggle="tab">@i</a></li>
                                                 }
                                             </ul>
                                         </div>
@@ -455,29 +455,29 @@
                                     @if (User.Identity.IsAuthenticated && !User.IsInRole("RestrictedUser"))
                                     {
                                         <!-- Q&A Form -->
-                                        <div class="col-md-3">
-                                            <div id="review-form">
-                                                @using (Html.BeginForm("New", "Posts", FormMethod.Post, new { enctype = "multipart/form-data", @class = "review-form" }))
+                                    <div class="col-md-3">
+                                        <div id="review-form">
+                                            @using (Html.BeginForm("New", "Posts", FormMethod.Post, new { enctype = "multipart/form-data", @class = "review-form" }))
                                                 {
-                                                    <input type="hidden" name="ProductId" value="@Model.ProductId" />
-                                                    <input type="hidden" name="isReview" value="false" />
-                                                    <textarea class="input" name="Content" placeholder="Intrebarea ta"></textarea>
+                                            <input type="hidden" name="ProductId" value="@Model.ProductId" />
+                                            <input type="hidden" name="isReview" value="false" />
+                                            <textarea class="input" name="Content" placeholder="Intrebarea ta"></textarea>
 
                                                     for (var i = 0; i < 5; i++)
                                                     {
-                                                        <input type="file" name="uploadedPhotos[@i]" />
-                                                        <br />
+                                            <input type="file" name="uploadedPhotos[@i]" />
+                                            <br />
                                                     }
 
-                                                    <button class="primary-btn" type="submit">Submit</button>
+                                            <button class="primary-btn" type="submit">Submit</button>
                                                 }
-                                            </div>
                                         </div>
-                                        <!-- /Q&A Form -->
+                                    </div>
+ <!-- /Q&A Form -->
                                     }
                                     else
                                     {
-                                        <p>Trebuie sa fii autentificat pentru a posta o intrebare/raspuns!</p>
+                                    <p>Trebuie sa fii autentificat pentru a posta o intrebare/raspuns!</p>
                                     }
                                 </div>
                             </div>
@@ -633,6 +633,14 @@
     <script src="~/Scripts/nouislider.min.js"></script>
     <script src="~/Scripts/jquery.zoom.min.js"></script>
     <script src="~/Scripts/main.js"></script>
+
+    <style>
+        a:hover, a:focus {
+            color: white;
+            text-decoration: none;
+            outline: none;
+        }
+    </style>
 
     <script>
         function slick_refresh() {
