@@ -293,7 +293,7 @@
                                                                                 </form>
                                                                             </div>
                                                                         }
-                                                                        @if (post.Photos.Count > 0)
+                                                                        @if (post.Photos.Count > 1)
                                                                         {
                                                                             <!--TODO: Make sure the carousel displays correctly when there is only one image-->
                                                                             <!-- Review thumb imgs -->
@@ -306,6 +306,12 @@
                                                                                 </div>
                                                                             </div>
                                                                             <!-- /Review thumb imgs -->
+                                                                        }
+                                                                        else if (post.Photos.Count == 1)
+                                                                        {
+                                                                            <div class="post-img-no-carousel">
+                                                                                <img src="@post.Photos[0].Path" alt="review photo">
+                                                                            </div>
                                                                         }
                                                                     </div>
                                                                     <!-- /Review body-->
