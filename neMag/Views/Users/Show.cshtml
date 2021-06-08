@@ -162,7 +162,7 @@
                             <div id="product-tab" style="margin-top:0">
                                 <div class="subsection">
                                     <div class="subsection-title">
-                                        <p> Datele contului <p>
+                                        <p> Datele mele <p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -191,38 +191,70 @@
 
             if (User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
             {
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <h3> Comenzile mele </h3>
-                        @foreach (neMag.Models.Order order in ViewBag.orders)
-                        {
-                            if (order.Status == "Done")
-                            {
-                                <hr />
-                                <div style="display: table; width: 100%">
-                                    <strong style="display:table-cell; width: 20%"> Comanda numarul: @order.OrderId </strong> <br />
-                                    <p style="display:table-cell; width: 30%"> Comanda plasata la data: @order.Date </p>
-                                    <p style="display:table-cell; width: 10%"> Total: @order.TotalPrice </p>
-                                    <p style="display:table-cell; width: 30%"> Status: <strong> Finalizat </strong> </p>
-                                    <h3 style="display:table-cell; text-align: right">
-                                        <a class="btn btn-primary" href="/Cos/Show/@order.OrderId"> Detalii </a>
-                                    </h3>
+                <div class="section">
+                    <!-- container -->
+                    <div class="container">
+                        <div class="row">
+                            <!-- Product tab -->
+                            <div class="col-md-12">
+                                <div id="product-tab" style="margin-top:0">
+                                    <div class="subsection">
+                                        <div class="subsection-title">
+                                            <p> Comenzile mele <p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            @{
+                                                var idx = false;
+                                                foreach (neMag.Models.Order order in ViewBag.orders)
+                                                {
+                                                    if (order.Status == "Done")
+                                                    {
+                                                        if (idx == true)
+                                                        {
+                                                            <hr />
+                                                        }
+
+                                                        idx = true;
+                                                        <div style="display: table; width: 100%">
+                                                            <strong style="display:table-cell; width: 20%"> Comanda numarul: @order.OrderId </strong> <br />
+                                                            <p style="display:table-cell; width: 30%"> Comanda plasata la data: @order.Date </p>
+                                                            <p style="display:table-cell; width: 10%"> Total: @order.TotalPrice </p>
+                                                            <p style="display:table-cell; width: 30%"> Status: <strong> Finalizat </strong> </p>
+                                                            <h3 style="display:table-cell; text-align: right">
+                                                                <a class="btn btn-primary" href="/Cos/Show/@order.OrderId"> Detalii </a>
+                                                            </h3>
+                                                        </div>
+                                                    }
+                                                    if (order.Status == "Sent")
+                                                    {
+                                                        if (idx == true)
+                                                        {
+                                                            <hr />
+                                                        }
+
+                                                        idx = true;
+                                                        <div style="display: table; width: 100%">
+                                                            <strong style="display:table-cell; width: 20%"> Comanda numarul: @order.OrderId </strong> <br />
+                                                            <p style="display:table-cell; width: 30%"> Comanda plasata la data: @order.Date </p>
+                                                            <p style="display:table-cell; width: 10%"> Total: @order.TotalPrice </p>
+                                                            <p style="display:table-cell; width: 30%"> Status: <strong> In curs de procesare </strong> </p>
+                                                            <h3 style="display:table-cell; text-align: right">
+                                                                <a class="btn btn-primary" href="/Cos/Show/@order.OrderId"> Detalii </a>
+                                                            </h3>
+                                                        </div>
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                        <!-- /product tab content  -->
+                                    </div>
                                 </div>
-                            }
-                            if (order.Status == "Sent")
-                            {
-                                <hr />
-                                <div style="display: table; width: 100%">
-                                    <strong style="display:table-cell; width: 20%"> Comanda numarul: @order.OrderId </strong> <br />
-                                    <p style="display:table-cell; width: 30%"> Comanda plasata la data: @order.Date </p>
-                                    <p style="display:table-cell; width: 10%"> Total: @order.TotalPrice </p>
-                                    <p style="display:table-cell; width: 30%"> Status: <strong> In curs de procesare </strong> </p>
-                                    <h3 style="display:table-cell; text-align: right">
-                                        <a class="btn btn-primary" href="/Cos/Show/@order.OrderId"> Detalii </a>
-                                    </h3>
-                                </div>
-                            }
-                        }
+                                <!-- /product tab -->
+                            </div>
+                            <!-- Products tab & slick -->
+                        </div>
                     </div>
                 </div>
             }
@@ -234,12 +266,6 @@
                     {
                         <div style="width: 100%">
                             <hr />
-                            <div style="width:15%; display: inline-block; margin-right: 0.5em">
-                                <picture>
-                                    <img class="my-image" src="@post.Product.Photo" alt="@post.Product.ProductName">
-                                </picture> <br /> <br />
-                                <p style="text-align: center"> @post.Product.ProductName </p>
-                            </div>
                             <div style="width: 70%; display: inline-block; margin-left: 0.5em">
                                 @{
                                     var rating = post.Rating;
