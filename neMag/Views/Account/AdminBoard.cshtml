@@ -1,26 +1,59 @@
 ﻿@using Microsoft.AspNet.Identity
+<!--
 <!DOCTYPE html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="@Url.Content("~/Content/Site.css")"
+    <link href="Url.Content("~/Content/Site.css")"
           rel="stylesheet" type="text/css" />
 
 </head>
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>neMag</title>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="~/Content/bootstrap.min.css" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick.css" />
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick-theme.css" />
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" href="~/Content/noUiSlider/jquery.nouislider.css" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="~/Content/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="~/Content/AdminBoard.css" />
+</head>
 <body>
-    <h1>AdminBoard</h1>
+    <style> a {color:white; font-size:20px} a:hover {color:bisque; font-size:20px; text-decoration:none} </style>
+    <h1 class="title">Admin Board</h1>
     <div class="AdminBoard">
         <ul>
-            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Lista utilizatori", "Index", "Users")</li>
-            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Afisare categorii", "Index", "Categories")</li>
-            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Adaugare categorie", "New", "Categories")</li>
-            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Cereri adaugare produse", "Requests", "Products")</li>
-            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Comenzi din portofoliul meu", "OrdersFromMe", "Cos")</li>
-            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Adaugare produs", "New", "Products")</li>
-            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Produsele mele", "MyProducts/" + User.Identity.GetUserId(), "Products")</li>
-            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Toate comenzile", "AllOrders", "Cos")</li>
-            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Comenzi active", "Orders/1", "Cos")</li>
-            <li style="font-size:30px;list-style-type: none;">@Html.ActionLink("Istoric comenzi", "Orders/2", "Cos")</li>
+            <li class="btn order" style="list-style-type: none;margin:3px">@Html.ActionLink("Listă utilizatori", "Index", "Users") </li>
+            <li class="btn order" style="font-size:20px;list-style-type: none;margin:3px">@Html.ActionLink("Afișare categorii", "Index", "Categories")</li>
+            <li class="btn order" style="font-size:20px;list-style-type: none;margin:3px">@Html.ActionLink("Adăugare categorie", "New", "Categories")</li>
+            <li class="btn order" style="font-size:20px;list-style-type: none;margin:3px">@Html.ActionLink("Cereri adăugare produse", "Requests", "Products")</li>
+            <li class="btn order" style="font-size:20px;list-style-type: none;margin:3px">@Html.ActionLink("Comenzi din portofoliul meu", "OrdersFromMe", "Cos")</li>
+            <li class="btn order" style="font-size:20px;list-style-type: none;margin:3px">@Html.ActionLink("Adăugare produs", "New", "Products")</li>
+            <li class="btn order" style="font-size:20px;list-style-type: none;margin:3px">@Html.ActionLink("Produsele mele", "MyProducts/" + User.Identity.GetUserId(), "Products")</li>
+            <li class="btn order" style="font-size:20px;list-style-type: none;margin:3px">@Html.ActionLink("Toate comenzile", "AllOrders", "Cos")</li>
+            <li class="btn order" style="font-size:20px;list-style-type: none;margin:3px">@Html.ActionLink("Comenzi active", "Orders/1", "Cos")</li>
+            <li class="btn order" style="font-size:20px;list-style-type: none;margin:3px">@Html.ActionLink("Istoric comenzi", "Orders/2", "Cos")</li>
         </ul>
     </div>
 </body>
