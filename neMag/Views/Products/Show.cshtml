@@ -1,5 +1,6 @@
 ﻿@model neMag.Models.Product
 @using Microsoft.AspNet.Identity;
+@using neMag.Models
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +32,10 @@
 
 </head>
 <body>
+    <br />
+    <h1>@ViewBag.Message</h1>
+    <hr />
+
     <!-- SECTION -->
     <div class="section">
         <!-- container -->
@@ -94,7 +99,7 @@
                                     }
                                 }
                             </div>
-                            <a class="review-link" href="#tab3">@(((ICollection<neMag.Models.Post>)@ViewBag.reviews).Count) Recenzii | Adauga o recenzie!</a>
+                            <a class="review-link" href="#tab2">@(((List<Post>)@ViewBag.reviews).Count) Recenzii | Adauga o recenzie!</a>
                         </div>
                         <div>
                             <h3 class="product-price">@(@Model.Price - @Model.Price * @Model.Discount / 100)<del class="product-old-price">@Model.Price</del> Lei</h3>
@@ -170,8 +175,8 @@
                         <!-- product tab nav -->
                         <ul class="tab-nav">
                             <li class="active"><a data-toggle="tab" href="#tab1">Descriere produs</a></li>
-                            <li><a data-toggle="tab" href="#tab2">Recenzii (@(((ICollection<neMag.Models.Post>)@ViewBag.reviews).Count))</a></li>
-                            <li><a data-toggle="tab" href="#tab3">Intrebari si raspunsuri (@(((ICollection<neMag.Models.Post>)@ViewBag.posts).Count))</a></li>
+                            <li><a data-toggle="tab" href="#tab2">Recenzii (@(((List<Post>)@ViewBag.reviews).Count))</a></li>
+                            <li><a data-toggle="tab" href="#tab3">Intrebari si raspunsuri (@(((List<Post>)@ViewBag.posts).Count))</a></li>
                         </ul>
                         <!-- /product tab nav -->
                         <!-- product tab content -->
@@ -225,8 +230,8 @@
                                                             }
 
                                                             @{
-                                                                double nr = (((ICollection<neMag.Models.Post>)ViewBag.reviews)).Count(p => p.Rating == stars);
-                                                                int n = ((ICollection<neMag.Models.Post>)ViewBag.reviews).Count;
+                                                                double nr = (((List<Post>)ViewBag.reviews)).Count(p => p.Rating == stars);
+                                                                int n = ((List<Post>)ViewBag.reviews).Count;
                                                             }
 
                                                         </div>
@@ -243,70 +248,79 @@
                                     <!-- Reviews -->
                                     <div class="col-md-6">
                                         <div id="reviews">
-                                            <ul class="reviews">
-                                                @foreach (var post in (ICollection<neMag.Models.Post>)ViewBag.reviews)
+                                            <div class="tab-content">
+                                                @for (var page = 1; page <= ViewBag.pagesReviews; page++)
                                                 {
-                                                    <li>
-                                                        <!-- Review heading-->
-                                                        <div class="review-heading">
-                                                            <h5 class="name">@post.User.Email</h5>
-                                                            <p class="date">@post.Date</p>
-                                                            <div class="review-rating">
-                                                                @for (var i = 1; i <= 5; i++)
-                                                                {
-                                                                    if (i <= post.Rating)
-                                                                    {
-                                                                        <i class="fa fa-star"></i>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <i class="fa fa-star-o empty"></i>
-                                                                    }
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                        <!-- /Review heading-->
-                                                        <!-- Review body-->
-                                                        <div class="review-body">
-                                                            <p>@post.Content</p>
-                                                            @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
+                                                    <div id="reviews-pagination-@page" class="tab-pane fade in @(page == 1 ? "active" : "")">
+                                                        <ul class="reviews">
+                                                            @for (var i = (page - 1) * ViewBag.postsPerPage;
+                                                                i < page * ViewBag.postsPerPage && i < ((List<Post>)ViewBag.reviews).Count; i++)
                                                             {
-                                                                <div style="display: inline-block; float : left; margin-right: 15px">
-                                                                    <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
-                                                                </div>
-
-                                                                <div style="display: inline-block; float : left">
-                                                                    <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId })">
-                                                                        @Html.HttpMethodOverride(HttpVerbs.Delete)
-                                                                        <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
-                                                                    </form>
-                                                                </div>
-                                                            }
-                                                            @if (post.Photos.Count > 0)
-                                                            {
-                                                                <!--TODO: Make sure the carousel displays correctly when there is only one image-->
-                                                                <!-- Review thumb imgs -->
-                                                                <div class="post-imgs">
-                                                                    <div class="post-img">
-                                                                        @for (var i = 0; i < post.Photos.Count; i++)
+                                                                Post post = ((List<Post>)ViewBag.reviews)[i];
+                                                                <li>
+                                                                    <!-- Review heading-->
+                                                                    <div class="review-heading">
+                                                                        <h5 class="name">@post.User.Email</h5>
+                                                                        <p class="date">@post.Date</p>
+                                                                        <div class="review-rating">
+                                                                            @for (var stars = 1; stars <= 5; stars++)
+                                                                            {
+                                                                                if (stars <= post.Rating)
+                                                                                {
+                                                                                    <i class="fa fa-star"></i>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <i class="fa fa-star-o empty"></i>
+                                                                                }
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /Review heading-->
+                                                                    <!-- Review body-->
+                                                                    <div class="review-body">
+                                                                        <p>@post.Content</p>
+                                                                        @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
                                                                         {
-                                                                            <div><img src="@post.Photos[i].Path" alt="review photo"></div>
+                                                                            <div style="display: inline-block; float : left; margin-right: 15px">
+                                                                                <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
+                                                                            </div>
+
+                                                                            <div style="display: inline-block; float : left">
+                                                                                <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId })">
+                                                                                    @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                                                                    <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
+                                                                                </form>
+                                                                            </div>
+                                                                        }
+                                                                        @if (post.Photos.Count > 0)
+                                                                        {
+                                                                            <!--TODO: Make sure the carousel displays correctly when there is only one image-->
+                                                                            <!-- Review thumb imgs -->
+                                                                            <div class="post-imgs">
+                                                                                <div class="post-img">
+                                                                                    @for (var idx = 0; idx < post.Photos.Count; idx++)
+                                                                                    {
+                                                                                        <div><img src="@post.Photos[idx].Path" alt="review photo"></div>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                            <!-- /Review thumb imgs -->
                                                                         }
                                                                     </div>
-                                                                </div>
-                                                                <!-- /Review thumb imgs -->
+                                                                    <!-- /Review body-->
+                                                                </li>
                                                             }
-                                                        </div>
-                                                        <!-- /Review body-->
-                                                    </li>
+                                                        </ul>
+                                                    </div>
                                                 }
-                                            </ul>
+                                            </div>
                                             <ul class="reviews-pagination">
-                                                <li class="active">1</li>
-                                                <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                                <li><a href="#">4</a></li>
-                                                <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                                                <li class="active"><a href="#reviews-pagination-1" data-toggle="tab">1</a></li>
+                                                @for (var i = 2; i <= ViewBag.pagesReviews; i++)
+                                                {
+                                                    <li><a href="#reviews-pagination-@i" data-toggle="tab">@i</a></li>
+                                                }
                                             </ul>
                                         </div>
                                     </div>
@@ -357,62 +371,70 @@
                                     <!-- Q&A -->
                                     <div class="col-md-6">
                                         <div id="reviews">
-                                            <ul class="reviews">
-                                                @foreach (var post in (ICollection<neMag.Models.Post>)ViewBag.posts)
+                                            <div class="tab-content">
+                                                @for (var page = 1; page <= ViewBag.pagesQA; page++)
                                                 {
-                                                    <li>
-                                                        <div class="review-heading">
-                                                            <h5 class="name">@post.User.Email</h5>
-                                                            @if (post.User.Roles.Any(r => r.RoleId == ViewBag.collaboratorRoleId))
+                                                    <div id="postsQA-pagination-@page" class="tab-pane fade in @(page == 1 ? "active" : "")">
+                                                        <ul class="reviews">
+                                                            @for (var i = (page - 1) * ViewBag.postsPerPage;
+                                                                i < page * ViewBag.postsPerPage && i < ((List<Post>)ViewBag.posts).Count; i++)
                                                             {
-                                                                <p class="badge">Colaborator</p>
-                                                            }
-                                                            else if (post.User.Roles.Any(r => r.RoleId == ViewBag.adminRoleId))
-                                                            {
-                                                                <p class="badge">Administrator</p>
-                                                            }
-                                                            <p class="date">@post.Date</p>
-                                                        </div>
-                                                        <div class="review-body">
-                                                            <p>@post.Content</p>
-                                                            @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
-                                                            {
-                                                                <div style="display: inline-block; float : left; margin-right: 15px">
-                                                                    <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
-                                                                </div>
-
-                                                                <div style="display: inline-block; float : left">
-                                                                    <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId})">
-                                                                        @Html.HttpMethodOverride(HttpVerbs.Delete)
-                                                                        <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
-                                                                    </form>
-                                                                </div>
-                                                            }
-                                                            @if (post.Photos.Count > 0)
-                                                            {
-                                                                <!--TODO: Make sure the carousel displays correctly when there is only one image-->
-                                                                <!-- Q&A thumb imgs -->
-                                                                <div class="post-imgs">
-                                                                    <div class="post-img">
-                                                                        @for (var i = 0; i < post.Photos.Count; i++)
+                                                                Post post = ((List<Post>)ViewBag.posts)[i];
+                                                                <li>
+                                                                    <div class="review-heading">
+                                                                        <h5 class="name">@post.User.Email</h5>
+                                                                        @if (post.User.Roles.Any(r => r.RoleId == ViewBag.collaboratorRoleId))
                                                                         {
-                                                                            <div><img src="@post.Photos[i].Path" alt="review photo"></div>
+                                                                            <p class="badge">Colaborator</p>
+                                                                        }
+                                                                        else if (post.User.Roles.Any(r => r.RoleId == ViewBag.adminRoleId))
+                                                                        {
+                                                                            <p class="badge">Administrator</p>
+                                                                        }
+                                                                        <p class="date">@post.Date</p>
+                                                                    </div>
+                                                                    <div class="review-body">
+                                                                        <p>@post.Content</p>
+                                                                        @if (User.IsInRole("Admin") || post.UserId == ViewBag.userId)
+                                                                        {
+                                                                            <div style="display: inline-block; float : left; margin-right: 15px">
+                                                                                <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
+                                                                            </div>
+
+                                                                            <div style="display: inline-block; float : left">
+                                                                                <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId})">
+                                                                                    @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                                                                    <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
+                                                                                </form>
+                                                                            </div>
+                                                                        }
+                                                                        @if (post.Photos.Count > 0)
+                                                                        {
+                                                                            <!--TODO: Make sure the carousel displays correctly when there is only one image-->
+                                                                            <!-- Q&A thumb imgs -->
+                                                                            <div class="post-imgs">
+                                                                                <div class="post-img">
+                                                                                    @for (var idx = 0; idx < post.Photos.Count; idx++)
+                                                                                    {
+                                                                                        <div><img src="@post.Photos[idx].Path" alt="review photo"></div>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                            <!-- /Q&A thumb imgs -->
                                                                         }
                                                                     </div>
-                                                                </div>
-                                                                <!-- /Q&A thumb imgs -->
+                                                                </li>
                                                             }
-                                                        </div>
-
-                                                    </li>
+                                                        </ul>
+                                                    </div>
                                                 }
-                                            </ul>
+                                            </div>
                                             <ul class="reviews-pagination">
-                                                <li class="active">1</li>
-                                                <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                                <li><a href="#">4</a></li>
-                                                <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                                                <li class="active"><a href="#postsQA-pagination-1" data-toggle="tab">1</a></li>
+                                                @for (var i = 2; i <= ViewBag.pagesQA; i++)
+                                                {
+                                                    <li><a href="#postsQA-pagination-@i" data-toggle="tab">@i</a></li>
+                                                }
                                             </ul>
                                         </div>
                                     </div>
