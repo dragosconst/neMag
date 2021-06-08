@@ -1,39 +1,143 @@
 ﻿@model neMag.Models.Order
-@{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-@if (Model.TotalPrice == 0)
-{
-    <h2>Coșul este gol</h2>
-}
-@if (Model.TotalPrice > 0)
-{
-    <h2 style="margin-top:65px">Ai următoarele produse în coș: </h2>
-    foreach (neMag.Models.OrderContent cont in Model.OrderContents)
-    {
-        <div class="panel panel-default">
-            @Html.Partial("productInfo", cont.Product)
-            <div class="panel-footer">
-                <form method="post" action="/Cos/Delete/@cont.OrderContentId">
-                    @Html.HttpMethodOverride(HttpVerbs.Delete)
-                    <button class="btn btn-danger pull-right" type="submit">Șterge din coș</button>
-                </form>
-                    <p>Nr. de exemplare: @cont.Quantity</p>
-                    <form method="post" class="quantity_buttons pull-left" action="/Cos/Decrease/@cont.OrderContentId">
-                        @Html.HttpMethodOverride(HttpVerbs.Put)
-                        <button class="btn btn-info glyphicon glyphicon-minus" type="submit"></button>
-                    </form>
-                    <form method="post" class="quantity_buttons pull-left" action="/Cos/Increase/@cont.OrderContentId">
-                        @Html.HttpMethodOverride(HttpVerbs.Put)
-                        <button class="btn btn-info glyphicon glyphicon-plus" type="submit"></button>
-                    </form>
-                <div class="clearfix"></div>
-            </div>
-        </div>
+    <title>neMag</title>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="~/Content/bootstrap.min.css" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick.css" />
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick-theme.css" />
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" href="~/Content/noUiSlider/jquery.nouislider.css" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="~/Content/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="~/Content/Product.css" />
+</head>
+<body>
+    @{
+        ViewBag.Title = "Cos de cumparaturi";
     }
-    <h2>Preț total: @Model.TotalPrice RON</h2>
 
-    <a class="btn open" href="/Cos/Order/@Model.OrderId">Plasează comanda</a>
-}
+    @if (Model.TotalPrice == 0)
+    {
+        <h2>Coșul este gol</h2>
+    }
+    @if (Model.TotalPrice > 0)
+    {
+        <!-- SECTION -->
+        <div class="section">
+            <!-- container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+
+                    <!-- section title -->
+                    <div class="col-md-12">
+                        <div class="section-title">
+                            <h2 class="pull-left">Preț total: @Model.TotalPrice RON</h2>
+                            <a class="btn primary-btn pull-right" href="/Cos/Order/@Model.OrderId">Plasează comanda</a>
+                        </div>
+                    </div>
+                    <!-- /section title -->
+                    <!-- Products tab & slick -->
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="products-tabs">
+                                <!-- tab -->
+                                <div id="tab1" class="tab-pane active">
+                                    <div class="products-slick" data-nav="#slick-nav-1">
+                                        <!-- product -->
+                                        @foreach (neMag.Models.OrderContent cont in Model.OrderContents)
+                                        {
+                                            
+                                            neMag.Models.Product product = cont.Product;
+                                            
+                                            <div class="product">
+                                                <div class="product-img">
+                                                    @if (product.Photos.Count() > 0)
+                                                    {
+                                                        <img src="@product.Photos[0].Path" alt="@product.ProductName">
+                                                    }
+                                                </div>
+                                                <div class="product-body">
+                                                    <p class="product-category">@product.Category.Title</p>
+                                                    <h3 class="product-name"><a href="/Products/Show/@product.ProductId">@product.ProductName</a></h3>
+                                                    <h4 class="product-price">
+                                                        @if (product.Discount > 0)
+                                                        {
+                                                            @(@product.Price - @product.Price * @product.Discount / 100)<del class="product-old-price">@product.Price</del>
+                                                        }
+                                                        else
+                                                        {
+                                                            @product.Price
+                                                        }
+                                                        Lei
+                                                    </h4>
+                                                    <div class="product-rating">
+                                                        @for (var i = 1; i <= 5; i++)
+                                                        {
+                                                            if (i <= (int)product.Rating)
+                                                            {
+                                                                <i class="fa fa-star"></i>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="fa fa-star-o empty"></i>
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <div>
+                                                        <p>Nr. de exemplare: @cont.Quantity</p>
+                                                        <div class="row" style="display:inline-flex !important">
+                                                            <form method="post" class="quantity_buttons" style="position: relative" action="/Cos/Decrease/@cont.OrderContentId">
+                                                                @Html.HttpMethodOverride(HttpVerbs.Put)
+                                                                <button class="primary-btn glyphicon glyphicon-minus" type="submit"></button>
+                                                            </form>
+                                                            <form method="post" class="quantity_buttons" style="position: relative" action="/Cos/Increase/@cont.OrderContentId">
+                                                                @Html.HttpMethodOverride(HttpVerbs.Put)
+                                                                <button class="primary-btn glyphicon glyphicon-plus" type="submit"></button>
+                                                            </form>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="add-to-cart">
+                                                    <form method="post" action="/Cos/Delete/@cont.OrderContentId" style="display: inline;">
+                                                        @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                                        <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Sterge din cos</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div id="slick-nav-1" class="products-slick-nav"></div>
+                                </div>
+                                <!-- /tab -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Products tab & slick -->
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /SECTION -->
+    }
+</body>
