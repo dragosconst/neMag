@@ -22,5 +22,7 @@ namespace neMag.Tests.Controllers
 
             Assert.AreEqual(String.Concat(result), String.Concat(categoryIds));
         }
+
+
     }
 }
