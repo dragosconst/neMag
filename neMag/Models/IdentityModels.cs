@@ -36,12 +36,12 @@ namespace neMag.Models
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<ApplicationDbContext, neMag.Migrations.Configuration>("DefaultConnection"));
         }
 
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Post> Posts { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderContent> OrderContents { get; set; }
-        public DbSet<Photo> Photos { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<Post> Posts { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderContent> OrderContents { get; set; }
+        public virtual DbSet<Photo> Photos { get; set; }
 
         public static ApplicationDbContext Create()
         {
