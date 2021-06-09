@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using neMag.Controllers;
 using neMag.Models;
+using Rhino.Mocks;
 
 namespace neMag.Tests.Controllers
 {
@@ -182,9 +183,16 @@ namespace neMag.Tests.Controllers
             mockPrincipal.Setup(x => x.Identity).Returns(identity);
             mockPrincipal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
 
+            var mockHttpRequest = new Mock<HttpRequestBase>();
+            mockHttpRequest.Setup(r => r.HttpMethod).Returns("PUT");
+            var mockHttpContext = new Mock<HttpContextBase>();
+            mockHttpContext.Setup(c => c.Request).Returns(mockHttpRequest.Object);
             var mockContext = new Mock<ControllerContext>();
+            mockContext.Setup(p => p.HttpContext).Returns(mockHttpContext.Object);
             mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
             cosController.ControllerContext = mockContext.Object;
+            cosController.ValueProvider = new DictionaryValueProvider<object>(
+    new Dictionary<string, object>() { { "OrderContent", demoOc } }, null);
 
             var result = cosController.AddToOrder(1);
 
