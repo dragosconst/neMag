@@ -22,10 +22,9 @@ namespace neMag.Tests.Controllers
          * the method correctly creates an empty cart.
          * **/
         [TestMethod]
-        public void GetCart_EmptyUser()
+        public void GetCart_EmptyUser_CreateNewCart()
         {
             CosController cosController = new CosController();
-            Models.ApplicationDbContext db = new Models.ApplicationDbContext();
             var username = "fakeuser";
             var identity = new GenericIdentity(username, "");
             var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
@@ -109,32 +108,50 @@ namespace neMag.Tests.Controllers
 
 
         /*
-         * Checks if the admin getcart method works as intended.
-         * I'm using the admin user just because they have the same account
-         * credentials on all of our machines, so it should run alright
-         * for everyone.
+         * Checks if the behaviour on a user that already has a cart in the db
+         * is the expected one: get cart should return it.
          * **/
         [TestMethod]
-        public void GetCart_AdminUser()
+        public void GetCart_AlreadyHasCart_ReturnCart()
         {
             CosController cosController = new CosController();
-            Models.ApplicationDbContext db = new Models.ApplicationDbContext();
-            string aid = db.Users.Where(u => u.Email == "admin1@gmail.com")
-             .Select(u => u.Id).ToList().First();
-            var identity = new GenericIdentity(aid, "");
-            var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, aid);
+            var username = "fakeuser";
+            var identity = new GenericIdentity(username, "");
+            var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
             identity.AddClaim(nameIdentifierClaim);
+
+            var mockDbconnection = new Mock<Models.ApplicationDbContext>();
+            Order demoOrder = new Order
+            {
+                OrderId = 1,
+                UserId = username,
+                Status = "Cart"
+            };
+            List<Order> fakeOrders = new List<Order>
+            {
+                demoOrder
+            };
+            IQueryable<Order> queryableOrders = fakeOrders.AsQueryable();
+
+            var mockOrderSet = new Mock<DbSet<Order>>();
+            mockOrderSet.As<IQueryable<Order>>().Setup(m => m.Provider).Returns(queryableOrders.Provider);
+            mockOrderSet.As<IQueryable<Order>>().Setup(m => m.Expression).Returns(queryableOrders.Expression);
+            mockOrderSet.As<IQueryable<Order>>().Setup(m => m.ElementType).Returns(queryableOrders.ElementType);
+            mockOrderSet.As<IQueryable<Order>>().Setup(m => m.GetEnumerator()).Returns(queryableOrders.GetEnumerator());
+
+            mockDbconnection.Setup(d => d.Orders).
+                Returns(mockOrderSet.Object);
+            mockDbconnection.Setup(d => d.SaveChanges()).Returns(null);
 
             var mockPrincipal = new Mock<IPrincipal>();
             mockPrincipal.Setup(x => x.Identity).Returns(identity);
-            mockPrincipal.Setup(x => x.IsInRole("Admin")).Returns(true);
 
             var mockContext = new Mock<ControllerContext>();
             mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
             cosController.ControllerContext = mockContext.Object;
-
             PrivateObject po = new PrivateObject(cosController);
-            Order expectedResult = db.Orders.Where(o => o.UserId == aid && o.Status == "Cart").ToList().First();
+            po.SetField("db", mockDbconnection.Object);
+            Order expectedResult = demoOrder;
 
 
             Order result = (Order)po.Invoke("GetCart");
@@ -153,7 +170,6 @@ namespace neMag.Tests.Controllers
         public void AddToOrder_UnauthenicatedUser()
         {
             CosController cosController = new CosController();
-            Models.ApplicationDbContext db = new Models.ApplicationDbContext();
             var username = "fakeuser";
             var identity = new GenericIdentity(username, "");
             var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
@@ -185,7 +201,6 @@ namespace neMag.Tests.Controllers
         public void AddToOrder_AuthenicatedUser_ProductAlreadyOrdered()
         {
             CosController cosController = new CosController();
-            Models.ApplicationDbContext db = new Models.ApplicationDbContext();
             var username = "fakeuser";
             var identity = new GenericIdentity(username, "");
             var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
