@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using neMag.Controllers;
 using neMag.Models;
@@ -8,8 +10,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace neMag.Tests.Controllers
@@ -192,5 +192,43 @@ namespace neMag.Tests.Controllers
         }
 
 
+        /*
+         * Check that trying to acces an id that doesn't correspond to any product
+         * in the database redirects to the Index and shows an error message.
+         * **/
+        [TestMethod]
+        public void Show_WrongId_RedirectToIndexAndErrMsg()
+        {
+            ProductsController productsController = new ProductsController();
+            var mockDbconnection = new Mock<Models.ApplicationDbContext>();
+            List<Product> products = new List<Product>
+            {
+                new Product
+                {
+                    ProductId = 1
+                }
+            };
+            IQueryable<Product> queryableProducts = products.AsQueryable();
+
+            var mockProducts = new Mock<DbSet<Product>>();
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.Provider).Returns(queryableProducts.Provider);
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.Expression).Returns(queryableProducts.Expression);
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.ElementType).Returns(queryableProducts.ElementType);
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.GetEnumerator()).Returns(queryableProducts.GetEnumerator());
+
+            mockDbconnection.Setup(db => db.Products).Returns(mockProducts.Object);
+            mockProducts.Setup(set => set.Find(It.IsAny<Product>())).Returns((Product product) => products.Find(p => p.ProductId == product.ProductId));
+            PrivateObject po = new PrivateObject(productsController);
+            po.SetField("db", mockDbconnection.Object);
+
+            var result = productsController.Show(-1);
+
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            RedirectToRouteResult redirect = (RedirectToRouteResult)result;
+            Assert.AreEqual("Index", redirect.RouteValues["action"]);
+            Assert.IsTrue(productsController.TempData.ContainsKey("message"));
+            var msg = productsController.TempData["message"];
+            Assert.AreEqual(msg, "Bad id-1");
+        }
     }
 }
