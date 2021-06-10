@@ -273,6 +273,7 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\noUiSlider\jquery.nouislider.css" />
     <Content Include="Content\Product.css" />
+    <Content Include="Content\Slick\AdminBoard.css" />
     <Content Include="Content\Slick\ajax-loader.gif" />
     <Content Include="Content\Slick\fonts\slick.svg" />
     <Content Include="Content\Slick\slick-theme.css" />

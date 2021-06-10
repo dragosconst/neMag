@@ -2205,29 +2205,3 @@ textarea.input {
         margin-top: 10px;
     }
 }
-
-.post-img {
-    width: 90%;
-    margin: 7% auto;
-    left: -15%;
-}
-
-.post-img-no-carousel > img {
-    width: 50%;
-    margin: 7% auto;
-    left: -15%;
-}
-
-.slick-slide {
-    margin: 10px;
-}
-
-    .slick-slide img {
-        width: 100%;
-        border: 2px solid #fff;
-    }
-
-.post-imgs .slick-dots li button:before {
-    font-size: 20px;
-    color: white;
-}
