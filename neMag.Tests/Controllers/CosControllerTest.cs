@@ -170,18 +170,16 @@ namespace neMag.Tests.Controllers
         public void AddToOrder_UnauthenicatedUser()
         {
             CosController cosController = new CosController();
-            var username = "fakeuser";
-            var identity = new GenericIdentity(username, "");
-            var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
-            identity.AddClaim(nameIdentifierClaim);
 
             var mockPrincipal = new Mock<IPrincipal>();
-            mockPrincipal.Setup(x => x.Identity).Returns(identity);
+            // the order of the following two calls is important, the first one
+            // would overwrite the identity if it was called after the second one
             mockPrincipal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
             var mockContext = new Mock<ControllerContext>();
             mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
             cosController.ControllerContext = mockContext.Object;
+
 
             var result = cosController.AddToOrder(0);
 
@@ -260,8 +258,8 @@ namespace neMag.Tests.Controllers
             mockDbconnection.Setup(d => d.SaveChanges()).Returns(null);
 
             var mockPrincipal = new Mock<IPrincipal>();
-            mockPrincipal.Setup(x => x.Identity).Returns(identity);
             mockPrincipal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
+            mockPrincipal.Setup(x => x.Identity).Returns(identity);
 
             var mockHttpRequest = new Mock<HttpRequestBase>();
             mockHttpRequest.Setup(r => r.HttpMethod).Returns("PUT");
@@ -285,7 +283,7 @@ namespace neMag.Tests.Controllers
 
         /*
          * Check if adding a new product to the cart creates a corresponding
-         * OrderContent object correctly
+         * OrderContent object correctly.
          * **/
         [TestMethod]
         public void AddToOrder_AuthenicatedUserProductNotOrdered_CreateNewOrderContent()
@@ -361,7 +359,6 @@ namespace neMag.Tests.Controllers
 
             var mockPrincipal = new Mock<IPrincipal>();
             mockPrincipal.Setup(x => x.Identity).Returns(identity);
-            mockPrincipal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
 
             var mockHttpRequest = new Mock<HttpRequestBase>();
             mockHttpRequest.Setup(r => r.HttpMethod).Returns("PUT");
@@ -383,5 +380,97 @@ namespace neMag.Tests.Controllers
             Assert.AreEqual("Index", redirect.RouteValues["action"]);
             Assert.AreEqual(mockOCSet.Object.Count(), 2);
         }
+
+        /*
+         * Check if trying to order an unaccepted product has the expected behaviour.
+         * **/
+        [TestMethod]
+        public void AddToOrder_AuthenicatedUserProductNotAccepted_RedirectToIndexAndErrMsg()
+        {
+            CosController cosController = new CosController();
+            var username = "fakeuser";
+            var identity = new GenericIdentity(username, "");
+            var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
+            identity.AddClaim(nameIdentifierClaim);
+
+            var mockDbconnection = new Mock<Models.ApplicationDbContext>();
+            Product demoProduct = new Product
+            {
+                ProductId = 1,
+                CategoryId = 1,
+                ProductName = "demo",
+                Price = 5,
+                Discount = 0,
+                Accepted = false
+            };
+            Order demoOrder = new Order
+            {
+                OrderId = 1,
+                UserId = username
+            };
+            OrderContent demoOc = new OrderContent
+            {
+                Product = demoProduct,
+                Order = demoOrder,
+                Quantity = 1,
+                Total = 0.0
+            };
+            List<OrderContent> fakeOrderContents = new List<OrderContent>
+            {
+                demoOc
+            };
+
+            List<Order> fakeOrders = new List<Order>
+            {
+                demoOrder
+            };
+            IQueryable<Order> queryableOrders = fakeOrders.AsQueryable();
+            IQueryable<OrderContent> queryableList = fakeOrderContents.AsQueryable();
+
+            var mockOCSet = new Mock<DbSet<OrderContent>>();
+            mockOCSet.As<IQueryable<OrderContent>>().Setup(m => m.Provider).Returns(queryableList.Provider);
+            mockOCSet.As<IQueryable<OrderContent>>().Setup(m => m.Expression).Returns(queryableList.Expression);
+            mockOCSet.As<IQueryable<OrderContent>>().Setup(m => m.ElementType).Returns(queryableList.ElementType);
+            mockOCSet.As<IQueryable<OrderContent>>().Setup(m => m.GetEnumerator()).Returns(queryableList.GetEnumerator());
+            mockOCSet.Setup(d => d.Add(It.IsAny<OrderContent>())).Callback<OrderContent>((s) => fakeOrderContents.Add(s));
+
+            var mockOrderSet = new Mock<DbSet<Order>>();
+            mockOrderSet.As<IQueryable<Order>>().Setup(m => m.Provider).Returns(queryableOrders.Provider);
+            mockOrderSet.As<IQueryable<Order>>().Setup(m => m.Expression).Returns(queryableOrders.Expression);
+            mockOrderSet.As<IQueryable<Order>>().Setup(m => m.ElementType).Returns(queryableOrders.ElementType);
+            mockOrderSet.As<IQueryable<Order>>().Setup(m => m.GetEnumerator()).Returns(queryableOrders.GetEnumerator());
+
+
+            mockDbconnection.Setup(d => d.Products.Find(1)).
+                Returns(demoProduct);
+            mockDbconnection.Setup(d => d.Orders).
+                Returns(mockOrderSet.Object);
+            mockDbconnection.Setup(d => d.OrderContents).
+                Returns(mockOCSet.Object);
+
+            var mockPrincipal = new Mock<IPrincipal>();
+            mockPrincipal.Setup(x => x.Identity).Returns(identity);
+
+            var mockHttpRequest = new Mock<HttpRequestBase>();
+            mockHttpRequest.Setup(r => r.HttpMethod).Returns("PUT");
+            var mockHttpContext = new Mock<HttpContextBase>();
+            mockHttpContext.Setup(c => c.Request).Returns(mockHttpRequest.Object);
+            var mockContext = new Mock<ControllerContext>();
+            mockContext.Setup(p => p.HttpContext).Returns(mockHttpContext.Object);
+            mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
+            cosController.ControllerContext = mockContext.Object;
+            PrivateObject po = new PrivateObject(cosController);
+            po.SetField("db", mockDbconnection.Object);
+
+            var result = cosController.AddToOrder(1);
+
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            RedirectToRouteResult redirect = (RedirectToRouteResult)result;
+            Assert.AreEqual("Index", redirect.RouteValues["action"]);
+            Assert.IsTrue(cosController.TempData.ContainsKey("message"));
+            var msg = cosController.TempData["message"];
+            Assert.AreEqual(msg, "Produsul nu poate fi comandat");
+        }
+
     }
 }
