@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -57,6 +59,136 @@ namespace neMag.Tests.Controllers
             List<string> result = productController.GetAllCategories().OrderBy(s => s.Value).Select(s => s.Value).ToList();
 
             Assert.AreEqual(String.Concat(result), String.Concat(categoryIds));
+        }
+
+
+        /*
+         * Check that the admin gets the ViewBag show buttons field set to true.
+         * **/
+        [TestMethod]
+        public void SetAccessRights_AdminUser_GetsAllButtons()
+        {
+            ProductsController productController = new ProductsController();
+            var username = "fakeuser";
+            var identity = new GenericIdentity(username, "");
+            var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
+            identity.AddClaim(nameIdentifierClaim);
+
+            var mockPrincipal = new Mock<IPrincipal>();
+            mockPrincipal.Setup(x => x.Identity).Returns(identity);
+            mockPrincipal.Setup(x => x.IsInRole("Admin")).Returns(true);
+
+            var mockContext = new Mock<ControllerContext>();
+            mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
+            productController.ControllerContext = mockContext.Object;
+            PrivateObject po = new PrivateObject(productController);
+
+            po.Invoke("SetAccessRights", args: new Product());
+            
+            Assert.IsTrue(productController.ViewData.ContainsKey("showButtons"));
+            var val = productController.ViewData["showButtons"];
+            Assert.AreEqual(val, true);
+            Assert.IsTrue(productController.ViewData.ContainsKey("isCollaborator"));
+            val = productController.ViewData["isCollaborator"];
+            Assert.AreEqual(val, false);
+        }
+
+        /*
+         * Check that collaborators only get their respective buttons.
+         * **/
+        [TestMethod]
+        public void SetAccessRights_CollaboratorUser_GetsColButtons()
+        {
+            ProductsController productController = new ProductsController();
+            var username = "fakeuser";
+            var identity = new GenericIdentity(username, "");
+            var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
+            identity.AddClaim(nameIdentifierClaim);
+
+            var mockPrincipal = new Mock<IPrincipal>();
+            mockPrincipal.Setup(x => x.Identity).Returns(identity);
+            mockPrincipal.Setup(x => x.IsInRole("Collaborator")).Returns(true);
+
+            var mockContext = new Mock<ControllerContext>();
+            mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
+            productController.ControllerContext = mockContext.Object;
+            PrivateObject po = new PrivateObject(productController);
+
+            po.Invoke("SetAccessRights", args: new Product
+            {
+                UserId = username
+            });
+
+            Assert.IsTrue(productController.ViewData.ContainsKey("showButtons"));
+            var val = productController.ViewData["showButtons"];
+            Assert.AreEqual(val, true);
+            Assert.IsTrue(productController.ViewData.ContainsKey("isCollaborator"));
+            val = productController.ViewData["isCollaborator"];
+            Assert.AreEqual(val, true);
+        }
+
+        /*
+         * Check that regular users don't get any edit\delete buttons
+         * shown for any product.
+         * **/
+        [TestMethod]
+        public void SetAccessRights_RegularUser_GetsNoButtons()
+        {
+            ProductsController productController = new ProductsController();
+            var username = "fakeuser";
+            var identity = new GenericIdentity(username, "");
+            var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
+            identity.AddClaim(nameIdentifierClaim);
+
+            var mockPrincipal = new Mock<IPrincipal>();
+            mockPrincipal.Setup(x => x.Identity).Returns(identity);
+
+            var mockContext = new Mock<ControllerContext>();
+            mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
+            productController.ControllerContext = mockContext.Object;
+            PrivateObject po = new PrivateObject(productController);
+
+            po.Invoke("SetAccessRights", args: new Product());
+
+            Assert.IsTrue(productController.ViewData.ContainsKey("showButtons"));
+            var val = productController.ViewData["showButtons"];
+            Assert.AreEqual(val, false);
+            Assert.IsTrue(productController.ViewData.ContainsKey("isCollaborator"));
+            val = productController.ViewData["isCollaborator"];
+            Assert.AreEqual(val, false);
+        }
+
+
+        /*
+         * Check that collaborators can't edit the buttons of the products that
+         * belong to other collaborators.
+         * **/
+        [TestMethod]
+        public void SetAccessRights_CollaboratorUserOtherProduct_GetsNoButtons()
+        {
+            ProductsController productController = new ProductsController();
+            var username = "fakeuser";
+            var identity = new GenericIdentity(username, "");
+            var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
+            identity.AddClaim(nameIdentifierClaim);
+
+            var mockPrincipal = new Mock<IPrincipal>();
+            mockPrincipal.Setup(x => x.Identity).Returns(identity);
+            mockPrincipal.Setup(x => x.IsInRole("Collaborator")).Returns(true);
+
+            var mockContext = new Mock<ControllerContext>();
+            mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
+            productController.ControllerContext = mockContext.Object;
+            PrivateObject po = new PrivateObject(productController);
+
+            po.Invoke("SetAccessRights", args: new Product());
+
+            Assert.IsTrue(productController.ViewData.ContainsKey("showButtons"));
+            var val = productController.ViewData["showButtons"];
+            Assert.AreEqual(val, false);
+            Assert.IsTrue(productController.ViewData.ContainsKey("isCollaborator"));
+            val = productController.ViewData["isCollaborator"];
+            Assert.AreEqual(val, false);
         }
 
 

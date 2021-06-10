@@ -258,7 +258,6 @@ namespace neMag.Tests.Controllers
             mockDbconnection.Setup(d => d.SaveChanges()).Returns(null);
 
             var mockPrincipal = new Mock<IPrincipal>();
-            mockPrincipal.Setup(x => x.Identity.IsAuthenticated).Returns(true);
             mockPrincipal.Setup(x => x.Identity).Returns(identity);
 
             var mockHttpRequest = new Mock<HttpRequestBase>();
