@@ -9,39 +9,41 @@
 
 <ul style="column-count : 1;display: inline-block;column-width:100px">
     <li class="row" style="list-style-type: none;width:1000px">
-        <h3 class="pull-left" style="width:50%">Id produs</h3><h3 class="pull-left" style="width:50%">Cantitate</h3>
+        <h3 class="pull-left" style="width:40%; margin-left:20px">Id produs</h3><h3 class="pull-left" style="width:50%">Cantitate</h3>
     </li>
     @foreach (neMag.Models.OrderContent con in Model.OrderContents)
     {
         if (con.Order.OrderId == Model.OrderId)
         {
-            
-                <h3 class="pull-left" style="width:50%">@con.Product.ProductId</h3>
-                <h3 class="pull-left" style="width:35%">
-                    <form method="post" class="quantity_buttons pull-left" action="/Cos/EditDecrease/@con.OrderContentId/1">
-                        @Html.HttpMethodOverride(HttpVerbs.Put)
-                        <button class="btn btn-info glyphicon glyphicon-minus" type="submit"></button>
-                    </form>
-                    <div class="pull-left">@con.Quantity</div>
-                    <form method="post" class="quantity_buttons pull-left" action="/Cos/EditIncrease/@con.OrderContentId/1">
-                        @Html.HttpMethodOverride(HttpVerbs.Put)
-                        <button class="btn btn-info glyphicon glyphicon-plus" type="submit"></button>
-                    </form>
-                </h3>
-                <h3 class="pull-left" style="width:15%">
-                    <form method="post" action="/Cos/EditDelete/@con.OrderContentId/1">
-                        @Html.HttpMethodOverride(HttpVerbs.Delete)
-                        <button class="btn btn-danger pull-right" type="submit">Șterge din comanda</button>
-                    </form>
-                </h3>
-            
+            <div style="border-left-style: solid; border-bottom-style: solid; border-color: #D10024; border-radius:10px; margin-bottom:10px; font-size: 25px">
+                <li class="row" style="list-style-type:none">
+                    <div class="pull-left" style="width:40%; margin-left: 20px">@con.Product.ProductId</div>
+                    <div class="pull-left" style="width:35%">
+                        <form method="post" class="quantity_buttons pull-left" action="/Cos/EditDecrease/@con.OrderContentId/1">
+                            @Html.HttpMethodOverride(HttpVerbs.Put)
+                            <button class="my-primary-btn glyphicon glyphicon-minus" type="submit"></button>
+                        </form>
+                        <div class="pull-left">@con.Quantity</div>
+                        <form method="post" class="quantity_buttons pull-left" action="/Cos/EditIncrease/@con.OrderContentId/1">
+                            @Html.HttpMethodOverride(HttpVerbs.Put)
+                            <button class="my-primary-btn glyphicon glyphicon-plus" type="submit"></button>
+                        </form>
+                    </div>
+                    <div class="pull-right" style="width:15%;margin-right: 20px">
+                        <form method="post" action="/Cos/EditDelete/@con.OrderContentId/1">
+                            @Html.HttpMethodOverride(HttpVerbs.Delete)
+                            <button class="my-primary-btn pull-right" type="submit">Șterge din comanda</button>
+                        </form>
+                    </div>
+                </li>
+            </div>
         }
 
     }
    </br>
     @if (Model.Status == ViewBag.SENT)
     {
-        <li class="row pull-left" style=" list-style-type: none;margin-top:30px; margin-left:0"><a class="btn btn-success pull-left" href="/Cos/Finish/@Model.OrderId">Finalizează</a></li>
+        <li class="row pull-left" style=" list-style-type: none;margin-top:30px; margin-left:0"><a class="my-primary-btn pull-left" href="/Cos/Finish/@Model.OrderId">Finalizează</a></li>
     }
 </ul>
 

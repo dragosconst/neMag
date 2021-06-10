@@ -445,7 +445,6 @@
     <Content Include="Views\Account\AdminBoard.cshtml" />
     <Content Include="Views\Cos\AllOrders.cshtml" />
     <Content Include="Views\Cos\Show.cshtml" />
-    <Content Include="Views\Cos\Comenzi.cshtml" />
     <Content Include="Views\Cos\OrdersFromMe.cshtml" />
     <!-- Extra files from bootstrap -->
     <Content Include="Scripts\umd\popper.min.js.map" />
