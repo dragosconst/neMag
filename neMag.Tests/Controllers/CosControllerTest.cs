@@ -172,8 +172,6 @@ namespace neMag.Tests.Controllers
             CosController cosController = new CosController();
 
             var mockPrincipal = new Mock<IPrincipal>();
-            // the order of the following two calls is important, the first one
-            // would overwrite the identity if it was called after the second one
             mockPrincipal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
 
             var mockContext = new Mock<ControllerContext>();
@@ -217,7 +215,9 @@ namespace neMag.Tests.Controllers
             Order demoOrder = new Order
             {
                 OrderId = 1,
-                UserId = username
+                UserId = username,
+                Status = "Cart",
+                TotalPrice = 5
             };
             OrderContent demoOc = new OrderContent
             {
@@ -230,6 +230,7 @@ namespace neMag.Tests.Controllers
             {
                 demoOc
             };
+            demoOrder.OrderContents = fakeOrderContents;
             List<Order> fakeOrders = new List<Order>
             {
                 demoOrder
@@ -260,12 +261,7 @@ namespace neMag.Tests.Controllers
             var mockPrincipal = new Mock<IPrincipal>();
             mockPrincipal.Setup(x => x.Identity).Returns(identity);
 
-            var mockHttpRequest = new Mock<HttpRequestBase>();
-            mockHttpRequest.Setup(r => r.HttpMethod).Returns("PUT");
-            var mockHttpContext = new Mock<HttpContextBase>();
-            mockHttpContext.Setup(c => c.Request).Returns(mockHttpRequest.Object);
             var mockContext = new Mock<ControllerContext>();
-            mockContext.Setup(p => p.HttpContext).Returns(mockHttpContext.Object);
             mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
             cosController.ControllerContext = mockContext.Object;
             cosController.ValueProvider = new DictionaryValueProvider<object>(
@@ -278,6 +274,7 @@ namespace neMag.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
             RedirectToRouteResult redirect = (RedirectToRouteResult)result;
             Assert.AreEqual("Index", redirect.RouteValues["action"]);
+            Assert.AreEqual(demoOc.Quantity, 2);
         }
 
         /*
@@ -315,7 +312,8 @@ namespace neMag.Tests.Controllers
             Order demoOrder = new Order
             {
                 OrderId = 1,
-                UserId = username
+                UserId = username,
+                Status = "Cart"
             };
             OrderContent demoOc = new OrderContent
             {
@@ -328,6 +326,7 @@ namespace neMag.Tests.Controllers
             {
                 demoOc
             };
+            demoOrder.OrderContents = fakeOrderContents;
             List<Order> fakeOrders = new List<Order>
             {
                 demoOrder
@@ -359,12 +358,7 @@ namespace neMag.Tests.Controllers
             var mockPrincipal = new Mock<IPrincipal>();
             mockPrincipal.Setup(x => x.Identity).Returns(identity);
 
-            var mockHttpRequest = new Mock<HttpRequestBase>();
-            mockHttpRequest.Setup(r => r.HttpMethod).Returns("PUT");
-            var mockHttpContext = new Mock<HttpContextBase>();
-            mockHttpContext.Setup(c => c.Request).Returns(mockHttpRequest.Object);
             var mockContext = new Mock<ControllerContext>();
-            mockContext.Setup(p => p.HttpContext).Returns(mockHttpContext.Object);
             mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
             cosController.ControllerContext = mockContext.Object;
             cosController.ValueProvider = new DictionaryValueProvider<object>(
@@ -377,7 +371,7 @@ namespace neMag.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
             RedirectToRouteResult redirect = (RedirectToRouteResult)result;
             Assert.AreEqual("Index", redirect.RouteValues["action"]);
-            Assert.AreEqual(mockOCSet.Object.Count(), 2);
+            Assert.AreEqual(mockOCSet.Object.Count(), 3); // 3 because db.OrderContents and cart.OrderContents are the same in this context
         }
 
         /*
@@ -405,7 +399,8 @@ namespace neMag.Tests.Controllers
             Order demoOrder = new Order
             {
                 OrderId = 1,
-                UserId = username
+                UserId = username,
+                Status = "Cart"
             };
             OrderContent demoOc = new OrderContent
             {
@@ -418,7 +413,7 @@ namespace neMag.Tests.Controllers
             {
                 demoOc
             };
-
+            demoOrder.OrderContents = fakeOrderContents;
             List<Order> fakeOrders = new List<Order>
             {
                 demoOrder
@@ -450,12 +445,7 @@ namespace neMag.Tests.Controllers
             var mockPrincipal = new Mock<IPrincipal>();
             mockPrincipal.Setup(x => x.Identity).Returns(identity);
 
-            var mockHttpRequest = new Mock<HttpRequestBase>();
-            mockHttpRequest.Setup(r => r.HttpMethod).Returns("PUT");
-            var mockHttpContext = new Mock<HttpContextBase>();
-            mockHttpContext.Setup(c => c.Request).Returns(mockHttpRequest.Object);
             var mockContext = new Mock<ControllerContext>();
-            mockContext.Setup(p => p.HttpContext).Returns(mockHttpContext.Object);
             mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
             cosController.ControllerContext = mockContext.Object;
             PrivateObject po = new PrivateObject(cosController);

@@ -86,7 +86,7 @@ namespace neMag.Tests.Controllers
             po.Invoke("SetAccessRights", args: new Product());
             
             Assert.IsTrue(productController.ViewData.ContainsKey("showButtons"));
-            var val = productController.ViewData["showButtons"];
+            var val = productController.ViewData["showButtons"]; // ViewData and ViewBag are the same thing
             Assert.AreEqual(val, true);
             Assert.IsTrue(productController.ViewData.ContainsKey("isCollaborator"));
             val = productController.ViewData["isCollaborator"];
@@ -332,8 +332,6 @@ namespace neMag.Tests.Controllers
             mockCategories.As<IQueryable<Category>>().Setup(m => m.Expression).Returns(queryableCategories.Expression);
             mockCategories.As<IQueryable<Category>>().Setup(m => m.ElementType).Returns(queryableCategories.ElementType);
             mockCategories.As<IQueryable<Category>>().Setup(m => m.GetEnumerator()).Returns(queryableCategories.GetEnumerator());
-
-
 
             mockDbconnection.Setup(db => db.Products).
                 Returns(mockProducts.Object);
