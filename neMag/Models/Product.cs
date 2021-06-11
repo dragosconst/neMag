@@ -33,6 +33,8 @@ namespace neMag.Models
 
         public bool Accepted { get; set; }
 
+        public int? Stock { get; set; }
+
 
         public virtual Category Category { get; set; }
 
