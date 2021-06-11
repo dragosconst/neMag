@@ -33,7 +33,9 @@
     }
 
     @model neMag.Models.ApplicationUser
+
     @using Microsoft.AspNet.Identity
+    @using neMag.Models
 
 
     @if (ViewBag.userRole == "Collaborator" || ViewBag.userRole == "Admin")
@@ -60,13 +62,9 @@
                                     </p>
                                 </div>
                             </div>
-                            <!-- /product tab content  -->
                         </div>
-                        <!-- /product tab -->
                     </div>
-                    <!-- Products tab & slick -->
                     <div class="col-md-12">
-                        <!-- product tab nav -->
                         <div class="subsection">
                             <div class="subsection-title">
                                 <p> Produse vandute <p>
@@ -76,10 +74,8 @@
                             <div class="products-tabs">
                                 @{
                                     var cnt = 0;
-                                    <!-- tab -->
                                     <div id="tab1" class="tab-pane fade in active">
                                         <div class="products-slick" data-nav="#slick-nav-1">
-                                            <!-- product -->
                                             @foreach (neMag.Models.Product product in ViewBag.products)
                                             {
                                                 cnt += 1;
@@ -89,7 +85,12 @@
                                                         {
                                                             <img src="@product.Photos[0].Path" alt="@product.ProductName">
                                                         }
+                                                        else
+                                                        {
+                                                            <img src="https://i.imgur.com/S3AdcES.png" alt="defaultImage">
+                                                        }
                                                     </div>
+
                                                     <div class="product-body">
                                                         <p class="product-category">@product.Category.Title</p>
                                                         <h3 class="product-name"><a href="/Products/Show/@product.ProductId">@product.ProductName</a></h3>
@@ -131,12 +132,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Products tab & slick -->
                 </div>
-                <!-- /row -->
             </div>
         </div>
-        <!-- /SECTION -->
+
         if (User.Identity.IsAuthenticated == true && ((User.IsInRole("Admin") && (string)Model.Id != User.Identity.GetUserId()) || (!User.IsInRole("Admin") && (string)Model.Id == User.Identity.GetUserId())))
         {
             <form method="post" action="/Users/Delete/@Model.Id">
@@ -146,18 +145,16 @@
         }
     }
 
+
     else
     {
         if (ViewBag.userRole == "User" || ViewBag.userRole == "RestrictedUser")
         {
             <div class="section">
-                <!-- container -->
                 <div class="container">
                     <h1> @Model.FirstName @Model.LastName </h1>
                     <br />
-                    <!-- row -->
                     <div class="row">
-                        <!-- Product tab -->
                         <div class="col-md-12">
                             <div id="product-tab" style="margin-top:0">
                                 <div class="subsection">
@@ -173,29 +170,23 @@
 
                                         @if (User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
                                         {
-                                            <hr />
+                                            <br /> <br />
                                             <a class="btn btn-default" href="/Users/Edit/@Model.Id"> Editeaza datele </a>
                                         }
                                     </div>
                                 </div>
-                                <!-- /product tab content  -->
                             </div>
-                            <!-- /product tab -->
                         </div>
-                        <!-- Products tab & slick -->
                     </div>
                 </div>
             </div>
-            <!-- /SECTION -->
 
 
             if (User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
             {
                 <div class="section">
-                    <!-- container -->
                     <div class="container">
                         <div class="row">
-                            <!-- Product tab -->
                             <div class="col-md-12">
                                 <div id="product-tab" style="margin-top:0">
                                     <div class="subsection">
@@ -248,40 +239,78 @@
                                                 }
                                             }
                                         </div>
-                                        <!-- /product tab content  -->
                                     </div>
                                 </div>
-                                <!-- /product tab -->
                             </div>
-                            <!-- Products tab & slick -->
                         </div>
                     </div>
                 </div>
             }
 
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <h3> Postarile mele </h3>
-                    @foreach (var post in ViewBag.posts)
-                    {
-                        <div style="width: 100%">
-                            <hr />
-                            <div style="width: 70%; display: inline-block; margin-left: 0.5em">
-                                @{
-                                    var rating = post.Rating;
-                                    for (int i = 1; i <= rating; ++i)
-                                    {
-                                        <i class="glyphicon glyphicon-star" style="color: yellow"></i>
-                                    }
-                                    for (int i = rating + 1; i <= 5; ++i)
-                                    {
-                                        <i class="glyphicon glyphicon-star" style="color: gray"></i>
-                                    }
-                                }
-                                <p> @post.Content </p>
+            <div class="section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="product-tab" style="margin-top:0">
+                                <div class="subsection">
+                                    <div class="subsection-title">
+                                        <p> Postarile mele <p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="reviews">
+                                            <div class="tab-content">
+                                                <div id="reviews-pagination-1" class="tab-pane fade in active">
+                                                    <ul class="reviews">
+                                                        @foreach (var post in ViewBag.posts)
+                                                        {
+                                                            <li>
+                                                                <div class="review-heading">
+                                                                    <h5 class="name">@post.User.Email</h5>
+                                                                    <p class="date">@post.Date</p>
+                                                                    <div class="review-rating">
+                                                                        @for (var stars = 1; stars <= 5; stars++)
+                                                                        {
+                                                                            if (stars <= post.Rating)
+                                                                            {
+                                                                                <i class="fa fa-star"></i>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <i class="fa fa-star-o empty"></i>
+                                                                            }
+                                                                        }
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="review-body">
+                                                                    <p>@post.Content</p>
+                                                                    @if (User.IsInRole("Admin") || post.UserId == User.Identity.GetUserId())
+                                                                    {
+                                                                        <div style="display: inline-block; float : left; margin-right: 15px">
+                                                                            <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
+                                                                        </div>
+
+                                                                        <div style="display: inline-block; float : left">
+                                                                            <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId })">
+                                                                                @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                                                                <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
+                                                                            </form>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    }
+                    </div>
                 </div>
             </div>
         }
