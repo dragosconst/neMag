@@ -231,5 +231,126 @@ namespace neMag.Tests.Controllers
             var msg = productsController.TempData["message"];
             Assert.AreEqual(msg, "Bad id-1");
         }
+
+
+        [TestMethod]
+        public void Edit_WrongCollaborator_RedirectAndErrMsg()
+        {
+            ProductsController productsController = new ProductsController();
+            var mockDbconnection = new Mock<Models.ApplicationDbContext>();
+            var username = "fakeuser";
+            var identity = new GenericIdentity(username, "");
+            var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
+            identity.AddClaim(nameIdentifierClaim);
+
+            var mockPrincipal = new Mock<IPrincipal>();
+            mockPrincipal.Setup(x => x.Identity).Returns(identity);
+            mockPrincipal.Setup(x => x.IsInRole("Collaborator")).Returns(true);
+
+            List<Product> products = new List<Product>
+            {
+                new Product
+                {
+                    ProductId = 1,
+                    ProductName = "prod1",
+                    UserId = ""
+                }
+            };
+            IQueryable<Product> queryableProducts = products.AsQueryable();
+
+            var mockProducts = new Mock<DbSet<Product>>();
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.Provider).Returns(queryableProducts.Provider);
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.Expression).Returns(queryableProducts.Expression);
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.ElementType).Returns(queryableProducts.ElementType);
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.GetEnumerator()).Returns(queryableProducts.GetEnumerator());
+            mockProducts.Setup(set => set.Find(It.IsAny<int>())).Returns<object[]>(p => products.FirstOrDefault(prod => prod.ProductId == (int)p[0])); // honestly no idea how this works
+
+            mockDbconnection.Setup(db => db.Products).
+                Returns(mockProducts.Object);
+
+            var mockContext = new Mock<ControllerContext>();
+            mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
+            productsController.ControllerContext = mockContext.Object;
+            PrivateObject po = new PrivateObject(productsController);
+            po.SetField("db", mockDbconnection.Object);
+
+            var result = productsController.Edit(1);
+
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            var redirectResult = (RedirectToRouteResult)result;
+            Assert.AreEqual("Index", redirectResult.RouteValues["action"]);
+            Assert.IsTrue(productsController.TempData.ContainsKey("message"));
+            var msg = productsController.TempData["message"];
+            Assert.AreEqual(msg, "Acces interzis");
+        }
+
+
+        [TestMethod]
+        public void Edit_OkCollaborator_ReturnEditView()
+        {
+            ProductsController productsController = new ProductsController();
+            var mockDbconnection = new Mock<Models.ApplicationDbContext>();
+            var username = "fakeuser";
+            var identity = new GenericIdentity(username, "");
+            var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
+            identity.AddClaim(nameIdentifierClaim);
+
+            var mockPrincipal = new Mock<IPrincipal>();
+            mockPrincipal.Setup(x => x.Identity).Returns(identity);
+            mockPrincipal.Setup(x => x.IsInRole("Collaborator")).Returns(true);
+
+            List<Product> products = new List<Product>
+            {
+                new Product
+                {
+                    ProductId = 1,
+                    ProductName = "prod1",
+                    UserId = username
+                }
+            };
+            IQueryable<Product> queryableProducts = products.AsQueryable();
+
+            var mockProducts = new Mock<DbSet<Product>>();
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.Provider).Returns(queryableProducts.Provider);
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.Expression).Returns(queryableProducts.Expression);
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.ElementType).Returns(queryableProducts.ElementType);
+            mockProducts.As<IQueryable<Product>>().Setup(m => m.GetEnumerator()).Returns(queryableProducts.GetEnumerator());
+            mockProducts.Setup(set => set.Find(It.IsAny<int>())).Returns<object[]>(p => products.FirstOrDefault(prod => prod.ProductId == (int)p[0])); // honestly no idea how this works
+
+            List<Category> categories = new List<Category>
+            {
+                new Category
+                {
+                    CategoryId = 1,
+                    Title = "cat1"
+                }
+            };
+            IQueryable<Category> queryableCategories = categories.AsQueryable();
+
+            var mockCategories = new Mock<DbSet<Category>>();
+            mockCategories.As<IQueryable<Category>>().Setup(m => m.Provider).Returns(queryableCategories.Provider);
+            mockCategories.As<IQueryable<Category>>().Setup(m => m.Expression).Returns(queryableCategories.Expression);
+            mockCategories.As<IQueryable<Category>>().Setup(m => m.ElementType).Returns(queryableCategories.ElementType);
+            mockCategories.As<IQueryable<Category>>().Setup(m => m.GetEnumerator()).Returns(queryableCategories.GetEnumerator());
+
+
+
+            mockDbconnection.Setup(db => db.Products).
+                Returns(mockProducts.Object);
+            mockDbconnection.Setup(db => db.Categories).
+                Returns(mockCategories.Object);
+
+            var mockContext = new Mock<ControllerContext>();
+            mockContext.Setup(p => p.HttpContext.User).Returns(mockPrincipal.Object);
+            productsController.ControllerContext = mockContext.Object;
+            PrivateObject po = new PrivateObject(productsController);
+            po.SetField("db", mockDbconnection.Object);
+
+            var result = productsController.Edit(1);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = (ViewResult)result;
+            Assert.IsInstanceOfType(viewResult.Model, typeof(Product));
+        }
     }
 }
