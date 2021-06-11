@@ -217,7 +217,8 @@ namespace neMag.Tests.Controllers
             mockProducts.As<IQueryable<Product>>().Setup(m => m.GetEnumerator()).Returns(queryableProducts.GetEnumerator());
 
             mockDbconnection.Setup(db => db.Products).Returns(mockProducts.Object);
-            mockProducts.Setup(set => set.Find(It.IsAny<Product>())).Returns((Product product) => products.Find(p => p.ProductId == product.ProductId));
+            mockProducts.Setup(set => set.Find(It.IsAny<int>())).Returns<object[]>(p => products.FirstOrDefault(prod => prod.ProductId == (int)p[0])); // honestly no idea how this works
+
             PrivateObject po = new PrivateObject(productsController);
             po.SetField("db", mockDbconnection.Object);
 

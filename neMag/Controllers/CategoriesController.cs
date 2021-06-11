@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace online_shop.Controllers
+namespace neMag.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
