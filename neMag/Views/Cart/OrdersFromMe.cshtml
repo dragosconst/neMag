@@ -25,19 +25,19 @@
                 <div class="pull-left" style="width:20%; margin-left: 10px; margin-top: 10px;">@oc.Order.OrderId</div>
                 <div class="pull-left" style="width:30%; margin-top: 10px;">@oc.Product.ProductId</div>
                 <div class="pull-left" style="width:30%; margin-top: 10px;">
-                    <form method="post" class="quantity_buttons pull-left" action="/Cos/EditDecrease/@oc.OrderContentId/2">
+                    <form method="post" class="quantity_buttons pull-left" action="/Cart/EditDecrease/@oc.OrderContentId/2">
                         @Html.HttpMethodOverride(HttpVerbs.Put)
                         <button class="my-primary-btn glyphicon glyphicon-minus" type="submit"></button>
                     </form>
                     <div class="pull-left">@oc.Quantity</div>
 
-                    <form method="post" class="quantity_buttons pull-left" style="position: relative" action="/Cos/EditIncrease/@oc.OrderContentId/2">
+                    <form method="post" class="quantity_buttons pull-left" style="position: relative" action="/Cart/EditIncrease/@oc.OrderContentId/2">
                         @Html.HttpMethodOverride(HttpVerbs.Put)
                         <button class="my-primary-btn glyphicon glyphicon-plus" type="submit"></button>
                     </form>
                 </div>
                 <div class="pull-left" style="width:15%">
-                    <form method="post" action="/Cos/EditDelete/@oc.OrderContentId/2">
+                    <form method="post" action="/Cart/EditDelete/@oc.OrderContentId/2">
                         @Html.HttpMethodOverride(HttpVerbs.Delete)
                         <button class="my-primary-btn pull-right" type="submit">Șterge din comanda</button>
                     </form>

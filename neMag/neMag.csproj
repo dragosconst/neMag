@@ -230,7 +230,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
-    <Compile Include="Controllers\CosController.cs" />
+    <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PhotosController.cs" />
@@ -441,12 +441,12 @@
     <Content Include="Views\Users\Show.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Users\Edit.cshtml" />
-    <Content Include="Views\Cos\Index.cshtml" />
-    <Content Include="Views\Cos\Order.cshtml" />
+    <Content Include="Views\Cart\Index.cshtml" />
+    <Content Include="Views\Cart\Order.cshtml" />
     <Content Include="Views\Account\AdminBoard.cshtml" />
-    <Content Include="Views\Cos\AllOrders.cshtml" />
-    <Content Include="Views\Cos\Show.cshtml" />
-    <Content Include="Views\Cos\OrdersFromMe.cshtml" />
+    <Content Include="Views\Cart\AllOrders.cshtml" />
+    <Content Include="Views\Cart\Show.cshtml" />
+    <Content Include="Views\Cart\OrdersFromMe.cshtml" />
     <!-- Extra files from bootstrap -->
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
@@ -460,7 +460,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Products\Requests.cshtml" />
     <Content Include="Views\Products\MyProducts.cshtml" />
-    <Content Include="Views\Cos\Orders.cshtml" />
+    <Content Include="Views\Cart\Orders.cshtml" />
     <Content Include="Scripts\jquery.zoom.min.js" />
   </ItemGroup>
   <ItemGroup>

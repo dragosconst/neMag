@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace neMag.Controllers
 {
-    public class CosController : Controller
+    public class CartController : Controller
     {
         private Models.ApplicationDbContext db = new Models.ApplicationDbContext();
         // consts for possible status of an order

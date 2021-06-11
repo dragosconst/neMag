@@ -36,7 +36,7 @@
     <br /><br />
     <h3>Total Comandă: @Model.TotalPrice lei</h3>
     <h3>Timp estimat de livrare: se va calcula după trimiterea comenzii</h3>
-    @using (Html.BeginForm(actionName: "Order", controllerName: "Cos"))
+    @using (Html.BeginForm(actionName: "Order", controllerName: "Cart"))
     {
         @Html.HttpMethodOverride(HttpVerbs.Put)
 
