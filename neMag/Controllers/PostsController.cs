@@ -76,7 +76,7 @@ namespace neMag.Controllers
         public ActionResult New(Post post, HttpPostedFileBase[] uploadedPhotos)
         {
             post.Date = DateTime.Now;
-            post.isReview = true; // PLACEHOLDER: For now, all posts are reviews.
+            // post.isReview = true; // PLACEHOLDER: For now, all posts are reviews.
             post.UserId = User.Identity.GetUserId();
 
             try

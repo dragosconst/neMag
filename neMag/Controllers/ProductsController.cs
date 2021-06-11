@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using neMag.Models;
 using System;
 using System.Collections.Generic;
@@ -169,6 +170,17 @@ namespace neMag.Controllers
             ViewBag.Category = product.Category;
 
             ViewBag.userId = User.Identity.GetUserId();
+            ViewBag.reviews = product.Posts.Where(p => p.isReview).ToList();
+            ViewBag.posts = product.Posts.Where(p => !p.isReview).ToList(); // posts from Q&A section
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+            ViewBag.collaboratorRoleId = roleManager.Roles.Where(r => r.Name == "Collaborator").First().Id;
+            ViewBag.adminRoleId = roleManager.Roles.Where(r => r.Name == "Admin").First().Id;
+            ViewBag.postsPerPage = 4;
+            ViewBag.pagesReviews = Math.Ceiling((double) ViewBag.reviews.Count / ViewBag.postsPerPage);
+            ViewBag.pagesQA = Math.Ceiling((double) ViewBag.posts.Count / ViewBag.postsPerPage);
+
+            if (TempData.ContainsKey("message"))
+                ViewBag.Message = TempData["message"].ToString();
 
             SetAccessRights(product);
 
