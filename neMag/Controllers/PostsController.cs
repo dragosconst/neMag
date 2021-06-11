@@ -81,8 +81,9 @@ namespace neMag.Controllers
 
             try
             {
-                if (post.isReview &&
+                if ((post.isReview &&
                     !db.Posts.Where(p => p.UserId == post.UserId && p.ProductId == post.ProductId).Any())
+                    || !post.isReview)
                 {
 
                     if (ModelState.IsValid)
