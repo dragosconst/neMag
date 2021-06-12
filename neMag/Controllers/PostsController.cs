@@ -82,7 +82,7 @@ namespace neMag.Controllers
             try
             {
                 if ((post.isReview &&
-                    !db.Posts.Where(p => p.UserId == post.UserId && p.ProductId == post.ProductId).Any())
+                    !db.Posts.Where(p => p.UserId == post.UserId && p.ProductId == post.ProductId && p.isReview).Any())
                     || !post.isReview)
                 {
 
