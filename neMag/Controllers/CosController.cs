@@ -63,9 +63,12 @@ namespace neMag.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "RestrictedUser,User,Collaborator,Admin")]
         public ActionResult AddToOrder(int id)
         {
+            if(!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             string uid = User.Identity.GetUserId();
             Order cart = GetCart();
             Product product = db.Products.Find(id);
