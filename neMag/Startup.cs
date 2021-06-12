@@ -23,15 +23,15 @@ namespace neMag
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
             
-            // Se adauga rolurile aplicatiei
+            // Se Adaugă rolurile aplicatiei
             if (!roleManager.RoleExists("Admin"))
             {
-                // Se adauga rolul de administrator
+                // Se Adaugă rolul de administrator
                 var role = new IdentityRole();
                 role.Name = "Admin";
                 roleManager.Create(role);
                 
-                // se adauga utilizatorul administrator
+                // se Adaugă utilizatorul administrator
                 var user = new ApplicationUser();
 
                 user.LastName = "Adminescu";

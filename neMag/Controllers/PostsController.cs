@@ -34,7 +34,7 @@ namespace neMag.Controllers
             }
             else
             {
-                TempData["message"] = "You cannot edit someone else's post!";
+                TempData["message"] = "Nu poți șterge postarea altcuiva!";
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
         }
@@ -58,12 +58,12 @@ namespace neMag.Controllers
                         db.SaveChanges();
                         UpdateProductRating(post.ProductId);
                         PhotosController.UploadPhotos(uploadedPhotos, post.PostId, false);
+                        TempData["message"] = "Postarea a fost modificată.";
                         return RedirectToAction("Show", "Products", new { id = post.ProductId });
                     }
-                    System.Diagnostics.Debug.WriteLine("Ceva.");
                     return View(requestPost);
                 }
-                TempData["message"] = "You cannot edit someone else's post!";
+                TempData["message"] = "Nu poți șterge postarea altcuiva!";
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
             catch (Exception e)
@@ -77,7 +77,6 @@ namespace neMag.Controllers
         public ActionResult New(Post post, HttpPostedFileBase[] uploadedPhotos)
         {
             post.Date = DateTime.Now;
-            // post.isReview = true; // PLACEHOLDER: For now, all posts are reviews.
             post.UserId = User.Identity.GetUserId();
 
             try
@@ -106,7 +105,7 @@ namespace neMag.Controllers
             }
             catch (Exception e)
             {
-                TempData["message"] = "The post was not added.";
+                TempData["message"] = "Postarea nu a fost adăugată.";
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
         }
@@ -120,7 +119,7 @@ namespace neMag.Controllers
 
             if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Admin"))
             {
-                TempData["message"] = "The post has been deleted.";
+                TempData["message"] = "Postarea a fost ștearsă.";
 
                 // Delete the photos before the post.
                 List<int> ids = new List<int>();
@@ -146,7 +145,7 @@ namespace neMag.Controllers
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
 
-            TempData["message"] = "You cannot delete someone else's post!";
+            TempData["message"] = "Nu poți șterge postarea altcuiva!";
             return RedirectToAction("Show", "Products", new { id = post.ProductId });
         }
 
