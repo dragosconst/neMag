@@ -103,7 +103,12 @@
                             <a class="review-link" href="#tab2">@(((List<Post>)@ViewBag.reviews).Count) Recenzii | Adaugă o recenzie!</a>
                         </div>
                         <div>
-                            <h3 class="product-price">@(@Model.Price - @Model.Price * @Model.Discount / 100)<del class="product-old-price">@Model.Price</del> Lei</h3>
+                            <h3 class="product-price">@(@Model.Price - @Model.Price * @Model.Discount / 100)
+                            @if (Model.Discount > 0)
+                            {
+                                <del class="product-old-price">@Model.Price</del>
+                            }
+                            Lei</h3>
                             <span class="product-available">In stoc</span>
                         </div>
                         <p>@Model.Description</p>
