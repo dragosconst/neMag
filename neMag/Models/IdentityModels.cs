@@ -26,6 +26,8 @@ namespace neMag.Models
             return userIdentity;
         }
         public IEnumerable<SelectListItem> AllRoles { get; set; }
+
+        public virtual ICollection<UserProducts> Products { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -35,6 +37,7 @@ namespace neMag.Models
         {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<ApplicationDbContext, neMag.Migrations.Configuration>("DefaultConnection"));
         }
+        
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -42,6 +45,7 @@ namespace neMag.Models
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderContent> OrderContents { get; set; }
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<UserProducts> UserProducts { get; set; }
 
         public static ApplicationDbContext Create()
         {

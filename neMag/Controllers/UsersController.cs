@@ -47,6 +47,12 @@ namespace neMag.Controllers
                         select post;
             ViewBag.posts = posts;
 
+            var fav = from users in db.UserProducts
+                      join prod in db.Products on users.ProductId equals prod.ProductId
+                      where prod.UserId == user.Id
+                      select prod;
+            ViewBag.fav = fav;
+
             return View(user);
         }
 
