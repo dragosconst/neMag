@@ -103,7 +103,18 @@
                         </div>
                         <div>
                             <h3 class="product-price">@(@Model.Price - @Model.Price * @Model.Discount / 100)<del class="product-old-price">@Model.Price</del> Lei</h3>
-                            <span class="product-available">In stoc</span>
+                            @if (Model.Stock != null && Model.Stock >= 11)
+                            {
+                                <span class="product-available in-stock">In stoc</span>
+                            }
+                            else if(Model.Stock != null && Model.Stock > 0)
+                            {
+                                <span class="product-available few-left">Au ramas mai putin de 10 produse!</span> 
+                            }
+                            else
+                            {
+                                <span class="product-available">Nu e in stoc!</span>
+                            }
                         </div>
                         <p>@Model.Description</p>
 
@@ -118,11 +129,13 @@
                                 </div>
                             </div>
                             -->
-                            <form method="post" action="/Cart/AddToOrder/@Model.ProductId" style="display: inline;">
-                                @Html.HttpMethodOverride(HttpVerbs.Put)
-                                <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
-                            </form>
-
+                            @if (Model.Stock != null && Model.Stock > 0)
+                            {
+                                <form method="post" action="/Cos/AddToOrder/@Model.ProductId" style="display: inline;">
+                                    @Html.HttpMethodOverride(HttpVerbs.Put)
+                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
+                                </form>
+                            }
                         </div>
 
                         <ul class="product-links">

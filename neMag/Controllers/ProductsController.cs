@@ -298,9 +298,7 @@ namespace neMag.Controllers
         {
 
 
-            var products = from prod in db.Products
-                           where prod.UserId == id
-                           select prod;
+            var products = db.Products.Where(p => p.UserId == id);
             var anyPending = products.Where(p => p.Accepted == false).ToList().Any();
             var anyAccepted = products.Where(p => p.Accepted == true).ToList().Any();
             ViewBag.anyAccepted = anyAccepted;
@@ -354,8 +352,7 @@ namespace neMag.Controllers
         {
             var selectList = new List<SelectListItem>();
 
-            var categories = from cat in db.Categories
-                             select cat;
+            var categories = db.Categories;
 
             foreach (var category in categories)
             {

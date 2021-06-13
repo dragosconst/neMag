@@ -33,6 +33,8 @@ namespace neMag.Models
 
         public bool Accepted { get; set; }
 
+        public int? Stock { get; set; }
+
 
         public virtual Category Category { get; set; }
 
@@ -43,5 +45,7 @@ namespace neMag.Models
         public virtual ICollection<Post> Posts { get; set; }
 
         public virtual IList<Photo> Photos { get; set; }
+
+        //public virtual IEnumerable<UserProducts> UserProducts { get; set; }
     }
 }
