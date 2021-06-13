@@ -18,7 +18,7 @@ namespace neMag.Controllers
     {
 
         private Models.ApplicationDbContext db = new Models.ApplicationDbContext();
-        private int _perPage = 11; // how many products to show per page
+        private int _perPage = 12; // how many products to show per page
         private const int PRICE_ASC = 1;
         private const int PRICE_DESC = 2;
         private const int RATING_ASC = 3;

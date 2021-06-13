@@ -100,6 +100,7 @@
                                                     </form>
 
                                                     <form method="post" action="/Products/DeleteRequest/@product.ProductId" style="display: inline;">
+                                                        @Html.HttpMethodOverride(HttpVerbs.Delete)
                                                         <button class="add-to-cart-btn" type="submit"><i class="fa fa-trash"></i> Șterge</button>
                                                     </form>
 
