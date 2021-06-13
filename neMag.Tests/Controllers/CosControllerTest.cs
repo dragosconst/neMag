@@ -24,7 +24,7 @@ namespace neMag.Tests.Controllers
         [TestMethod]
         public void GetCart_EmptyUser_CreateNewCart()
         {
-            CosController cosController = new CosController();
+            CartController cosController = new CartController();
             var username = "fakeuser";
             var identity = new GenericIdentity(username, "");
             var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
@@ -114,7 +114,7 @@ namespace neMag.Tests.Controllers
         [TestMethod]
         public void GetCart_AlreadyHasCart_ReturnCart()
         {
-            CosController cosController = new CosController();
+            CartController cosController = new CartController();
             var username = "fakeuser";
             var identity = new GenericIdentity(username, "");
             var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
@@ -169,7 +169,7 @@ namespace neMag.Tests.Controllers
         [TestMethod]
         public void AddToOrder_UnauthenicatedUser()
         {
-            CosController cosController = new CosController();
+            CartController cosController = new CartController();
 
             var mockPrincipal = new Mock<IPrincipal>();
             mockPrincipal.Setup(x => x.Identity.IsAuthenticated).Returns(false);
@@ -196,7 +196,7 @@ namespace neMag.Tests.Controllers
         [TestMethod]
         public void AddToOrder_AuthenicatedUserProductAlreadyOrdered_IncreaseQuantityInOrderContent()
         {
-            CosController cosController = new CosController();
+            CartController cosController = new CartController();
             var username = "fakeuser";
             var identity = new GenericIdentity(username, "");
             var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
@@ -210,7 +210,8 @@ namespace neMag.Tests.Controllers
                 ProductName = "demo",
                 Price = 5,
                 Discount = 0,
-                Accepted = true
+                Accepted = true,
+                Stock = 1
             };
             Order demoOrder = new Order
             {
@@ -284,7 +285,7 @@ namespace neMag.Tests.Controllers
         [TestMethod]
         public void AddToOrder_AuthenicatedUserProductNotOrdered_CreateNewOrderContent()
         {
-            CosController cosController = new CosController();
+            CartController cosController = new CartController();
             var username = "fakeuser";
             var identity = new GenericIdentity(username, "");
             var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
@@ -307,7 +308,8 @@ namespace neMag.Tests.Controllers
                 ProductName = "demo2",
                 Price = 50,
                 Discount = 0,
-                Accepted = true
+                Accepted = true,
+                Stock = 1
             };
             Order demoOrder = new Order
             {
@@ -380,7 +382,7 @@ namespace neMag.Tests.Controllers
         [TestMethod]
         public void AddToOrder_AuthenicatedUserProductNotAccepted_RedirectToIndexAndErrMsg()
         {
-            CosController cosController = new CosController();
+            CartController cosController = new CartController();
             var username = "fakeuser";
             var identity = new GenericIdentity(username, "");
             var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
@@ -394,7 +396,8 @@ namespace neMag.Tests.Controllers
                 ProductName = "demo",
                 Price = 5,
                 Discount = 0,
-                Accepted = false
+                Accepted = false,
+                Stock = 1
             };
             Order demoOrder = new Order
             {
