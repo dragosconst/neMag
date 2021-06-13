@@ -49,7 +49,7 @@ namespace neMag.Controllers
 
             var fav = from users in db.UserProducts
                       join prod in db.Products on users.ProductId equals prod.ProductId
-                      where prod.UserId == user.Id
+                      where users.UserId == user.Id
                       select prod;
             ViewBag.fav = fav;
 

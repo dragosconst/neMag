@@ -57,13 +57,23 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p class="content">
-                                        Companie românească fondată în 2001, eMAG este un pionier al pieței de comerț online din România, locul unde oricine poate căuta și comanda orice, de oriunde. Cu o gamă de produse în continuă creștere atât prin oferta proprie, cât și prin partenerii din Marketplace, investim constant în servicii bazate pe tehnologii dezvoltate în România și am exportat cu succes modelul local și în Bulgaria și Ungaria. Suntem online, pe www.emag.ro și prin aplicația de mobil, și offline prin intermediul showroom-urilor și al rețelei extinse easybox. Aducem clienților programul Genius, livrare și retur la easybox, livrare rapidă prin tazz by eMAG, 30 de zile timp de retur, returnarea rapidă a banilor prin Instant Money Back, deschiderea coletului la livrare, call center 24/7, finanțare în rate prin eCredit și suntem într-un proces continuu de dezvoltare și îmbunătățire a serviciilor pe care le oferim.
-                                    </p>
+                                    @if (Model.Description == null)
+                                    {
+                                        <p class="content">
+                                            Acest colaborator nu are o descriere
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <p class="content">
+                                            @Model.Description
+                                        </p>
+                                    }
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-12">
                         <div class="subsection">
                             <div class="subsection-title">
@@ -198,6 +208,7 @@
                                         <div class="col-md-12">
                                             @{
                                                 var idx = false;
+                                                var cnt = 0;
                                                 foreach (neMag.Models.Order order in ViewBag.orders)
                                                 {
                                                     if (order.Status == "Done")
@@ -237,6 +248,11 @@
                                                         </div>
                                                     }
                                                 }
+
+                                                if (cnt == 0)
+                                                {
+                                                    <p style="margin-left: 15px"> Acest magazin nu are momentan comenzi plasate. </p>
+                                                }
                                             }
                                         </div>
                                     </div>
@@ -258,7 +274,7 @@
                                 <div class="row">
                                     <div class="products-tabs">
                                         @{
-                                            var cnt = 0;
+                                            cnt = 0;
                                             <div id="tab1" class="tab-pane fade in active">
                                                 <div class="products-slick" data-nav="#slick-nav-1">
                                                     @foreach (neMag.Models.Product product in ViewBag.fav)
@@ -311,7 +327,7 @@
                                             </div>
                                             if (cnt == 0)
                                             {
-                                                <p style="margin-left: 15px"> Acest magazin nu are momentan produse de vanzare. </p>
+                                                <p style="margin-left: 15px"> Acest utilizator nu are momentan produse favorite. </p>
                                             }
                                         }
                                     </div>
