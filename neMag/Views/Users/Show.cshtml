@@ -269,7 +269,7 @@
                                                                 <div class="review-heading">
                                                                     <h5 class="name">@post.User.Email</h5>
                                                                     <p class="date">@post.Date</p>
-                                                                    @if(post.isReview == True)
+                                                                    @if(post.isReview)
                                                                     {
                                                                         <div class="review-rating">
                                                                             @for (var stars = 1; stars <= 5; stars++)
