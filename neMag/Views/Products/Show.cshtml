@@ -139,7 +139,7 @@
     -->
                             @if (Model.Stock != null && Model.Stock > 0)
                             {
-                                <form method="post" action="/Cos/AddToOrder/@Model.ProductId" style="display: inline;">
+                                <form method="post" action="/Cart/AddToOrder/@Model.ProductId" style="display: inline;">
                                     @Html.HttpMethodOverride(HttpVerbs.Put)
                                     <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
                                 </form>
