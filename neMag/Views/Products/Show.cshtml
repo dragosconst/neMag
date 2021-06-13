@@ -103,31 +103,47 @@
                             <a class="review-link" href="#tab2">@(((List<Post>)@ViewBag.reviews).Count) Recenzii | Adaugă o recenzie!</a>
                         </div>
                         <div>
-                            <h3 class="product-price">@(@Model.Price - @Model.Price * @Model.Discount / 100)
+                            <h3 class="product-price">
+                                @(@Model.Price - @Model.Price * @Model.Discount / 100)
                             @if (Model.Discount > 0)
                             {
                                 <del class="product-old-price">@Model.Price</del>
                             }
-                            Lei</h3>
-                            <span class="product-available">In stoc</span>
+                            Lei
+                        </h3>                          
+                        @if (Model.Stock != null && Model.Stock >= 11)
+                        {
+                            <span class="product-available in-stock">In stoc</span>
+                        }
+                        else if (Model.Stock != null && Model.Stock > 0)
+                        {
+                            <span class="product-available few-left">Au ramas mai putin de 10 produse!</span>
+                        }
+                        else
+                        {
+                            <span class="product-available">Nu e in stoc!</span>
+                        }
                         </div>
                         <p>@Model.Description</p>
 
                         <div class="add-to-cart">
                             <!--
-                            <div class="qty-label">
-                                Qty
-                                <div class="input-number">
-                                    <input type="number">
-                                    <span class="qty-up">+</span>
-                                    <span class="qty-down">-</span>
-                                </div>
-                            </div>
-                            -->
-                            <form method="post" action="/Cos/AddToOrder/@Model.ProductId" style="display: inline;">
-                                @Html.HttpMethodOverride(HttpVerbs.Put)
-                                <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adaugă in cos</button>
-                            </form>
+    <div class="qty-label">
+        Qty
+        <div class="input-number">
+            <input type="number">
+            <span class="qty-up">+</span>
+            <span class="qty-down">-</span>
+        </div>
+    </div>
+    -->
+                            @if (Model.Stock != null && Model.Stock > 0)
+                            {
+                                <form method="post" action="/Cos/AddToOrder/@Model.ProductId" style="display: inline;">
+                                    @Html.HttpMethodOverride(HttpVerbs.Put)
+                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
+                                </form>
+                            }
 
                         </div>
 
