@@ -159,3 +159,10 @@ textarea {
     .cat-panel:hover {
         transform: scale(1.07);
     }
+
+.few-left {
+    color: #E4B725 !important;
+}
+.in-stock {
+    color: #27D038 !important;
+}
