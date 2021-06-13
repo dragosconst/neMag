@@ -113,9 +113,12 @@ else
                     <div style="width: 100%">
                         <hr />
                         <div style="width:15%; display: inline-block; margin-right: 0.5em">
-                            <picture>
-                                <img class="my-image" src="@post.Product.Photo" alt="@post.Product.ProductName">
-                            </picture> <br /> <br />
+                            @if (post.Photos.Count > 0)
+                            {
+                                <picture>
+                                    <img class="my-image" src="@post.Product.Photos[0]" alt="@post.Product.ProductName">
+                                </picture> <br /> <br />
+                            }
                             <p style="text-align: center"> @post.Product.ProductName </p>
                         </div>
                         <div style="width: 70%; display: inline-block; margin-left: 0.5em">

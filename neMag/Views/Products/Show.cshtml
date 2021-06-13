@@ -84,6 +84,8 @@
                 <div class="col-md-5">
                     <div class="product-details">
                         <h2 class="product-name">@Model.ProductName</h2>
+                        <p> Vândut de: @Model.User.UserName <a class="glyphicon glyphicon-user" href="/Users/Show/@Model.UserId"></a></p>
+                        
                         <div>
                             <div class="product-rating">
                                 @for (var i = 1; i <= 5; i++)
@@ -259,7 +261,7 @@
                                                                 <li>
                                                                     <!-- Review heading-->
                                                                     <div class="review-heading">
-                                                                        <h5 class="name">@post.User.Email</h5>
+                                                                        <h5 class="name">@post.User.Email <a class="glyphicon glyphicon-user" href="/Users/Show/@post.UserId"></a></h5>
                                                                         <p class="date">@post.Date</p>
                                                                         <div class="review-rating">
                                                                             @for (var stars = 1; stars <= 5; stars++)
