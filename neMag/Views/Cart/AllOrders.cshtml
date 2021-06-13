@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "AllOrders";
+}
+
+<h2>Istoric comenzi</h2>
+<ul>
+    <li class="row" style="list-style-type: none">
+        <h3 class="pull-left" style="width:200px; margin-left: 20px">Id Comanda</h3><h3 class="pull-left" style="width:300px">Data</h3><h3 class="pull-left" style="width:300px">Detalii livrare</h3>
+    </li>
+    <hr />
+    @foreach (neMag.Models.Order order in ViewBag.Orders)
+    {
+
+        if (order.Status == ViewBag.SENT)
+        {
+            <div style="border-left-style: solid; border-bottom-style: solid; border-color: #D10024; border-radius:10px; margin-bottom:10px; font-size: 25px; width:100%">
+                <li class="row" style="list-style-type: none">
+                    <div class="pull-left" style="width:200px; margin-left:20px">
+                        @order.OrderId
+                    </div>
+                    <div class="pull-left" style="width:300px">
+                        @order.Date
+                    </div>
+                    <div class="pull-left" style="width:300px">
+                        @order.Details
+                    </div>
+                    <div class="pull-right">
+                        <a class="my-primary-btn" href="/Cart/Show/@order.OrderId">Deschide</a>
+                        <a class="my-primary-btn" style="margin-right:20px" href="/Cart/Finish/@order.OrderId">Finalizează</a>
+                    </div>
+                </li>
+            </div>
+        }
+        if (order.Status == ViewBag.DONE)
+        {
+            <div style="border-left-style: solid; border-bottom-style: solid; border-color: #D10024; border-radius:10px; margin-bottom:10px; font-size: 25px; width:100%">
+                <li class="row" style="list-style-type: none">
+                    <div class="pull-left" style="width:200px; margin-left:20px">@order.OrderId</div>
+                    <div class="pull-left" style="width:300px">@order.Date</div>
+                    <div class="pull-left" style="width:300px">@order.Details</div>
+                    <div class="pull-right">
+                        <a class="my-primary-btn" style="margin-right:20px" href="/Cart/Show/@order.OrderId">Afișează</a>
+                    </div>
+                </li>
+            </div>
+        }
+
+    }

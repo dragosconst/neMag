@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewBag.Title = "Orders";
+}
+@if (ViewBag.pagina == "finished")
+{
+    <h2>Istoric comenzi</h2>
+    <ul>
+        <li class="row" style="list-style-type: none">
+            <h3 class="pull-left" style="width:200px; margin-left: 20px">Id Comanda</h3><h3 class="pull-left" style="width:300px">Data</h3><h3 class="pull-left" style="width:300px">Detalii livrare</h3>
+        </li>
+        <hr />
+        @foreach (neMag.Models.Order comanda in ViewBag.orderList)
+        {
+        
+            if (@comanda.Status == ViewBag.DONE)
+            {
+                <div style="border-left-style: solid; border-bottom-style: solid; border-color: #D10024; border-radius:10px; margin-bottom:10px; font-size: 25px; width:100%">
+                    <li class="row" style="list-style-type: none">
+                        <h3 class="pull-left" style="width:200px; margin-left: 20px">@comanda.OrderId</h3>
+                        <h3 class="pull-left" style="width:300px">@comanda.Date</h3><h3 class="pull-left" style="width:300px">@comanda.Details</h3>
+                        <h3 class="pull-right"><a class="my-primary-btn" style="margin-right:20px" href="/Cart/Show/@comanda.OrderId">Deschide</a></h3>
+                    </li>
+                </div>
+            }
+         }
+</ul>
+}
+@if (ViewBag.pagina == "processing")
+{
+    <h2>Comenzi active</h2>
+    <ul>
+        <li class="row" style="list-style-type: none">
+            <h3 class="pull-left" style="width:200px; margin-left: 20px">Id Comanda</h3><h3 class="pull-left" style="width:300px">Data</h3><h3 class="pull-left" style="width:300px">Detalii livrare</h3>
+        </li>
+        <hr />
+        @foreach (neMag.Models.Order comanda in ViewBag.orderList)
+        {
+            if (@comanda.Status == ViewBag.SENT)
+            {
+                <div style="border-left-style: solid; border-bottom-style: solid; border-color: #D10024; border-radius:10px; margin-bottom:10px; font-size: 25px; width:100%">
+                    <li class="row" style="list-style-type: none">
+                        <h3 class="pull-left" style="width:200px; margin-left: 20px">@comanda.OrderId</h3>
+                        <h3 class="pull-left" style="width:300px">@comanda.Date</h3>
+                        <h3 class="pull-left" style="width:300px">@comanda.Details</h3>
+                        <h3 class="pull-right"><a class="my-primary-btn" href="/Cart/Show/@comanda.OrderId">Deschide</a><a class="my-primary-btn" style="margin-right:20px" href="/Cart/secondFinish/@comanda.OrderId">Finalizeaza</a></h3>
+                    </li>
+                </div>
+            }
+
+        }
+    </ul>
+
+}
+
+
+
+
+
+
