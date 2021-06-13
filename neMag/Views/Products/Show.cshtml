@@ -124,19 +124,8 @@
                             <span class="product-available">Nu e in stoc!</span>
                         }
                         </div>
-                        <p>@Model.Description</p>
 
                         <div class="add-to-cart">
-                            <!--
-    <div class="qty-label">
-        Qty
-        <div class="input-number">
-            <input type="number">
-            <span class="qty-up">+</span>
-            <span class="qty-down">-</span>
-        </div>
-    </div>
-    -->
                             @if (Model.Stock != null && Model.Stock > 0)
                             {
                                 <form method="post" action="/Cart/AddToOrder/@Model.ProductId" style="display: inline;">
@@ -144,7 +133,6 @@
                                     <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
                                 </form>
                             }
-
                         </div>
 
                         <ul class="product-links">
@@ -518,15 +506,6 @@
     <script src="~/Scripts/nouislider.min.js"></script>
     <script src="~/Scripts/jquery.zoom.min.js"></script>
     <script src="~/Scripts/main.js"></script>
-
-    <!-- Pagination buttons hover color --> 
-    <style>
-         .pagination-btn:hover,  .pagination-btn:focus {
-            color: white;
-            text-decoration: none;
-            outline: none;
-        }
-    </style>
 
     <!-- Refresh all slick carousels -->
     <script>

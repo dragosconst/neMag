@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="ro">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -32,160 +32,137 @@
     <h1>@ViewBag.Message</h1>
     <hr />
 
-    <div class="categories">
-        Mergi direct la categoria:
-        @foreach (neMag.Models.Category cat in ViewBag.categories)
-        {
-            <div class="cat-panel">
-                <form method="post" id="categ_form" class="card card-sm" action="/Products/Index?id=@ViewBag.inorder&page=1&search=@ViewBag.search">
-                    <button class="primary-btn" id="categ_id" name="category" value="@cat.CategoryId" type="submit">@cat.Title</button>
-                </form>
-            </div>
-        }
-    </div>
-
     @if (ViewBag.search != "")
     {
         <h3>Ați căutat produse care conțin <b>@ViewBag.search</b></h3>
     }
+
     <!-- SECTION -->
     <div class="section">
         <!-- container -->
         <div class="container">
             <!-- row -->
             <div class="row">
-
-                <!-- section title -->
-                <div class="col-md-12">
-                    <div class="section-title">
-                        <h3 class="title">Produse</h3>
-                        <div class="section-nav">
-                            <ul class="section-tab-nav tab-nav">
-
-                                <li>
-                                    @if (ViewBag.inorder == 1)
+                <!-- ASIDE -->
+                <div id="aside" class="col-md-3">
+                    <!-- aside Widget -->
+                    <div class="aside" style="padding: 20px; border-style: solid; border-color: #D10024; border-radius:10px; margin-bottom:10px; width: 100%">
+                        <h3 class="aside-title">Categorii</h3>
+                        <div class="checkbox-filter">
+                            @foreach (neMag.Models.Category cat in ViewBag.categories)
+                            {
+                                <div class="input-checkbox">
+                                    @if (ViewBag.cat == cat.CategoryId)
                                     {
-                                        <a class=" btn this-order" href="/Products/Index?id=1&search=@ViewBag.search&category=@ViewBag.cat">Pret crescator</a>
+                                        <input type="checkbox" id="@(cat.CategoryId)_categ_id" name="category" value="@cat.CategoryId" onChange="checkBox_submit(-1)" checked>
                                     }
                                     else
                                     {
-                                        <a class=" btn order" href="/Products/Index?id=1&search=@ViewBag.search&category=@ViewBag.cat">Pret crescator</a>
+                                        <input type="checkbox" id="@(cat.CategoryId)_categ_id" name="category" value="@cat.CategoryId" onChange="checkBox_submit(@cat.CategoryId)">
                                     }
-                                </li>
-                                <li>
-                                    @if (ViewBag.inorder == 2)
-                                    {
-                                        <a class=" btn this-order" href="/Products/Index?id=2&search=@ViewBag.search&category=@ViewBag.cat">Pret descrescator</a>
-                                    }
-                                    else
-                                    {
-                                        <a class=" btn order" href="/Products/Index?id=2&search=@ViewBag.search&category=@ViewBag.cat">Pret descrescator</a>
-                                    }
-                                </li>
-                                <li>
-                                    @if (ViewBag.inorder == 3)
-                                    {
-                                        <a class=" btn this-order" href="/Products/Index?id=3&search=@ViewBag.search&category=@ViewBag.cat">Rating crescator</a>
-                                    }
-                                    else
-                                    {
-                                        <a class=" btn order" href="/Products/Index?id=3&search=@ViewBag.search&category=@ViewBag.cat">Rating crescator</a>
-                                    }
-                                </li>
-                                <li>
-                                    @if (ViewBag.inorder == 4)
-                                    {
-                                        <a class=" btn this-order" href="/Products/Index?id=4&search=@ViewBag.search&category=@ViewBag.cat">Rating descrescator</a>
-                                    }
-
-                                    else
-                                    {
-                                        <a class=" btn order" href="/Products/Index?id=4&search=@ViewBag.search&category=@ViewBag.cat">Rating descrescator</a>
-                                    }
-                                </li>
-                                <li>
-                                    @if (ViewBag.removeFilter == true)
-                                    {
-                                        <a class="btn order" href="/Products/Index?id=0&search=@ViewBag.search&category=@ViewBag.cat"><i class="glyphicon glyphicon-remove"></i></a>
-                                    }
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- /section title -->
-                <!-- Products tab & slick -->
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="products-tabs">
-                            <!-- tab -->
-                            <div id="tab1" class="tab-pane active">
-                                <div class="products-slick" data-nav="#slick-nav-1">
-                                    <!-- product -->
-                                    @foreach (neMag.Models.Product product in ViewBag.products)
-                                    {
-                                        <div class="product">
-                                            <div class="product-img">
-                                                @if (product.Photos.Count() > 0)
-                                                {
-                                                    <img src="@product.Photos[0].Path" alt="@product.ProductName">
-                                                }
-                                                else
-                                                {
-                                                    <img src="https://i.imgur.com/S3AdcES.png" alt="defaultImage">
-                                                }
-                                            </div>
-                                            <div class="product-body">
-                                                <p class="product-category">@product.Category.Title</p>
-                                                <h3 class="product-name"><a href="/Products/Show/@product.ProductId">@product.ProductName</a></h3>
-                                                <h4 class="product-price">
-                                                    @if (product.Discount > 0)
-                                                    {
-                                                        @(@product.Price - @product.Price * @product.Discount / 100)<del class="product-old-price">@product.Price</del>
-                                                    }
-                                                    else
-                                                    {
-                                                        @product.Price
-                                                    }
-                                                    Lei
-                                                </h4>
-                                                <div class="product-rating">
-                                                    @for (var i = 1; i <= 5; i++)
-                                                    {
-                                                        if (i <= (int)product.Rating)
-                                                        {
-                                                            <i class="fa fa-star"></i>
-                                                        }
-                                                        else
-                                                        {
-                                                            <i class="fa fa-star-o empty"></i>
-                                                        }
-                                                    }
-                                                </div>
-                                            </div>
-                                            <div class="add-to-cart">
-                                                @if (product.Stock != null && product.Stock > 0)
-                                                {
-                                                    <form method="post" action="/Cart/AddToOrder/@product.ProductId" style="display: inline;">
-                                                        @Html.HttpMethodOverride(HttpVerbs.Put)
-                                                        <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
-                                                    </form>
-                                                }
-                                                else
-                                                {
-                                                    <span style="color: white;">Nu e in stoc!</span>
-                                                }
-                                            </div>
-                                        </div>
-                                    }
+                                    <label for="@(cat.CategoryId)_categ_id">
+                                        <span></span>
+                                        @cat.Title
+                                    </label>
                                 </div>
-                                <div id="slick-nav-1" class="products-slick-nav"></div>
-                            </div>
-                            <!-- /tab -->
+                            }
                         </div>
                     </div>
+                    <!-- /aside Widget -->
                 </div>
-                <!-- Products tab & slick -->
+                <!-- /ASIDE -->
+                <!-- STORE -->
+                <div id="store" class="col-md-9">
+                    <!-- store top filter -->
+                    <div class="store-filter clearfix">
+                        <div class="store-sort">
+                            <label>
+                                Sortează după:
+                                <select class="input-select" onchange="select_sorting(this.selectedIndex)">
+                                    <option value="0" @(ViewBag.inorder == 0 ? "selected" : "")>Popularitate</option>
+                                    <option value="1" @(ViewBag.inorder == 1 ? "selected" : "")>Pret crescător</option>
+                                    <option value="2" @(ViewBag.inorder == 2 ? "selected" : "")>Pret descrescător</option>
+                                    <option value="3" @(ViewBag.inorder == 3 ? "selected" : "")>Rating crescător</option>
+                                    <option value="4" @(ViewBag.inorder == 4 ? "selected" : "")>Rating descrescător</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- /store top filter -->
+                    <!-- store products -->
+                    <div class="row">
+                        @foreach (neMag.Models.Product product in ViewBag.products)
+                        {
+                            <div class="col-md-4 col-xs-6">
+                                <div class="product">
+                                    <div class="product-img">
+                                        @if (product.Photos.Count() > 0)
+                                        {
+                                            <img src="@product.Photos[0].Path" alt="@product.ProductName">
+                                        }
+                                        else
+                                        {
+                                            <img src="https://i.imgur.com/S3AdcES.png" alt="defaultImage">
+                                        }
+                                    </div>
+                                    <div class="product-body">
+                                        <p class="product-category">@product.Category.Title</p>
+                                        <h3 class="product-name"><a href="/Products/Show/@product.ProductId">@product.ProductName</a></h3>
+                                        <h4 class="product-price">
+                                            @if (product.Discount > 0)
+                                            {
+                                                @(@product.Price - @product.Price * @product.Discount / 100)<del class="product-old-price">@product.Price</del>
+                                            }
+                                            else
+                                            {
+                                                @product.Price
+                                            }
+                                            Lei
+                                        </h4>
+                                        <div class="product-rating">
+                                            @for (var i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= (int)product.Rating)
+                                                {
+                                                    <i class="fa fa-star"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa fa-star-o empty"></i>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="add-to-cart">
+                                        @if (product.Stock != null && product.Stock > 0)
+                                        {
+                                            <form method="post" action="/Cart/AddToOrder/@product.ProductId" style="display: inline;">
+                                                @Html.HttpMethodOverride(HttpVerbs.Put)
+                                                <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <span style="color: white;">Nu e in stoc!</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                         }
+                    </div>
+                    <!-- /store products -->
+                    <!-- store bottom filter -->
+                    <div class="store-filter clearfix">
+                        <ul class="store-pagination">
+                            @for (int i = 1; i <= ViewBag.lastPage; i++)
+                            {
+                                    <li class = "@(i == ViewBag.currentPage ? "active" : "")"><a class="pagination-btn" href="/Products/Index?page=@i&category=@ViewBag.cat">@(i)</a></li>
+                            }
+                        </ul>
+                    </div>
+                    <!-- /store bottom filter -->
+                </div>
+                <!-- /STORE -->
             </div>
             <!-- /row -->
         </div>
@@ -193,39 +170,6 @@
     </div>
     <!-- /SECTION -->
 
-
-
-    <br />
-    <div>
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                @for (int i = 1; i <= ViewBag.lastPage; i++)
-                {
-                    if (ViewBag.search != "")
-                    {
-                        <li><a href="/Products/Index?page=@i&category=@ViewBag.cat" class="glyphicon">@(i)</a></li>
-                    }
-                    else
-                    {
-                        <li><a href="/Products/Index?page=@i&category=@ViewBag.cat" class="glyphicon">@(i)</a></li>
-                    }
-                }
-                <li>
-                    @if (ViewBag.search != "")
-                    {
-                        <a href="/Products/Index?page=@(ViewBag.lastPage)&category=@ViewBag.cat" class="glyphicon glyphicon-chevron-right" aria-label="Next">
-                        </a>
-                    }
-                    else
-                    {
-                        <a href="/Products/Index?page=@(ViewBag.lastPage)&category=@ViewBag.cat" class="glyphicon glyphicon-chevron-right" aria-label="Next">
-                        </a>
-                    }
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <hr />
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/Slick/slick.min.js"></script>
@@ -238,6 +182,17 @@
             $(this).attr('action', $(this).attr('action') + '&' + $('#categ_id').val());
             return true;
         });
+
+        function checkBox_submit(catId) {
+            if (catId !== -1)
+                window.open("/Products/Index?id=@ViewBag.inorder&page=1&search=@ViewBag.search&category=" + catId, "_self")
+            else
+                window.open("/Products/Index?id=@ViewBag.inorder&page=1&search=@ViewBag.search", "_self")
+        }
+
+        function select_sorting(sortId) {
+            window.open("/Products/Index?id=" + sortId + "&page=1&search=@ViewBag.search&category=@(ViewBag.cat)", "_self")
+        }
     </script>
 </body>
 </html>

@@ -105,6 +105,7 @@ namespace neMag.Controllers
             ViewBag.removeFilter = removeFilter;
             ViewBag.categories   = categories;
             ViewBag.lastPage     = Math.Ceiling((float)totalItems / (float)this._perPage);
+            ViewBag.currentPage  = currentPage;
             ViewBag.Products     = prodsOnPage;
             return View();
         }
@@ -282,7 +283,7 @@ namespace neMag.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin, Colaborator")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Requests()
         {
 
