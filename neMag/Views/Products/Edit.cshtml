@@ -48,6 +48,11 @@
     @Html.EditorFor(m => m.Price)
     @Html.ValidationMessage("Price", null, new { @class = "text-danger" })
 
+    <br /> 
+    
+    @Html.LabelFor(p => p.Price, "Stoc", new { htmlAttributes = new { @class = "form-control" } })
+    @Html.EditorFor(p => p.Stock)
+    @Html.ValidationMessage("Stock", null, new { @class = "text-danger" })
     <br />
     @Html.Label("Discount", "Discount:")
     @Html.TextBox("Discount", null, new { @class = "form-control", type = "number", min = "0", max = "100", step = "0.01" })
