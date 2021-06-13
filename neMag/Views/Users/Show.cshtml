@@ -269,19 +269,22 @@
                                                                 <div class="review-heading">
                                                                     <h5 class="name">@post.User.Email</h5>
                                                                     <p class="date">@post.Date</p>
-                                                                    <div class="review-rating">
-                                                                        @for (var stars = 1; stars <= 5; stars++)
-                                                                        {
-                                                                            if (stars <= post.Rating)
+                                                                    @if(post.isReview == True)
+                                                                    {
+                                                                        <div class="review-rating">
+                                                                            @for (var stars = 1; stars <= 5; stars++)
                                                                             {
-                                                                                <i class="fa fa-star"></i>
+                                                                                if (stars <= post.Rating)
+                                                                                {
+                                                                                    <i class="fa fa-star"></i>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <i class="fa fa-star-o empty"></i>
+                                                                                }
                                                                             }
-                                                                            else
-                                                                            {
-                                                                                <i class="fa fa-star-o empty"></i>
-                                                                            }
-                                                                        }
-                                                                    </div>
+                                                                        </div>
+                                                                    }
                                                                 </div>
 
                                                                 <div class="review-body">
