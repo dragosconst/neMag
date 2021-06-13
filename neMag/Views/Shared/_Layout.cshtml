@@ -23,11 +23,11 @@
                 <ul class="nav navbar-nav">
                     @if (User.IsInRole("Admin") || User.IsInRole("Colaborator") || User.IsInRole("User") || User.IsInRole("RestrictedUser"))
                     {
-                        <li><a href="/Cos/Index"><i class="glyphicon glyphicon-shopping-cart"></i>  Cos</a></li>
+                        <li><a href="/Cart/Index"><i class="glyphicon glyphicon-shopping-cart"></i>  Cos</a></li>
                     }
                     @if (User.IsInRole("Collaborator"))
                     {
-                        <li>@Html.ActionLink("Comenzi din portofoliul meu", "OrdersFromMe", "Cos")</li>
+                        <li>@Html.ActionLink("Comenzi din portofoliul meu", "OrdersFromMe", "Cart")</li>
                         <li>@Html.ActionLink("Adaugare produs", "New", "Products")</li>
                     }
 
