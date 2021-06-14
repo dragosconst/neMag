@@ -63,6 +63,10 @@
                                                 {
                                                     <img src="@product.Photos[0].Path" alt="@product.ProductName">
                                                 }
+                                                else
+                                                {
+                                                    <img src="https://i.imgur.com/S3AdcES.png" alt="no photo" />
+                                                }
                                             </div>
                                             <div class="product-body">
                                                 <p class="product-category">@product.Category.Title</p>
@@ -94,11 +98,11 @@
                                             </div>
                                             <div class="add-to-cart">
                                                 <form method="post" action="/Products/Show/@product.ProductId" style="display: inline;">
-                                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-check"></i> Deschide</button>
+                                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-circle-o"></i> Deschide</button>
                                                 </form>
 
                                                 <form method="post" action="/Products/Edit/@product.ProductId" style="display: inline;">
-                                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-check"></i> Modifică</button>
+                                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-wrench"></i> Modifică</button>
                                                 </form>
 
                                             </div>
