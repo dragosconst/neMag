@@ -70,6 +70,11 @@
                                         </p>
                                     }
                                 </div>
+                                @if (User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
+                                {
+                                    <br /> <br />
+                                    <a class="btn btn-default" href="/Users/Edit/@Model.Id"> Editeaza datele </a>
+                                }
                             </div>
                         </div>
                     </div>

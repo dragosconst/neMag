@@ -73,6 +73,10 @@ namespace neMag.Controllers
         {
             ApplicationUser user = db.Users.Find(id);
             user.AllRoles = GetAllRoles();
+
+            var roles = user.Roles.Join(db.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name).ToList();
+            ViewBag.userRole = roles[0];
+
             return View(user);
         }
 
@@ -92,6 +96,11 @@ namespace neMag.Controllers
                     user.LastName = newData.LastName;
                     user.Email = newData.Email;
                     user.PhoneNumber = newData.PhoneNumber;
+
+                    if (User.IsInRole("Collaborator, Admin"))
+                    {
+                        user.Description = newData.Description;
+                    }
 
                     var selectedRole = db.Roles.Find(HttpContext.Request.Params.Get("newRole"));
                     UserManager.AddToRole(id, selectedRole.Name);
