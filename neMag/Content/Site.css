@@ -160,6 +160,14 @@ textarea {
         transform: scale(1.07);
     }
 
+.product-body {
+    background-color: #f8f8f8 !important;
+}
+
+.product .product-body .product-rating > i {
+    background: #f8f8f8 !important;
+}
+
 .one-order {
     border-color: #D10024;
     border-left-style: groove;
@@ -187,4 +195,8 @@ textarea {
 }
 .in-stock {
     color: #27D038 !important;
+}
+
+.small-margin {
+    margin-left: 5px;
 }
