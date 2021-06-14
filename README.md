@@ -1,6 +1,6 @@
 # neMag
 neMag is a shopping website written in ASP.NET MVC5, which offers a wide range of features that enhance usability, providing a pleasant and unique shopping experience. Users can post reviews, ask questions about any products and mark their favorite products, for better recommendations. The website offers a customizable user panel.<br/><br/>
-Collaborating shops can sell their products on the website, given they pass our quality checks made by our administrators. We provide them with various statistics about their products, so can they improve their selling offers.<br/><br/>
+Collaborating shops can sell their products on the website, given they pass our quality checks made by our administrators. We provide them with various statistics about their products, so they can improve their selling offers.<br/><br/>
 The website has a modern design, made with ease-of-use in mind. User navigation is facilitated by our user-friendly interface and the robust search mechanism. 
 
 ## UML states diagram
@@ -27,5 +27,5 @@ We compiled a list of user stories, they can also be found on our Jira website. 
 
 
 ## Unit testing
-We wrote 20 unit tests, that cover a range of features present in our application. We used the default framework for Visual Basic, which is MSTest. Due to the fact that our application is heavily dependent on a database connection, we used a mocking library, Moq, to write almost all the tests. <br/><br/>
+We wrote 20 unit tests that cover a range of features present in our application. We used the default framework for Visual Basic, which is MSTest. Due to the fact that our application is heavily dependent on a database connection, we used a mocking library, Moq, to write almost all the tests. <br/><br/>
 The tests are written following the usual conventions for unit testing.
