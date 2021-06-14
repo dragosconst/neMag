@@ -57,13 +57,59 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p class="content">
-                                        Companie românească fondată în 2001, eMAG este un pionier al pieței de comerț online din România, locul unde oricine poate căuta și comanda orice, de oriunde. Cu o gamă de produse în continuă creștere atât prin oferta proprie, cât și prin partenerii din Marketplace, investim constant în servicii bazate pe tehnologii dezvoltate în România și am exportat cu succes modelul local și în Bulgaria și Ungaria. Suntem online, pe www.emag.ro și prin aplicația de mobil, și offline prin intermediul showroom-urilor și al rețelei extinse easybox. Aducem clienților programul Genius, livrare și retur la easybox, livrare rapidă prin tazz by eMAG, 30 de zile timp de retur, returnarea rapidă a banilor prin Instant Money Back, deschiderea coletului la livrare, call center 24/7, finanțare în rate prin eCredit și suntem într-un proces continuu de dezvoltare și îmbunătățire a serviciilor pe care le oferim.
-                                    </p>
+                                    @if (Model.Description == null)
+                                    {
+                                        <p class="content">
+                                            Acest colaborator nu are o descriere
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <p class="content">
+                                            @Model.Description
+                                        </p>
+                                    }
+                                </div>
+                                @if (User.Identity.IsAuthenticated == true && (User.IsInRole("Admin") || (string)Model.Id == User.Identity.GetUserId()))
+                                {
+                                    <br /> <br />
+                                    <a class="btn btn-default" href="/Users/Edit/@Model.Id"> Editeaza datele </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div id="product-tab" style="margin-top:0">
+                            <div class="subsection">
+                                <div class="subsection-title">
+                                    <p> Statistici <p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @if (ViewBag.prodNr == 0)
+                                    {
+                                        <p class="content"> Acest colaborator nu are produse de vanzare! </p>
+                                    }
+                                    else
+                                    {
+                                        <p class="content"> <strong> Numarul de produse de vanzare: </strong> @ViewBag.prodNr </p>
+                                        <p class="content"> <strong> Pretul maxim al unui produs: </strong> @ViewBag.maxPrice </p>
+                                        <p class="content"> <strong> Pretul mediu al unui produs: </strong> @ViewBag.avgPrice </p>
+                                        <p class="content"> <strong> Pretul minim al unui produs: </strong> @ViewBag.minPrice </p>
+                                        <p class="content"> <strong> Numarul recenziilor: </strong> @ViewBag.ReviewNr </p>
+                                        if (@ViewBag.ReviewNr != 0)
+                                        {
+                                            <p class="content"> <strong> Media recenziilor: </strong> @ViewBag.avgReview </p>
+                                        }
+                                    }
                                 </div>
                             </div>
                         </div>
                     </div>
+
+
                     <div class="col-md-12">
                         <div class="subsection">
                             <div class="subsection-title">
@@ -142,14 +188,14 @@
                 @Html.HttpMethodOverride(HttpVerbs.Delete)
                 <button class="btn btn-danger" type="submit"> Sterge profil </button>
             </form>
-        }
-    }
+                                        }
+                                    }
 
 
-    else
-    {
-        if (ViewBag.userRole == "User" || ViewBag.userRole == "RestrictedUser")
-        {
+                                    else
+                                    {
+                                        if (ViewBag.userRole == "User" || ViewBag.userRole == "RestrictedUser")
+                                        {
             <div class="section">
                 <div class="container">
                     <h1> @Model.FirstName @Model.LastName </h1>
@@ -197,11 +243,13 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             @{
+                                                var cnt1 = 0;
                                                 var idx = false;
                                                 foreach (neMag.Models.Order order in ViewBag.orders)
                                                 {
                                                     if (order.Status == "Done")
                                                     {
+                                                        cnt1 += 1;
                                                         if (idx == true)
                                                         {
                                                             <hr />
@@ -220,6 +268,7 @@
                                                     }
                                                     if (order.Status == "Sent")
                                                     {
+                                                        cnt1 += 1;
                                                         if (idx == true)
                                                         {
                                                             <hr />
@@ -237,8 +286,89 @@
                                                         </div>
                                                     }
                                                 }
+
+                                                if (cnt1 == 0)
+                                                {
+                                                    <p style="margin-left: 15px"> Acest utilizator nu are momentan comenzi plasate. </p>
+                                                }
                                             }
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="subsection">
+                                    <div class="subsection-title">
+                                        <p> Produse favorite <p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="products-tabs">
+                                        @{
+                                            var cnt2 = 0;
+                                            <div id="tab1" class="tab-pane fade in active">
+                                                <div class="products-slick" data-nav="#slick-nav-1">
+                                                    @foreach (neMag.Models.Product product in ViewBag.fav)
+                                                    {
+                                                        cnt2 += 1;
+                                                        <div class="product">
+                                                            <div class="product-img">
+                                                                @if (product.Photos.Count() > 0)
+                                                                {
+                                                                    <img src="@product.Photos[0].Path" alt="@product.ProductName">
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img src="https://i.imgur.com/S3AdcES.png" alt="defaultImage">
+                                                                }
+                                                            </div>
+
+                                                            <div class="product-body">
+                                                                <p class="product-category">@product.Category.Title</p>
+                                                                <h3 class="product-name"><a href="/Products/Show/@product.ProductId">@product.ProductName</a></h3>
+                                                                <h4 class="product-price">
+                                                                    @if (product.Discount > 0)
+                                                                    {
+                                                                        @(@product.Price - @product.Price * @product.Discount / 100)<del class="product-old-price">@product.Price</del>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @product.Price
+                                                                    }
+                                                                    Lei
+                                                                </h4>
+                                                                <div class="product-rating">
+                                                                    @for (var i = 1; i <= 5; i++)
+                                                                    {
+                                                                        if (i <= (int)product.Rating)
+                                                                        {
+                                                                            <i class="fa fa-star"></i>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <i class="fa fa-star-o empty"></i>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div id="slick-nav-1" class="products-slick-nav"></div>
+                                            </div>
+
+                                            if (cnt2 == 0)
+                                            {
+                                                <p style="margin-left: 15px"> Acest utilizator nu are momentan produse favorite. </p>
+                                            }
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -260,54 +390,62 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div id="reviews">
-                                            <div class="tab-content">
-                                                <div id="reviews-pagination-1" class="tab-pane fade in active">
-                                                    <ul class="reviews">
-                                                        @foreach (var post in ViewBag.posts)
-                                                        {
-                                                            <li>
-                                                                <div class="review-heading">
-                                                                    <h5 class="name">@post.User.Email</h5>
-                                                                    <p class="date">@post.Date</p>
-                                                                    @if(post.isReview)
-                                                                    {
-                                                                        <div class="review-rating">
-                                                                            @for (var stars = 1; stars <= 5; stars++)
-                                                                            {
-                                                                                if (stars <= post.Rating)
+                                            @{
+                                                var cnt3 = 0;
+                                                <div class="tab-content">
+                                                    <div id="reviews-pagination-1" class="tab-pane fade in active">
+                                                        <ul class="reviews">
+                                                            @foreach (var post in ViewBag.posts)
+                                                            {
+                                                                <li>
+                                                                    <div class="review-heading">
+                                                                        <h5 class="name">@post.User.Email</h5>
+                                                                        <p class="date">@post.Date</p>
+                                                                        @if (post.isReview)
+                                                                        {
+                                                                            <div class="review-rating">
+                                                                                @for (var stars = 1; stars <= 5; stars++)
                                                                                 {
-                                                                                    <i class="fa fa-star"></i>
+                                                                                    if (stars <= post.Rating)
+                                                                                    {
+                                                                                        <i class="fa fa-star"></i>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <i class="fa fa-star-o empty"></i>
+                                                                                    }
                                                                                 }
-                                                                                else
-                                                                                {
-                                                                                    <i class="fa fa-star-o empty"></i>
-                                                                                }
-                                                                            }
-                                                                        </div>
-                                                                    }
-                                                                </div>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
 
-                                                                <div class="review-body">
-                                                                    <p>@post.Content</p>
-                                                                    @if (User.IsInRole("Admin") || post.UserId == User.Identity.GetUserId())
-                                                                    {
-                                                                        <div style="display: inline-block; float : left; margin-right: 15px">
-                                                                            <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
-                                                                        </div>
+                                                                    <div class="review-body">
+                                                                        <p>@post.Content</p>
+                                                                        @if (User.IsInRole("Admin") || post.UserId == User.Identity.GetUserId())
+                                                                        {
+                                                                            <div style="display: inline-block; float : left; margin-right: 15px">
+                                                                                <a class="glyphicon glyphicon-pencil" href="@Url.Action("Edit", "Posts", new { id = post.PostId })"></a>
+                                                                            </div>
 
-                                                                        <div style="display: inline-block; float : left">
-                                                                            <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId })">
-                                                                                @Html.HttpMethodOverride(HttpVerbs.Delete)
-                                                                                <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
-                                                                            </form>
-                                                                        </div>
-                                                                    }
-                                                                </div>
-                                                            </li>
-                                                        }
-                                                    </ul>
+                                                                            <div style="display: inline-block; float : left">
+                                                                                <form method="post" action="@Url.Action("Delete", "Posts", new { id = post.PostId })">
+                                                                                    @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                                                                    <button class="glyphicon glyphicon-trash" style="border: none; background: transparent" type="submit"></button>
+                                                                                </form>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
                                                 </div>
-                                            </div>
+
+                                                if (cnt3 == 0)
+                                                {
+                                                    <p style="margin-left: 15px"> Acest utilizator nu are momentan postari! </p>
+                                                }
+                                            }
                                         </div>
                                     </div>
                                 </div>

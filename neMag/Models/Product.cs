@@ -46,6 +46,6 @@ namespace neMag.Models
 
         public virtual IList<Photo> Photos { get; set; }
 
-        //public virtual IEnumerable<UserProducts> UserProducts { get; set; }
+        public virtual ICollection<UserProducts> Users { get; set; }
     }
 }
