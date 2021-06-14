@@ -35,4 +35,4 @@ An example of refactoring done: (we rewrote all linq queries, using simpler C# s
 https://github.com/dragosconst/neMag/commit/aba5d753c1a1a65eff74259e3b0050b9f33b4fea
 
 ## Bug reporting
-We mainly used the "Bugs" colum from Jira for bug reporting. A bug example: https://proiectmds.atlassian.net/browse/PM-61 . Bugs related to pull requests were usually reported directly in the github interface, example: https://github.com/dragosconst/neMag/pull/13 .
+We mainly used the "Bugs" column from Jira for bug reporting. A bug example: https://proiectmds.atlassian.net/browse/PM-61 . Bugs related to pull requests were usually reported directly in the github interface, example: https://github.com/dragosconst/neMag/pull/13 .
