@@ -29,3 +29,10 @@ We compiled a list of user stories, they can also be found on our Jira website. 
 ## Unit testing
 We wrote 20 unit tests that cover a range of features present in our application. We used the default framework for Visual Basic, which is MSTest. Due to the fact that our application is heavily dependent on a database connection, we used a mocking library, Moq, to write almost all the tests. <br/><br/>
 The tests are written following the usual conventions for unit testing.
+
+## Refactoring
+An example of refactoring done: (we rewrote all linq queries, using simpler C# syntax)
+https://github.com/dragosconst/neMag/commit/aba5d753c1a1a65eff74259e3b0050b9f33b4fea
+
+## Bug reporting
+We mainly used the "Bugs" colum from Jira for bug reporting. A bug example: https://proiectmds.atlassian.net/browse/PM-61 . Bugs related to pull requests were usually reported directly in the github interface, example: https://github.com/dragosconst/neMag/pull/13 .
