@@ -8,7 +8,7 @@ The website has a modern design, made with ease-of-use in mind. User navigation 
 
 
 ## Build tool  
-We used the default Visual Studio build tool, MSBuild. It is integrated by default with Visual Studio for ASP.NET applications, it works using a special .csproj file, where it automatically links all dependencies. We used NuGet as our packet manager.
+We used the default Visual Studio build tool, MSBuild. It works using a special .csproj file, where it automatically links all dependencies. We used NuGet as our packet manager.
 
 ## User stories
 We compiled a list of user stories, they can also be found on our Jira website. Due to the fact that most of our userbase is Romanian, the user stories are also written in Romanian:
