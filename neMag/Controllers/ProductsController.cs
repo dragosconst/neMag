@@ -185,6 +185,12 @@ namespace neMag.Controllers
 
             SetAccessRights(product);
 
+            var userId = User.Identity.GetUserId();
+            var isFav = (from users in db.UserProducts
+                        where users.UserId == userId && users.ProductId == id
+                        select 1).ToList().Count();
+            ViewBag.isFav = isFav;
+
             return View(product);
         }
 
