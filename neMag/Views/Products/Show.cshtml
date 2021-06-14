@@ -84,7 +84,7 @@
                 <div class="col-md-5">
                     <div class="product-details">
                         <h2 class="product-name">@Model.ProductName</h2>
-                        <p> Vândut de: @Model.User.LastName <a class="glyphicon glyphicon-user" href="/Users/Show/@Model.UserId"></a></p>
+                        <p> Vândut de: @Model.User.FirstName @Model.User.LastName <a class="glyphicon glyphicon-user" href="/Users/Show/@Model.UserId"></a></p>
 
                         <div>
                             <div class="product-rating">
@@ -130,7 +130,7 @@
                             {
                                 <form method="post" action="/Cart/AddToOrder/@Model.ProductId" style="display: inline;">
                                     @Html.HttpMethodOverride(HttpVerbs.Put)
-                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adauga in cos</button>
+                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adaugă în coș</button>
                                 </form>
                             }
                         </div>
@@ -140,14 +140,14 @@
                             {
                                 <form method="post" action="/Users/AddToFav/@Model.ProductId" style="display: inline;">
                                     @Html.HttpMethodOverride(HttpVerbs.Put)
-                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Adauga la favorite </button>
+                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-heart"></i> Adaugă la favorite </button>
                                 </form>
                             }
                             else
                             {
                                 <form method="post" action="/Users/RemoveFromFav/@Model.ProductId" style="display: inline;">
                                     @Html.HttpMethodOverride(HttpVerbs.Put)
-                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Sterge de la favorite </button>
+                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-heart-o"></i> Șterge de la favorite </button>
                                 </form>
                             }
                         </div>
@@ -287,7 +287,7 @@
                                                                 <li>
                                                                     <!-- Review heading-->
                                                                     <div class="review-heading">
-                                                                        <h5 class="name">@post.User.LastName @post.User.FirstName<a class="glyphicon glyphicon-user" href="/Users/Show/@post.UserId"></a></h5>
+                                                                        <h5 class="name">@post.User.FirstName @post.User.LastName <a class="glyphicon glyphicon-user" href="/Users/Show/@post.UserId"></a></h5>
                                                                         <p class="date">@post.Date</p>
                                                                         <div class="review-rating">
                                                                             @for (var stars = 1; stars <= 5; stars++)
@@ -413,7 +413,7 @@
                                                                 Post post = ((List<Post>)ViewBag.posts)[i];
                                                                 <li>
                                                                     <div class="review-heading">
-                                                                        <h5 class="name">@post.User.LastName @post.User.FirstName<a class="glyphicon glyphicon-user" href="/Users/Show/@post.UserId"></a></h5>
+                                                                        <h5 class="name">@post.User.FirstName @post.User.LastName <a class="glyphicon glyphicon-user" href="/Users/Show/@post.UserId"></a></h5>
                                                                         @if (post.User.Roles.Any(r => r.RoleId == ViewBag.collaboratorRoleId))
                                                                         {
                                                                             <p class="badge">Colaborator</p>

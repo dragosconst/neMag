@@ -54,15 +54,15 @@ namespace neMag.Controllers
                 var minPrice = db.Products.Where(p => p.UserId == user.Id).Min(p => p.Price);
                 ViewBag.minPrice = minPrice;
 
-                var avgPrice = db.Products.Where(p => p.UserId == user.Id).Average(p => p.Price);
+                var avgPrice = Math.Round(db.Products.Where(p => p.UserId == user.Id).Average(p => p.Price), 2);
                 ViewBag.avgPrice = avgPrice;
             }
 
-            var ReviewNr = db.Posts.Where(p => p.UserId == user.Id && p.isReview == true).Count();
+            var ReviewNr = db.Posts.Where(p => p.Product.UserId == user.Id && p.isReview == true).Count();
             ViewBag.ReviewNr = ReviewNr;
             if (ReviewNr != 0)
             {
-                var avgReview = db.Posts.Where(p => p.UserId == user.Id && p.isReview == true).Max(p => p.Rating);
+                var avgReview = Math.Round(db.Posts.Where(p => p.Product.UserId == user.Id && p.isReview == true).Average(p => p.Rating), 2);
                 ViewBag.avgReview = avgReview;
             }
 
@@ -102,9 +102,14 @@ namespace neMag.Controllers
                         user.Description = newData.Description;
                     }
 
-                    var selectedRole = db.Roles.Find(HttpContext.Request.Params.Get("newRole"));
-                    UserManager.AddToRole(id, selectedRole.Name);
+                    if (User.IsInRole("Admin"))
+                    {
+                        var selectedRole = db.Roles.Find(HttpContext.Request.Params.Get("newRole"));
 
+                        string[] allUserRoles = UserManager.GetRoles(id).ToArray();
+                        UserManager.RemoveFromRoles(id, allUserRoles);
+                        UserManager.AddToRole(id, selectedRole.Name);
+                    }
                     db.SaveChanges();
                 }
                 return RedirectToAction("Show", new { id = id });
@@ -129,6 +134,17 @@ namespace neMag.Controllers
             foreach (var post in posts)
             {
                 db.Posts.Remove(post);
+            }
+
+            var orders = db.Orders.Where(p => p.UserId == id);
+            foreach (var order in orders)
+            {
+                var ordercontents = db.OrderContents.Where(p => p.Order.OrderId == order.OrderId);
+                foreach (var ordercontent in ordercontents)
+                {
+                    db.OrderContents.Remove(ordercontent);
+                }
+                db.Orders.Remove(order);
             }
 
             var products = db.Products.Where(p => p.UserId == id);

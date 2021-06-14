@@ -43,7 +43,7 @@
         <div class="section">
             <!-- container -->
             <div class="container">
-                <h1> @Model.LastName </h1>
+                <h1> @Model.FirstName @Model.LastName </h1>
                 <br />
                 <!-- row -->
                 <div class="row">
@@ -397,6 +397,7 @@
                                                         <ul class="reviews">
                                                             @foreach (var post in ViewBag.posts)
                                                             {
+                                                                cnt3 += 1;
                                                                 <li>
                                                                     <div class="review-heading">
                                                                         <h5 class="name">@post.User.Email</h5>
