@@ -2231,3 +2231,9 @@ textarea.input {
     font-size: 20px;
     color: white;
 }
+
+.pagination-btn:hover, .pagination-btn:focus {
+    color: white;
+    text-decoration: none;
+    outline: none;
+}

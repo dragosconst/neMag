@@ -1,67 +1,121 @@
 ﻿@using Microsoft.AspNet.Identity
 @using System.Linq
-@{
-    ViewBag.Title = "Shop";
-}
 
-@if (User.IsInRole("Colaborator"))
-{
-    <h1>Produsele mele</h1>
-}
-<br />
-<hr />
-<br />
-<input type="hidden" id="verifica" value=0 />
-<h3>Produse in curs de adaugare:</h3>
-@if (!ViewBag.anyPending)
-{
-    <h4><i class="glyphicon glyphicon-arrow-right "></i>Nu exista produse in asteptare</h4>
-}
-@foreach (neMag.Models.Product product in ViewBag.Products)
-{
-    if (product.Accepted == false)
-    {
-        <input type="hidden" id="verifica" value=1 />
-        <div class="panel panel-default">
 
-            @Html.Partial("productInfo", product)
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-            <div class="panel-footer">
-                @{
-                    TempData["reqSource"] = true;
-                }
-                <a class="btn btn-success pull-left" href="/Products/Show/@product.ProductId">Deschidere</a>
-                <a class="btn btn-success pull-left" href="/Products/Edit/@product.ProductId">Modifica</a>
-                <div class="clearfix"></div>
+    <title>neMag</title>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="~/Content/bootstrap.min.css" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick.css" />
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick-theme.css" />
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" href="~/Content/noUiSlider/jquery.nouislider.css" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="~/Content/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="~/Content/Product.css" />
+</head>
+<body>
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+
+                <!-- section title -->
+                <div class="col-md-12">
+                    <div class="section-title">
+                        <h2 class="pull-left">Produsele mele</h2>
+                    </div>
+                </div>
+                <!-- /section title -->
+                <!-- Products tab & slick -->
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="products-tabs">
+                            <!-- tab -->
+                            <div id="tab1" class="tab-pane active">
+                                <div class="products-slick" data-nav="#slick-nav-1">
+                                    <!-- product -->
+                                    @foreach (neMag.Models.Product product in ViewBag.Products)
+                                    {
+                                        <div class="product">
+                                            <div class="product-img">
+                                                @if (product.Photos.Count() > 0)
+                                                {
+                                                    <img src="@product.Photos[0].Path" alt="@product.ProductName">
+                                                }
+                                            </div>
+                                            <div class="product-body">
+                                                <p class="product-category">@product.Category.Title</p>
+                                                <h3 class="product-name"><a href="/Products/Show/@product.ProductId">@product.ProductName</a></h3>
+                                                <h4 class="product-price">
+                                                    @if (product.Discount > 0)
+                                                    {
+                                                        @(@product.Price - @product.Price * @product.Discount / 100)<del class="product-old-price">@product.Price</del>
+                                                    }
+                                                    else
+                                                    {
+                                                        @product.Price
+                                                    }
+                                                    Lei
+                                                </h4>
+                                                <div class="product-rating">
+                                                    @for (var i = 1; i <= 5; i++)
+                                                    {
+                                                        if (i <= (int)product.Rating)
+                                                        {
+                                                            <i class="fa fa-star"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fa fa-star-o empty"></i>
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="add-to-cart">
+                                                <form method="post" action="/Products/Show/@product.ProductId" style="display: inline;">
+                                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-check"></i> Deschide</button>
+                                                </form>
+
+                                                <form method="post" action="/Products/Edit/@product.ProductId" style="display: inline;">
+                                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-check"></i> Modifică</button>
+                                                </form>
+
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div id="slick-nav-1" class="products-slick-nav"></div>
+                            </div>
+                            <!-- /tab -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Products tab & slick -->
             </div>
+            <!-- /row -->
         </div>
-    }
-
-}
-<h3>Produse active:</h3>
-@if (!ViewBag.anyAccepted)
-{
-    <h4><i class="glyphicon glyphicon-arrow-right "></i>Nu exista produse in magazin</h4>
-}
-@foreach (neMag.Models.Product product in ViewBag.Products)
-{
-    if (product.Accepted == true)
-    {
-        <input type="hidden" id="verifica" value=1 />
-        <div class="panel panel-default">
-
-            @Html.Partial("productInfo", product)
-
-            <div class="panel-footer">
-                @{
-                    TempData["reqSource"] = true;
-                }
-                <a class="btn btn-success pull-left" href="/Products/Show/@product.ProductId">Deschidere</a>
-                <a class="btn btn-success pull-left" href="/Products/Edit/@product.ProductId">Modifica</a>
-
-                <div class="clearfix"></div>
-            </div>
-        </div>
-    }
-
-}
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+</body>

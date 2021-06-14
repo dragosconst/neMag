@@ -1,6 +1,6 @@
 ﻿@model neMag.Models.Order
 <!DOCTYPE html>
-<html>
+<html lang="ro">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -50,7 +50,7 @@
                     <div class="col-md-12">
                         <div class="section-title">
                             <h2 class="pull-left">Preț total: @Model.TotalPrice RON</h2>
-                            <a class="btn primary-btn pull-right" href="/Cos/Order/@Model.OrderId">Plasează comanda</a>
+                            <a class="btn primary-btn pull-right" href="/Cart/Order/@Model.OrderId">Plasează comanda</a>
                         </div>
                     </div>
                     <!-- /section title -->
@@ -104,11 +104,11 @@
                                                     <div>
                                                         <p>Nr. de exemplare: @cont.Quantity</p>
                                                         <div class="row" style="display:inline-flex !important">
-                                                            <form method="post" class="quantity_buttons" style="position: relative" action="/Cos/Decrease/@cont.OrderContentId">
+                                                            <form method="post" class="quantity_buttons" style="position: relative" action="/Cart/Decrease/@cont.OrderContentId">
                                                                 @Html.HttpMethodOverride(HttpVerbs.Put)
                                                                 <button class="primary-btn glyphicon glyphicon-minus" type="submit"></button>
                                                             </form>
-                                                            <form method="post" class="quantity_buttons" style="position: relative" action="/Cos/Increase/@cont.OrderContentId">
+                                                            <form method="post" class="quantity_buttons" style="position: relative" action="/Cart/Increase/@cont.OrderContentId">
                                                                 @Html.HttpMethodOverride(HttpVerbs.Put)
                                                                 <button class="primary-btn glyphicon glyphicon-plus" type="submit"></button>
                                                             </form>
@@ -118,7 +118,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="add-to-cart">
-                                                    <form method="post" action="/Cos/Delete/@cont.OrderContentId" style="display: inline;">
+                                                    <form method="post" action="/Cart/Delete/@cont.OrderContentId" style="display: inline;">
                                                         @Html.HttpMethodOverride(HttpVerbs.Delete)
                                                         <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Sterge din cos</button>
                                                     </form>

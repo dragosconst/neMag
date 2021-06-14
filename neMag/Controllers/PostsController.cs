@@ -18,8 +18,7 @@ namespace neMag.Controllers
 
         public ActionResult Index()
         {
-            var posts = from post in db.Posts
-                        select post;
+            var posts = db.Posts;
             ViewBag.posts = posts;
 
             return View();
@@ -34,7 +33,7 @@ namespace neMag.Controllers
             }
             else
             {
-                TempData["message"] = "You cannot edit someone else's post!";
+                TempData["message"] = "Nu poți șterge postarea altcuiva!";
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
         }
@@ -58,12 +57,12 @@ namespace neMag.Controllers
                         db.SaveChanges();
                         UpdateProductRating(post.ProductId);
                         PhotosController.UploadPhotos(uploadedPhotos, post.PostId, false);
+                        TempData["message"] = "Postarea a fost modificată.";
                         return RedirectToAction("Show", "Products", new { id = post.ProductId });
                     }
-                    System.Diagnostics.Debug.WriteLine("Ceva.");
                     return View(requestPost);
                 }
-                TempData["message"] = "You cannot edit someone else's post!";
+                TempData["message"] = "Nu poți șterge postarea altcuiva!";
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
             catch (Exception e)
@@ -77,14 +76,12 @@ namespace neMag.Controllers
         public ActionResult New(Post post, HttpPostedFileBase[] uploadedPhotos)
         {
             post.Date = DateTime.Now;
-            // post.isReview = true; // PLACEHOLDER: For now, all posts are reviews.
             post.UserId = User.Identity.GetUserId();
 
             try
             {
-                // Make sure that a user cannot make multiple reviews on the same product
                 if ((post.isReview &&
-                    !(from p in db.Posts where p.UserId == post.UserId && p.ProductId == post.ProductId && p.isReview select p).Any())
+                    !db.Posts.Where(p => p.UserId == post.UserId && p.ProductId == post.ProductId && p.isReview).Any())
                     || !post.isReview)
                 {
 
@@ -106,7 +103,7 @@ namespace neMag.Controllers
             }
             catch (Exception e)
             {
-                TempData["message"] = "The post was not added.";
+                TempData["message"] = "Postarea nu a fost adăugată.";
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
         }
@@ -120,7 +117,7 @@ namespace neMag.Controllers
 
             if (post.UserId == User.Identity.GetUserId() || User.IsInRole("Admin"))
             {
-                TempData["message"] = "The post has been deleted.";
+                TempData["message"] = "Postarea a fost ștearsă.";
 
                 // Delete the photos before the post.
                 List<int> ids = new List<int>();
@@ -146,7 +143,7 @@ namespace neMag.Controllers
                 return RedirectToAction("Show", "Products", new { id = post.ProductId });
             }
 
-            TempData["message"] = "You cannot delete someone else's post!";
+            TempData["message"] = "Nu poți șterge postarea altcuiva!";
             return RedirectToAction("Show", "Products", new { id = post.ProductId });
         }
 
@@ -155,9 +152,7 @@ namespace neMag.Controllers
         {
             double sum = 0.0;
             int n;
-            var revs = from post in db.Posts
-                       where post.ProductId == id && post.isReview
-                       select post;
+            var revs = db.Posts.Where(p => p.ProductId == id && p.isReview == true);
 
             n = revs.Count();
             foreach (var rev in revs)

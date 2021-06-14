@@ -1,38 +1,95 @@
 ﻿@model neMag.Models.Post
 
-<h2>Edit post</h2>
-@using (Html.BeginForm("Edit", "Posts", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.HttpMethodOverride(HttpVerbs.Put)
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    @Html.Label("Content", "Post content")
+    <title>neMag</title>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="~/Content/bootstrap.min.css" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick.css" />
+    <link type="text/css" rel="stylesheet" href="~/Content/Slick/slick-theme.css" />
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" href="~/Content/noUiSlider/jquery.nouislider.css" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="~/Content/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="~/Content/Product.css" />
+
+</head>
+
+<body>
+    <h2>Modifică postarea</h2>
     <br />
-
-    @Html.TextArea("Content", null, new { @class = "form-control" })
-    @Html.ValidationMessageFor(m => m.Content, null, new { @class = "text-danger" })
-    <br />
-
-
-    for (var i = 0; i < 5; i++)
+    @using (Html.BeginForm("Edit", "Posts", FormMethod.Post, new { enctype = "multipart/form-data", @class = "review-form" }))
     {
-        if (i < Model.Photos.Count && Model.Photos[i] != null)
-        {
+        @Html.HttpMethodOverride(HttpVerbs.Put)
 
-            <input type="hidden" name="uploadedPhotos[@i]" /> @*necessary for binding the uploadedPhotos array*@
-            <a class="btn btn-sm btn-warning" href="~/Photos/Delete/@Model.Photos[i].PhotoId">Sterge poza @i</a>
-        }
-        else
-        {
-            <input type="file" name="uploadedPhotos[@i]" />
+        <div id="review-form">
+            @Html.HiddenFor(m => m.UserId)
+            @Html.HiddenFor(m => m.ProductId)
+            @Html.HiddenFor(m => m.isReview)
+            @Html.HiddenFor(m => m.Date)
+
+            @Html.Label("Content", "Conținut")
             <br />
-        }
-    }
 
-    @Html.HiddenFor(m => m.Date)
-    <button class="btn btn-success" type="submit">Editeaza comentariu</button>
+            @Html.TextArea("Content", null, new { @class = "form-control input" })
+            @Html.ValidationMessageFor(m => m.Content, null, new { @class = "text-danger" })
+            <br />
 
-    @Html.HiddenFor(m => m.isReview)
-    @Html.HiddenFor(m => m.Rating)
-    @Html.HiddenFor(m => m.ProductId)
-}
-</form>
+            @if (Model.isReview)
+            {
+                <div class="input-rating">
+                    <span>Noul rating: </span>
+                    <div class="stars">
+                        <input id="star5" name="Rating" value="5" type="radio"><label for="star5"></label>
+                        <input id="star4" name="Rating" value="4" type="radio"><label for="star4"></label>
+                        <input id="star3" name="Rating" value="3" type="radio"><label for="star3"></label>
+                        <input id="star2" name="Rating" value="2" type="radio"><label for="star2"></label>
+                        <input id="star1" name="Rating" value="1" type="radio"><label for="star1"></label>
+                    </div>
+                </div>
+            }
+
+            @for (var i = 0; i < 5; i++)
+            {
+                if (i < Model.Photos.Count && Model.Photos[i] != null)
+                {
+                    <input type="hidden" name="uploadedPhotos[@i]" /> @*necessary for binding the uploadedPhotos array*@
+                    <a style ="margin-bottom: 10px !important;"class="btn btn-sm btn-warning" href="/Photos/Delete/@Model.Photos[i].PhotoId">Sterge poza @i</a>
+                    <br />
+                }
+                else
+                {
+                    <input type="file" name="uploadedPhotos[@i]" />
+                    <br />
+                }
+            }
+            <button class="primary-btn" type="submit">Modifică postarea</button>
+        </div>
+     }
+
+    <!-- jQuery Plugins -->
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/Slick/slick.min.js"></script>
+    <script src="~/Scripts/nouislider.min.js"></script>
+    <script src="~/Scripts/jquery.zoom.min.js"></script>
+    <script src="~/Scripts/main.js"></script>
+</body>
+</html>
+

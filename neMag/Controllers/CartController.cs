@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace neMag.Controllers
 {
-    public class CosController : Controller
+    public class CartController : Controller
     {
         private Models.ApplicationDbContext db = new Models.ApplicationDbContext();
         // consts for possible status of an order
@@ -36,25 +36,21 @@ namespace neMag.Controllers
         [Authorize(Roles = "Collaborator,Admin")]
         public ActionResult OrdersFromMe()
         {
-            IEnumerable<int> orderids = (from order in db.Orders
-                                       where order.Status == SENT
-                                       select order.OrderId).ToList();
+            IEnumerable<int> orderids =db.Orders.Where(o => o.Status == SENT)
+                                        .Select(o => o.OrderId).ToList();
             string uid = User.Identity.GetUserId();
-            IEnumerable<int> productids = (from pr in db.Products
-                                           where pr.UserId == uid
-                                           select pr.ProductId).ToList();
+            IEnumerable<int> productids = db.Products.Where(p => p.UserId == uid)
+                                          .Select(p => p.ProductId).ToList();
             List<OrderContent> Contents = new List<OrderContent>();
             
-            foreach (var x in orderids)
+            foreach (var oid in orderids)
             {
-                IEnumerable<OrderContent> ocs = (from oc in db.OrderContents
-                                                where oc.Order.OrderId == x
-                                                select oc);
-                foreach (var y in ocs)
+                IEnumerable<OrderContent> ocs = db.OrderContents.Where(o => o.Order.OrderId == oid);
+                foreach (var oc in ocs)
                 {
-                    if(productids.Contains(y.Product.ProductId))
+                    if(productids.Contains(oc.Product.ProductId))
                     {
-                        Contents.Add(y);
+                        Contents.Add(oc);
                     }
                 }
             }
@@ -72,9 +68,13 @@ namespace neMag.Controllers
             string uid = User.Identity.GetUserId();
             Order cart = GetCart();
             Product product = db.Products.Find(id);
-            IEnumerable<OrderContent> alreadyOrdered = (from oc in db.OrderContents
-                                                 where oc.Product.ProductId == id && oc.Order.OrderId == cart.OrderId
-                                                select oc).ToList();
+            if (product.Stock == null || product.Stock <= 0)
+            {
+                TempData["message"] = "Produsul nu este in stoc";
+                return RedirectToAction("Index");
+            }
+            IEnumerable<OrderContent> alreadyOrdered = db.OrderContents.Where(oc => oc.Product.ProductId == id &&
+                                                oc.Order.OrderId == cart.OrderId).ToList();
             if (product.Accepted == false)
             {
                 TempData["message"] = "Produsul nu poate fi comandat";
@@ -90,6 +90,7 @@ namespace neMag.Controllers
                 if(TryUpdateModel(sameOrder))
                 {
                     sameOrder.Quantity++;
+                    product.Stock--;
                     sameOrder.Total += product.Price - product.Price * product.Discount;
                     db.SaveChanges(); //TODO: check if this is neccessary
                     UpdateCartValue();
@@ -104,6 +105,7 @@ namespace neMag.Controllers
             else
             {
                 OrderContent oc = new OrderContent();
+                product.Stock--;
                 oc.Order = cart;
                 oc.Product = product;
                 oc.Quantity = 1;
@@ -123,6 +125,15 @@ namespace neMag.Controllers
         public ActionResult Delete(int id)
         {
             OrderContent toDelete = db.OrderContents.Find(id);
+            Product product = toDelete.Product;
+            if(product.Stock == null)
+            {
+                product.Stock = toDelete.Quantity;
+            }
+            else
+            {
+                product.Stock += toDelete.Quantity;
+            }
             Order cart = toDelete.Order;
             cart.OrderContents.Remove(toDelete);
             db.OrderContents.Remove(toDelete);
@@ -138,9 +149,18 @@ namespace neMag.Controllers
         {
             // page = 1 => redirect to show, page = 2 => redirect to OrdersFromMe
             OrderContent toDelete = db.OrderContents.Find(id);
+            Product product = toDelete.Product;
             Order order = toDelete.Order;
             if (order.Status == SENT)
             {
+                if (product.Stock == null)
+                {
+                    product.Stock = toDelete.Quantity;
+                }
+                else
+                {
+                    product.Stock += toDelete.Quantity;
+                }
                 order.OrderContents.Remove(toDelete);
                 db.OrderContents.Remove(toDelete);
                 db.SaveChanges();
@@ -168,9 +188,15 @@ namespace neMag.Controllers
         public ActionResult Increase(int id)
         {
             OrderContent oc = db.OrderContents.Find(id);
+            if(oc.Product.Stock == null || oc.Product.Stock <= 0)
+            {
+                TempData["message"] = "Produsul nu este in stoc";
+                return RedirectToAction("Index");
+            }
             if (TryUpdateModel(oc))
             {
                 oc.Quantity++;
+                oc.Product.Stock--;
                 oc.Total += oc.Product.Price - oc.Product.Price * oc.Product.Discount;
                 db.SaveChanges();
                 UpdateCartValue();
@@ -191,6 +217,14 @@ namespace neMag.Controllers
             if (TryUpdateModel(oc))
             {
                 oc.Quantity--;
+                if(oc.Product.Stock == null)
+                {
+                    oc.Product.Stock = 1;
+                }
+                else
+                {
+                    oc.Product.Stock++;
+                }
                 oc.Total -= oc.Product.Price - oc.Product.Price * oc.Product.Discount;
                 db.SaveChanges();
                 UpdateCartValue();
@@ -214,14 +248,19 @@ namespace neMag.Controllers
         public ActionResult EditIncrease(int id,int page)
         {
             OrderContent oc = db.OrderContents.Find(id);
-            string status = (from or in db.Orders
-                          where or.OrderId == oc.Order.OrderId
-                          select or.Status).First();
+            string status = db.Orders.Where(o => o.OrderId == oc.Order.OrderId)
+                          .Select(o => o.Status).First();
             if (status == SENT)
             {
+                if (oc.Product.Stock == null || oc.Product.Stock <= 0)
+                {
+                    TempData["message"] = "Produsul nu este in stoc";
+                    return RedirectToAction("OrdersFromMe");
+                }
                 if (TryUpdateModel(oc))
                 {
                     oc.Quantity++;
+                    oc.Product.Stock--;
                     oc.Total += oc.Product.Price - oc.Product.Price * oc.Product.Discount;
                     db.SaveChanges();
                     UpdateCartValue();
@@ -252,14 +291,21 @@ namespace neMag.Controllers
         public ActionResult EditDecrease(int id, int page)
         {
             OrderContent oc = db.OrderContents.Find(id);
-            string status = (from or in db.Orders
-                             where or.OrderId == oc.Order.OrderId
-                             select or.Status).First();
+            string status = db.Orders.Where(o => o.OrderId == oc.Order.OrderId)
+                            .Select(o => o.Status).First();
             if (status == SENT)
             {
                 if (TryUpdateModel(oc))
                 {
                     oc.Quantity--;
+                    if (oc.Product.Stock == null)
+                    {
+                        oc.Product.Stock = 1;
+                    }
+                    else
+                    {
+                        oc.Product.Stock++;
+                    }
                     oc.Total -= oc.Product.Price - oc.Product.Price * oc.Product.Discount;
                     db.SaveChanges();
                     UpdateCartValue();
@@ -405,9 +451,8 @@ namespace neMag.Controllers
         private Order GetCart()
         {
             string uid = User.Identity.GetUserId();
-            IEnumerable<Order> cart = (from order in db.Orders
-                          where order.UserId == uid && order.Status == CART
-                          select order).ToList(); // tolist because we dont want to work with raw linq
+            IEnumerable<Order> cart = db.Orders.Where(o => o.UserId == uid && o.Status == CART)
+                        .ToList(); // tolist because we dont want to work with raw linq
             if (cart.Count() == 1)
                 return cart.First();
             else

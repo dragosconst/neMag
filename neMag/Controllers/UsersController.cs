@@ -16,9 +16,7 @@ namespace neMag.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
-            var users = from user in db.Users
-                        orderby user.UserName
-                        select user;
+            var users = db.Users.OrderBy(u => u.UserName);
             ViewBag.UsersList = users;
             return View();
         }
@@ -26,25 +24,16 @@ namespace neMag.Controllers
         public ActionResult Show(string id)
         {
             ApplicationUser user = db.Users.Find(id);
-            var roles = (from userRole in user.Roles
-                         join role in db.Roles on userRole.RoleId
-                         equals role.Id
-                         select role.Name).ToList();
+            var roles = user.Roles.Join(db.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name).ToList();
             ViewBag.userRole = roles[0];
 
-            var products = from prod in db.Products
-                           where prod.UserId == user.Id
-                           select prod;
+            var products = db.Products.Where(p => p.UserId == user.Id);
             ViewBag.products = products;
 
-            var orders = from ord in db.Orders
-                         where ord.UserId == user.Id
-                         select ord;
+            var orders = db.Orders.Where(o => o.UserId == user.Id);
             ViewBag.orders = orders;
 
-            var posts = from post in db.Posts
-                        where post.UserId == user.Id
-                        select post;
+            var posts = db.Posts.Where(p => p.UserId == user.Id);
             ViewBag.posts = posts;
 
             var fav = from users in db.UserProducts

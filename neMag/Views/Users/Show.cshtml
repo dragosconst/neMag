@@ -225,7 +225,7 @@
                                                             <p style="display:table-cell; width: 10%"> Total: @order.TotalPrice </p>
                                                             <p style="display:table-cell; width: 30%"> Status: <strong> Finalizat </strong> </p>
                                                             <h3 style="display:table-cell; text-align: right">
-                                                                <a class="btn btn-primary" href="/Cos/Show/@order.OrderId"> Detalii </a>
+                                                                <a class="btn btn-primary" href="/Cart/Show/@order.OrderId"> Detalii </a>
                                                             </h3>
                                                         </div>
                                                     }
@@ -243,7 +243,7 @@
                                                             <p style="display:table-cell; width: 10%"> Total: @order.TotalPrice </p>
                                                             <p style="display:table-cell; width: 30%"> Status: <strong> In curs de procesare </strong> </p>
                                                             <h3 style="display:table-cell; text-align: right">
-                                                                <a class="btn btn-primary" href="/Cos/Show/@order.OrderId"> Detalii </a>
+                                                                <a class="btn btn-primary" href="/Cart/Show/@order.OrderId"> Detalii </a>
                                                             </h3>
                                                         </div>
                                                     }
@@ -360,19 +360,22 @@
                                                                 <div class="review-heading">
                                                                     <h5 class="name">@post.User.Email</h5>
                                                                     <p class="date">@post.Date</p>
-                                                                    <div class="review-rating">
-                                                                        @for (var stars = 1; stars <= 5; stars++)
-                                                                        {
-                                                                            if (stars <= post.Rating)
+                                                                    @if(post.isReview)
+                                                                    {
+                                                                        <div class="review-rating">
+                                                                            @for (var stars = 1; stars <= 5; stars++)
                                                                             {
-                                                                                <i class="fa fa-star"></i>
+                                                                                if (stars <= post.Rating)
+                                                                                {
+                                                                                    <i class="fa fa-star"></i>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <i class="fa fa-star-o empty"></i>
+                                                                                }
                                                                             }
-                                                                            else
-                                                                            {
-                                                                                <i class="fa fa-star-o empty"></i>
-                                                                            }
-                                                                        }
-                                                                    </div>
+                                                                        </div>
+                                                                    }
                                                                 </div>
 
                                                                 <div class="review-body">
