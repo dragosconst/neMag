@@ -136,7 +136,7 @@ namespace neMag.Controllers
                     db.SaveChanges();
                     PhotosController.UploadPhotos(uploadedPhotos, product.ProductId, true);
 
-                    TempData["massage"] = "Produsul a fost adaugat";
+                    TempData["message"] = "Produsul este în curs de verificare de către administratori.";
 
                     return RedirectToAction("Index");
                 }
@@ -144,7 +144,7 @@ namespace neMag.Controllers
                 {
                     product.Categ = GetAllCategories();
                     product.Price = 1;
-                    TempData["massage"] = "Produsul nu a fost adaugat!";
+                    TempData["message"] = "Produsul nu a fost adaugat!";
                     return RedirectToAction("New");
                 }
             }
