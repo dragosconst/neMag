@@ -36,3 +36,11 @@ https://github.com/dragosconst/neMag/commit/aba5d753c1a1a65eff74259e3b0050b9f33b
 
 ## Bug reporting
 We mainly used the "Bugs" column from Jira for bug reporting. A bug example: https://proiectmds.atlassian.net/browse/PM-61 . Bugs related to pull requests were usually reported directly in the github interface, example: https://github.com/dragosconst/neMag/pull/13 .
+
+## Installation guide
+If you wish to run neMag locally, you will need Visual Studio 2017 or later, with its respective .NET modules. Clone the git repo wherever you wish to save the project and open the <i>neMag.sln</i> file.<br/><br/>
+Next, you should clean the project. Due to our .gitignore file, certain executables used by Visual Studio are absent from the repo, but cleaning the project will solve all such issues. Go to the <b>Build</b> menu to find the <b>Clean Solution</b> option.<br/><br/>
+Even thought the project will build with no issues now, there's yet another step. Go to the <i>App_Data</i> folder in VS, right click it and hover over <b>Add</b> and click <b>SQL Server Database</b>. You will need to use a local database, since we did not upload our database to the repo. It's also very important that you name it <i>Database1</i>, otherwise you will have to manually edit your connection string.<br/><br/>
+After this, the project will work as expected. There are three users created by default, one for every role. Their user information can be found in the <i>Startup.cs</i> file.
+
+
